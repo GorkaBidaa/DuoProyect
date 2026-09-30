@@ -54,7 +54,6 @@ public class PlayerMovement : MonoBehaviour
         bool jumpHeld = false;
         bool jumpReleased = false;
 
-        // New Input System: keyboard and gamepad
         var kb = Keyboard.current;
         float keyboard = 0f;
         if (kb != null)
