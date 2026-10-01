@@ -3,17 +3,20 @@ using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PhantomAnchor : MonoBehaviour
+public class ShadowAnchor : MonoBehaviour
 {
     [Header("Anchor Settings")]
     public GameObject phantomPrefab; //shadow prefab
     public float maxTeleportRadius = 8f; //Maximum allowed teleport distance
     public KeyCode anchorKey = KeyCode.E; //Key to use the ability
+    public float UpMultiplier = 1.5f; 
 
     private GameObject currentShadow; 
     private bool ActiveShadow = false;
 
     private Rigidbody2D rb;
+    // Stored upward inertia captured at button press
+    private float storedUpwardInertia = 0f;
 
     void Start()
     {
@@ -45,6 +48,16 @@ public class PhantomAnchor : MonoBehaviour
             }
             else
             {
+                // Capture current upward velocity right when the player requests teleport
+                if (rb != null)
+                {
+                    storedUpwardInertia = rb.linearVelocity.y;
+                }
+                else
+                {
+                    storedUpwardInertia = 0f;
+                }
+
                 Teleport();
             }
         }
@@ -63,24 +76,8 @@ public class PhantomAnchor : MonoBehaviour
 
         if (distanceToAnchor <= maxTeleportRadius)
         {
-            //Teleport
-            transform.position = currentShadow.transform.position;
-
-            if (rb != null)
-            {
-                // Reset all the velocity except for the Y velocity if jumping
-                float currentVelocityY = rb.linearVelocity.y;
-
-                if (currentVelocityY < 0)
-                {
-                    currentVelocityY = 0f;
-                }
-                rb.linearVelocity = new Vector2(0f, currentVelocityY);
-            }
-
-            //Destroy the phantom and reset
-            Destroy(currentShadow);
-            ActiveShadow = false;
+            // Start animation
+            StartCoroutine(TeleportRoutine(currentShadow.transform.position));
         }
         else
         {
@@ -89,7 +86,64 @@ public class PhantomAnchor : MonoBehaviour
             ActiveShadow = false;
         }
     }
-    private IEnumerator FailAndDestroy(GameObject shadowToDestroy)
+
+    private IEnumerator TeleportRoutine(Vector3 targetPosition)
+    {
+        SpriteRenderer playerSr = GetComponent<SpriteRenderer>();
+        float fadeTime = 0.2f;
+
+        // Fade out
+        if (playerSr != null)
+        {
+            Color col = playerSr.color;
+            for (float t = 0f; t < fadeTime; t += Time.deltaTime)
+            {
+                col.a = Mathf.Lerp(1f, 0f, t / fadeTime);
+                playerSr.color = col;
+                yield return null;
+            }
+            col.a = 0f;
+            playerSr.color = col;
+        }
+
+        // Move player to target
+        transform.position = targetPosition;
+
+        // Apply the stored upward inertia captured at button press
+        if (rb != null)
+        {
+            float appliedVelocityY = storedUpwardInertia;
+            if (appliedVelocityY <= 0f) appliedVelocityY = 0f;
+            else appliedVelocityY = appliedVelocityY * UpMultiplier;
+            rb.linearVelocity = new Vector2(0f, appliedVelocityY);
+        }
+
+        // Reset stored inertia after applying
+        storedUpwardInertia = 0f;
+
+        // Destroy phantom now that we've moved
+        if (currentShadow != null)
+        {
+            Destroy(currentShadow);
+            currentShadow = null;
+        }
+        ActiveShadow = false;
+
+        // Fade in
+        if (playerSr != null)
+        {
+            Color col = playerSr.color;
+            for (float t = 0f; t < fadeTime; t += Time.deltaTime)
+            {
+                col.a = Mathf.Lerp(0f, 1f, t / fadeTime);
+                playerSr.color = col;
+                yield return null;
+            }
+            col.a = 1f;
+            playerSr.color = col;
+        }
+    }
+    private  IEnumerator FailAndDestroy(GameObject shadowToDestroy)
     {
         //Get the Sprite
         SpriteRenderer sr = shadowToDestroy.GetComponent<SpriteRenderer>();
@@ -103,6 +157,14 @@ public class PhantomAnchor : MonoBehaviour
         if (shadowToDestroy != null)
         {
             Destroy(shadowToDestroy);
+        }
+    }
+    public void ForceDestroyAnchor()
+    {
+        if (ActiveShadow && currentShadow != null)
+        {
+            Destroy(currentShadow);
+            ActiveShadow = false;
         }
     }
 }
