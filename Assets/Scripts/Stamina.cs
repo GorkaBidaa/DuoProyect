@@ -47,7 +47,7 @@ public class StaminaSystem : MonoBehaviour
         respawnPosition = newPosition;
     }
 
-    private void Die()
+    public void Die()
     {
         // Teleport to the last saved respawn position
         transform.position = respawnPosition;

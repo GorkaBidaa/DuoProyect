@@ -28,7 +28,7 @@ public class ShadowAnchor : MonoBehaviour
         bool anchorPressed = false;
 
         var gp = Gamepad.current;
-        if (gp != null && gp.buttonSouth.wasPressedThisFrame) anchorPressed = true;
+        if (gp != null && (gp.buttonWest.wasPressedThisFrame || gp.rightShoulder.wasPressedThisFrame)) anchorPressed = true;
 
         var kb = Keyboard.current;
         if (kb != null)
