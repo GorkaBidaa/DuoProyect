@@ -17,6 +17,8 @@ public class ShadowAnchor : MonoBehaviour
     private Rigidbody2D rb;
     // Stored upward inertia captured at button press
     private float storedUpwardInertia = 0f;
+    public float abilityCooldown = 0.5f;
+    private float cooldownTimer = 0f;
 
     void Start()
     {
@@ -26,6 +28,8 @@ public class ShadowAnchor : MonoBehaviour
     void Update()
     {
         bool anchorPressed = false;
+        // Cooldown timer decrement
+        if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
 
         var gp = Gamepad.current;
         if (gp != null && (gp.buttonWest.wasPressedThisFrame || gp.rightShoulder.wasPressedThisFrame)) anchorPressed = true;
@@ -44,7 +48,12 @@ public class ShadowAnchor : MonoBehaviour
         {
             if (!ActiveShadow)
             {
-                DeployAnchor();
+                // Only allow deploying if cooldown has expired
+                if (cooldownTimer <= 0f)
+                {
+                    DeployAnchor();
+                    // cooldown starts on teleport, not on deploy
+                }
             }
             else
             {
@@ -71,6 +80,7 @@ public class ShadowAnchor : MonoBehaviour
 
     private void Teleport()
     {
+        cooldownTimer = abilityCooldown;
         //Distance between player and phantom
         float distanceToAnchor = Vector2.Distance(transform.position, currentShadow.transform.position);
 

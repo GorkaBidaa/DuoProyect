@@ -2342,6 +2342,7 @@ MonoBehaviour:
   maxTeleportRadius: 10
   anchorKey: 101
   UpMultiplier: 1.1
+  abilityCooldown: 1
 --- !u!114 &534447447
 MonoBehaviour:
   m_ObjectHideFlags: 0
