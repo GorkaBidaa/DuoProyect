@@ -29,26 +29,30 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     private float horizontalInput;
-    private bool isGrounded;
-    // Corner correction transforms
+    public bool isGrounded { get; private set; } 
+
     public Transform headLeft;
     public Transform headRight;
     public float headCheckDistance = 0.3f;
     public float nudgeAmount = 0.1f;
     public float maxCornerDistance = 0.2f;
+    private bool isTeleporting = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
+    public void SetTeleportingState(bool state)
+    {
+        isTeleporting = state;
+    }
+
     void Update()
     {
-        // floor check
         if (groundCheck != null)
             isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-        // default values
         horizontalInput = 0f;
         bool jumpPressed = false;
         bool jumpHeld = false;
@@ -77,17 +81,21 @@ public class PlayerMovement : MonoBehaviour
             if (gp.buttonSouth.wasReleasedThisFrame) jumpReleased = true;
         }
 
+        // If teleporting, force "jumpHeld" to true so the player gets max height automatically
+        if (isTeleporting)
+        {
+            jumpHeld = true;
+            jumpReleased = false;
+        }
+
         horizontalInput = (Mathf.Abs(gamepad) > 0.01f) ? gamepad : keyboard;
 
-        // COYOTE TIME
         if (isGrounded) coyoteTimeCounter = coyoteTime;
         else coyoteTimeCounter -= Time.deltaTime;
 
-        // JUMP BUFFER
         if (jumpPressed) jumpBufferCounter = jumpBufferTime;
         else jumpBufferCounter -= Time.deltaTime;
 
-        // Execute jump if buffered and within coyote time
         if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
@@ -95,14 +103,12 @@ public class PlayerMovement : MonoBehaviour
             coyoteTimeCounter = 0f;
         }
 
-        // Short hop (stop jump early)
         if (jumpReleased && rb.linearVelocity.y > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
             coyoteTimeCounter = 0f;
         }
 
-        // Asymmetric gravity
         if (rb.linearVelocity.y < 0)
         {
             rb.gravityScale = fallMultiplier;
@@ -119,7 +125,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Horizontal movement
         float targetSpeed = horizontalInput * maxSpeed;
 
         float accelRate;
@@ -137,7 +142,6 @@ public class PlayerMovement : MonoBehaviour
 
         rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
 
-        // CORNER CORRECTION
         if (rb.linearVelocity.y > 0f && headLeft != null && headRight != null)
         {
             RaycastHit2D leftHit = Physics2D.Raycast(headLeft.position, Vector2.up, headCheckDistance, groundLayer);
@@ -148,7 +152,6 @@ public class PlayerMovement : MonoBehaviour
 
             if (hitLeft && !hitRight)
             {
-                // Check if space to the right within the forgiven distance is free
                 Vector2 checkPos = new Vector2(headLeft.position.x + maxCornerDistance, headLeft.position.y);
                 RaycastHit2D check = Physics2D.Raycast(checkPos, Vector2.up, headCheckDistance, groundLayer);
                 if (check.collider == null)
@@ -158,7 +161,6 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (hitRight && !hitLeft)
             {
-                // Check if space to the left within the forgiven distance is free
                 Vector2 checkPos = new Vector2(headRight.position.x - maxCornerDistance, headRight.position.y);
                 RaycastHit2D check = Physics2D.Raycast(checkPos, Vector2.up, headCheckDistance, groundLayer);
                 if (check.collider == null)

@@ -1,35 +1,80 @@
 using System.Collections;
-using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class ShadowAnchor : MonoBehaviour
 {
     [Header("Anchor Settings")]
-    public GameObject phantomPrefab; //shadow prefab
-    public float maxTeleportRadius = 8f; //Maximum allowed teleport distance
-    public KeyCode anchorKey = KeyCode.E; //Key to use the ability
-    public float UpMultiplier = 1.5f; 
+    public GameObject phantomPrefab;
+    public float maxTeleportRadius = 8f;
+    public float RadiusForgive = 9f;
+    public KeyCode anchorKey = KeyCode.E;
 
-    private GameObject currentShadow; 
+    [Header("Momentum Settings")]
+    public float UpMultiplier = 1.1f;
+    public float velocityClampMax = 25f;
+
+    [Header("Game Feel Settings")]
+    public float inertiaCoyoteTime = 0.2f;
+    public float hitstopDuration = 0.1f;
+
+    private GameObject currentShadow;
     private bool ActiveShadow = false;
+    private float currentMaxLaunchVelocity = 0f;
 
     private Rigidbody2D rb;
-    // Stored upward inertia captured at button press
-    private float storedUpwardInertia = 0f;
+    private PlayerMovement playerMovement;
+
+    private float cachedMaxUpwardInertia = 0f;
+    private float inertiaTimer = 0f;
+
     public float abilityCooldown = 0.5f;
     private float cooldownTimer = 0f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     void Update()
     {
         bool anchorPressed = false;
-        // Cooldown timer decrement
+
         if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
+
+        if (rb != null)
+        {
+            if (rb.linearVelocity.y > 0.1f)
+            {
+                // FIX: Only overwrite if the new velocity is higher to capture the absolute peak force
+                if (rb.linearVelocity.y > cachedMaxUpwardInertia)
+                {
+                    cachedMaxUpwardInertia = rb.linearVelocity.y;
+                }
+                inertiaTimer = inertiaCoyoteTime;
+            }
+            else
+            {
+                inertiaTimer -= Time.deltaTime;
+                if (inertiaTimer <= 0f)
+                {
+                    cachedMaxUpwardInertia = 0f;
+                }
+            }
+        }
+
+        if (playerMovement != null)
+        {
+            if (playerMovement.isGrounded)
+            {
+                currentMaxLaunchVelocity = 0f;
+            }
+            else if (rb != null && rb.linearVelocity.y > currentMaxLaunchVelocity)
+            {
+                currentMaxLaunchVelocity = rb.linearVelocity.y;
+            }
+        }
 
         var gp = Gamepad.current;
         if (gp != null && (gp.buttonWest.wasPressedThisFrame || gp.rightShoulder.wasPressedThisFrame)) anchorPressed = true;
@@ -44,29 +89,43 @@ public class ShadowAnchor : MonoBehaviour
             }
         }
 
+        //Update shadow color dynamically if out of range
+        if (ActiveShadow && currentShadow != null)
+        {
+            float currentDist = Vector2.Distance(transform.position, currentShadow.transform.position);
+            bool isReachable = false;
+
+            if (currentDist <= maxTeleportRadius)
+            {
+                isReachable = true;
+            }
+            else if (currentDist <= RadiusForgive)
+            {
+                Vector2 dirToShadow = (currentShadow.transform.position - transform.position).normalized;
+                float currentDot = Vector2.Dot(rb.linearVelocity.normalized, dirToShadow);
+                if (currentDot > 0.3f) isReachable = true;
+            }
+
+            SpriteRenderer shadowSr = currentShadow.GetComponent<SpriteRenderer>();
+            if (shadowSr != null)
+            {
+                // Normal color if reachable, red/transparent if out of bounds
+                if (isReachable) shadowSr.color = new Color32(127, 0, 247, 80);
+                else shadowSr.color = new Color(1f, 0.3f, 0.3f, 0.5f);
+            }
+        }
+
         if (anchorPressed)
         {
             if (!ActiveShadow)
             {
-                // Only allow deploying if cooldown has expired
                 if (cooldownTimer <= 0f)
                 {
                     DeployAnchor();
-                    // cooldown starts on teleport, not on deploy
                 }
             }
             else
             {
-                // Capture current upward velocity right when the player requests teleport
-                if (rb != null)
-                {
-                    storedUpwardInertia = rb.linearVelocity.y;
-                }
-                else
-                {
-                    storedUpwardInertia = 0f;
-                }
-
                 Teleport();
             }
         }
@@ -81,17 +140,31 @@ public class ShadowAnchor : MonoBehaviour
     private void Teleport()
     {
         cooldownTimer = abilityCooldown;
-        //Distance between player and phantom
         float distanceToAnchor = Vector2.Distance(transform.position, currentShadow.transform.position);
+
+        bool canTeleport = false;
 
         if (distanceToAnchor <= maxTeleportRadius)
         {
-            // Start animation
+            canTeleport = true;
+        }
+        else if (distanceToAnchor <= RadiusForgive)
+        {
+            Vector2 directionToShadow = (currentShadow.transform.position - transform.position).normalized;
+            float dotProduct = Vector2.Dot(rb.linearVelocity.normalized, directionToShadow);
+
+            if (dotProduct > 0.3f)
+            {
+                canTeleport = true;
+            }
+        }
+
+        if (canTeleport)
+        {
             StartCoroutine(TeleportRoutine(currentShadow.transform.position));
         }
         else
         {
-            //Destroy the anchor on failure
             StartCoroutine(FailAndDestroy(currentShadow));
             ActiveShadow = false;
         }
@@ -102,7 +175,8 @@ public class ShadowAnchor : MonoBehaviour
         SpriteRenderer playerSr = GetComponent<SpriteRenderer>();
         float fadeTime = 0.2f;
 
-        // Fade out
+        if (playerMovement != null) playerMovement.SetTeleportingState(true);
+
         if (playerSr != null)
         {
             Color col = playerSr.color;
@@ -116,22 +190,23 @@ public class ShadowAnchor : MonoBehaviour
             playerSr.color = col;
         }
 
-        // Move player to target
         transform.position = targetPosition;
 
-        // Apply the stored upward inertia captured at button press
         if (rb != null)
         {
-            float appliedVelocityY = storedUpwardInertia;
+            float appliedVelocityY = cachedMaxUpwardInertia;
             if (appliedVelocityY <= 0f) appliedVelocityY = 0f;
             else appliedVelocityY = appliedVelocityY * UpMultiplier;
+
+            float dynamicMaxLimit = Mathf.Min(currentMaxLaunchVelocity * UpMultiplier, velocityClampMax);
+            appliedVelocityY = Mathf.Clamp(appliedVelocityY, 0f, dynamicMaxLimit);
+
             rb.linearVelocity = new Vector2(0f, appliedVelocityY);
         }
 
-        // Reset stored inertia after applying
-        storedUpwardInertia = 0f;
+        cachedMaxUpwardInertia = 0f;
+        inertiaTimer = 0f;
 
-        // Destroy phantom now that we've moved
         if (currentShadow != null)
         {
             Destroy(currentShadow);
@@ -139,7 +214,6 @@ public class ShadowAnchor : MonoBehaviour
         }
         ActiveShadow = false;
 
-        // Fade in
         if (playerSr != null)
         {
             Color col = playerSr.color;
@@ -152,10 +226,16 @@ public class ShadowAnchor : MonoBehaviour
             col.a = 1f;
             playerSr.color = col;
         }
+
+        Time.timeScale = 0f;
+        yield return new WaitForSecondsRealtime(hitstopDuration);
+        Time.timeScale = 1f;
+
+        if (playerMovement != null) playerMovement.SetTeleportingState(false);
     }
-    private  IEnumerator FailAndDestroy(GameObject shadowToDestroy)
+
+    private IEnumerator FailAndDestroy(GameObject shadowToDestroy)
     {
-        //Get the Sprite
         SpriteRenderer sr = shadowToDestroy.GetComponent<SpriteRenderer>();
         if (sr != null)
         {
@@ -169,6 +249,7 @@ public class ShadowAnchor : MonoBehaviour
             Destroy(shadowToDestroy);
         }
     }
+
     public void ForceDestroyAnchor()
     {
         if (ActiveShadow && currentShadow != null)
