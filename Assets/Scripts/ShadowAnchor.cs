@@ -8,6 +8,10 @@ public class ShadowAnchor : MonoBehaviour
     public GameObject phantomPrefab;
     public float maxTeleportRadius = 8f;
     public float RadiusForgive = 9f;
+    [Tooltip("Dot minimo entre tu velocidad y la direccion a la sombra para contar como 'moviéndote hacia ella'")]
+    public float forgiveDotThreshold = 0.3f;
+    [Tooltip("Velocidad minima para que cuente como movimiento hacia la sombra")]
+    public float forgiveMinSpeed = 0.5f;
     public KeyCode anchorKey = KeyCode.E;
 
     [Header("Momentum Settings")]
@@ -17,111 +21,71 @@ public class ShadowAnchor : MonoBehaviour
     [Header("Game Feel Settings")]
     public float inertiaCoyoteTime = 0.2f;
     public float hitstopDuration = 0.1f;
+    public float fadeTime = 0.2f;
+    public float abilityCooldown = 0.5f;
 
     private GameObject currentShadow;
+    private SpriteRenderer shadowSr;
     private bool ActiveShadow = false;
+    private bool isTeleporting = false;
+
     private float currentMaxLaunchVelocity = 0f;
+    private float cachedMaxUpwardInertia = 0f;
+    private float inertiaTimer = 0f;
+    private float cooldownTimer = 0f;
 
     private Rigidbody2D rb;
     private PlayerMovement playerMovement;
-
-    private float cachedMaxUpwardInertia = 0f;
-    private float inertiaTimer = 0f;
-
-    public float abilityCooldown = 0.5f;
-    private float cooldownTimer = 0f;
+    private SpriteRenderer playerSr;
+    private Key parsedKey;
+    private bool keyValid;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerMovement = GetComponent<PlayerMovement>();
+        playerSr = GetComponent<SpriteRenderer>();
+        CacheKey();
+    }
+
+    void OnValidate() { CacheKey(); }
+
+    void OnDisable()
+    {
+        // Evita que el juego se quede congelado o el jugador invisible si se desactiva a mitad de teleport
+        if (isTeleporting)
+        {
+            Time.timeScale = 1f;
+            isTeleporting = false;
+            if (playerSr != null)
+            {
+                Color c = playerSr.color; c.a = 1f; playerSr.color = c;
+            }
+            if (playerMovement != null) playerMovement.SetTeleportingState(false);
+        }
+    }
+
+    private void CacheKey()
+    {
+        keyValid = System.Enum.TryParse(anchorKey.ToString(), out parsedKey);
     }
 
     void Update()
     {
-        bool anchorPressed = false;
-
         if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
 
-        if (rb != null)
-        {
-            if (rb.linearVelocity.y > 0.1f)
-            {
-                if (rb.linearVelocity.y > cachedMaxUpwardInertia)
-                {
-                    cachedMaxUpwardInertia = rb.linearVelocity.y;
-                }
-                inertiaTimer = inertiaCoyoteTime;
-            }
-            else
-            {
-                inertiaTimer -= Time.deltaTime;
-                if (inertiaTimer <= 0f)
-                {
-                    cachedMaxUpwardInertia = 0f;
-                }
-            }
-        }
+        TrackMomentum();
 
-        if (playerMovement != null)
-        {
-            if (playerMovement.isGrounded)
-            {
-                currentMaxLaunchVelocity = 0f;
-            }
-            else if (rb != null && rb.linearVelocity.y > currentMaxLaunchVelocity)
-            {
-                currentMaxLaunchVelocity = rb.linearVelocity.y;
-            }
-        }
+        if (ActiveShadow && currentShadow != null && !isTeleporting)
+            UpdateShadowColor();
 
-        var gp = Gamepad.current;
-        if (gp != null && (gp.buttonWest.wasPressedThisFrame || gp.rightShoulder.wasPressedThisFrame)) anchorPressed = true;
+        if (isTeleporting) return; // ignora input mientras dura el teleport
 
-        var kb = Keyboard.current;
-        if (kb != null)
-        {
-            if (System.Enum.TryParse<Key>(anchorKey.ToString(), out Key parsedKey))
-            {
-                var keyControl = kb[parsedKey];
-                if (keyControl != null && keyControl.wasPressedThisFrame) anchorPressed = true;
-            }
-        }
-
-        //Update shadow color dynamically if out of range
-        if (ActiveShadow && currentShadow != null)
-        {
-            float currentDist = Vector2.Distance(transform.position, currentShadow.transform.position);
-            bool isReachable = false;
-
-            if (currentDist <= maxTeleportRadius)
-            {
-                isReachable = true;
-            }
-            else if (currentDist <= RadiusForgive)
-            {
-                Vector2 dirToShadow = (currentShadow.transform.position - transform.position).normalized;
-                float currentDot = Vector2.Dot(rb.linearVelocity.normalized, dirToShadow);
-                if (currentDot > 0.3f) isReachable = true;
-            }
-
-            SpriteRenderer shadowSr = currentShadow.GetComponent<SpriteRenderer>();
-            if (shadowSr != null)
-            {
-                // Normal color if reachable, red/transparent if out of bounds
-                if (isReachable) shadowSr.color = new Color32(127, 0, 247, 80);
-                else shadowSr.color = new Color(1f, 0.3f, 0.3f, 0.5f);
-            }
-        }
-
-        if (anchorPressed)
+        if (ReadAnchorInput())
         {
             if (!ActiveShadow)
             {
-                if (cooldownTimer <= 0f)
-                {
-                    DeployAnchor();
-                }
+                if (cooldownTimer <= 0f) DeployAnchor();
             }
             else
             {
@@ -130,131 +94,186 @@ public class ShadowAnchor : MonoBehaviour
         }
     }
 
+    private void TrackMomentum()
+    {
+        if (rb == null) return;
+
+        float vy = rb.linearVelocity.y;
+
+        if (vy > 0.1f)
+        {
+            if (vy > cachedMaxUpwardInertia) cachedMaxUpwardInertia = vy;
+            inertiaTimer = inertiaCoyoteTime;
+        }
+        else
+        {
+            inertiaTimer -= Time.deltaTime;
+            if (inertiaTimer <= 0f) cachedMaxUpwardInertia = 0f;
+        }
+
+        if (playerMovement != null)
+        {
+            if (playerMovement.isGrounded) currentMaxLaunchVelocity = 0f;
+            else if (vy > currentMaxLaunchVelocity) currentMaxLaunchVelocity = vy;
+        }
+    }
+
+    private bool ReadAnchorInput()
+    {
+        var gp = Gamepad.current;
+        if (gp != null && (gp.buttonWest.wasPressedThisFrame || gp.rightShoulder.wasPressedThisFrame))
+            return true;
+
+        var kb = Keyboard.current;
+        if (kb != null && keyValid && kb[parsedKey].wasPressedThisFrame)
+            return true;
+
+        return false;
+    }
+
+    // Una sola fuente de verdad para "se puede teletransportar?" (color y teleport usan lo mismo)
+    private bool IsReachable()
+    {
+        if (currentShadow == null) return false;
+
+        Vector2 toShadow = currentShadow.transform.position - transform.position;
+        float dist = toShadow.magnitude;
+
+        if (dist <= maxTeleportRadius) return true;
+        if (dist > RadiusForgive) return false;
+
+        // Zona de perdon: solo si te estas moviendo hacia la sombra
+        if (rb == null) return false;
+        Vector2 vel = rb.linearVelocity;
+        if (vel.magnitude < forgiveMinSpeed) return false;
+
+        float dot = Vector2.Dot(vel.normalized, toShadow.normalized);
+        return dot > forgiveDotThreshold;
+    }
+
+    private void UpdateShadowColor()
+    {
+        if (shadowSr == null) return;
+        shadowSr.color = IsReachable()
+            ? new Color32(127, 0, 247, 80)
+            : new Color(1f, 0.3f, 0.3f, 0.5f);
+    }
+
     private void DeployAnchor()
     {
+        if (phantomPrefab == null)
+        {
+            Debug.LogWarning("ShadowAnchor: falta phantomPrefab.");
+            return;
+        }
         currentShadow = Instantiate(phantomPrefab, transform.position, Quaternion.identity);
+        shadowSr = currentShadow.GetComponent<SpriteRenderer>();
         ActiveShadow = true;
     }
 
     private void Teleport()
     {
+        if (currentShadow == null) { ActiveShadow = false; return; }
+
         cooldownTimer = abilityCooldown;
-        float distanceToAnchor = Vector2.Distance(transform.position, currentShadow.transform.position);
 
-        bool canTeleport = false;
-
-        if (distanceToAnchor <= maxTeleportRadius)
-        {
-            canTeleport = true;
-        }
-        else if (distanceToAnchor <= RadiusForgive)
-        {
-            Vector2 directionToShadow = (currentShadow.transform.position - transform.position).normalized;
-            float dotProduct = Vector2.Dot(rb.linearVelocity.normalized, directionToShadow);
-
-            if (dotProduct > 0.3f)
-            {
-                canTeleport = true;
-            }
-        }
-
-        if (canTeleport)
+        if (IsReachable())
         {
             StartCoroutine(TeleportRoutine(currentShadow.transform.position));
         }
         else
         {
-            StartCoroutine(FailAndDestroy(currentShadow));
+            GameObject toDestroy = currentShadow;
+            currentShadow = null;
+            shadowSr = null;
             ActiveShadow = false;
+            StartCoroutine(FailAndDestroy(toDestroy));
         }
     }
 
     private IEnumerator TeleportRoutine(Vector3 targetPosition)
     {
-        SpriteRenderer playerSr = GetComponent<SpriteRenderer>();
-        float fadeTime = 0.2f;
+        isTeleporting = true;
+        float prevTimeScale = Time.timeScale;
 
-        if (playerMovement != null) playerMovement.SetTeleportingState(true);
-
-        if (playerSr != null)
+        try
         {
-            Color col = playerSr.color;
-            for (float t = 0f; t < fadeTime; t += Time.deltaTime)
+            if (playerMovement != null) playerMovement.SetTeleportingState(true);
+
+            // Fade out
+            yield return FadePlayer(1f, 0f);
+
+            // Mover (usar rb.position mantiene la fisica sincronizada)
+            if (rb != null) rb.position = targetPosition;
+            transform.position = targetPosition;
+
+            if (rb != null)
             {
-                col.a = Mathf.Lerp(1f, 0f, t / fadeTime);
-                playerSr.color = col;
-                yield return null;
+                float appliedVelocityY = cachedMaxUpwardInertia > 0f
+                    ? cachedMaxUpwardInertia * UpMultiplier
+                    : 0f;
+
+                float dynamicMaxLimit = Mathf.Min(currentMaxLaunchVelocity * UpMultiplier, velocityClampMax);
+                appliedVelocityY = Mathf.Clamp(appliedVelocityY, 0f, dynamicMaxLimit);
+
+                rb.linearVelocity = new Vector2(0f, appliedVelocityY);
             }
-            col.a = 0f;
-            playerSr.color = col;
-        }
 
-        transform.position = targetPosition;
+            cachedMaxUpwardInertia = 0f;
+            inertiaTimer = 0f;
 
-        if (rb != null)
-        {
-            float appliedVelocityY = cachedMaxUpwardInertia;
-            if (appliedVelocityY <= 0f) appliedVelocityY = 0f;
-            else appliedVelocityY = appliedVelocityY * UpMultiplier;
-
-            float dynamicMaxLimit = Mathf.Min(currentMaxLaunchVelocity * UpMultiplier, velocityClampMax);
-            appliedVelocityY = Mathf.Clamp(appliedVelocityY, 0f, dynamicMaxLimit);
-
-            rb.linearVelocity = new Vector2(0f, appliedVelocityY);
-        }
-
-        cachedMaxUpwardInertia = 0f;
-        inertiaTimer = 0f;
-
-        if (currentShadow != null)
-        {
-            Destroy(currentShadow);
+            if (currentShadow != null) Destroy(currentShadow);
             currentShadow = null;
-        }
-        ActiveShadow = false;
+            shadowSr = null;
+            ActiveShadow = false;
 
-        if (playerSr != null)
+            // Fade in
+            yield return FadePlayer(0f, 1f);
+
+            // Hitstop
+            Time.timeScale = 0f;
+            yield return new WaitForSecondsRealtime(hitstopDuration);
+        }
+        finally
         {
-            Color col = playerSr.color;
-            for (float t = 0f; t < fadeTime; t += Time.deltaTime)
-            {
-                col.a = Mathf.Lerp(0f, 1f, t / fadeTime);
-                playerSr.color = col;
-                yield return null;
-            }
-            col.a = 1f;
-            playerSr.color = col;
+            Time.timeScale = prevTimeScale > 0f ? prevTimeScale : 1f;
+            isTeleporting = false;
+            if (playerMovement != null) playerMovement.SetTeleportingState(false);
         }
+    }
 
-        Time.timeScale = 0f;
-        yield return new WaitForSecondsRealtime(hitstopDuration);
-        Time.timeScale = 1f;
+    private IEnumerator FadePlayer(float from, float to)
+    {
+        if (playerSr == null) yield break;
 
-        if (playerMovement != null) playerMovement.SetTeleportingState(false);
+        Color col = playerSr.color;
+        for (float t = 0f; t < fadeTime; t += Time.deltaTime)
+        {
+            col.a = Mathf.Lerp(from, to, t / fadeTime);
+            playerSr.color = col;
+            yield return null;
+        }
+        col.a = to;
+        playerSr.color = col;
     }
 
     private IEnumerator FailAndDestroy(GameObject shadowToDestroy)
     {
+        if (shadowToDestroy == null) yield break;
+
         SpriteRenderer sr = shadowToDestroy.GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            sr.color = new Color32(255, 0, 0, 128);
-        }
+        if (sr != null) sr.color = new Color32(255, 0, 0, 128);
 
         yield return new WaitForSeconds(0.3f);
 
-        if (shadowToDestroy != null)
-        {
-            Destroy(shadowToDestroy);
-        }
+        if (shadowToDestroy != null) Destroy(shadowToDestroy);
     }
 
     public void ForceDestroyAnchor()
     {
-        if (ActiveShadow && currentShadow != null)
-        {
-            Destroy(currentShadow);
-            ActiveShadow = false;
-        }
+        if (currentShadow != null) Destroy(currentShadow);
+        currentShadow = null;
+        shadowSr = null;
+        ActiveShadow = false;
     }
 }
