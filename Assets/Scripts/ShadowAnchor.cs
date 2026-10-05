@@ -11,7 +11,7 @@ public class ShadowAnchor : MonoBehaviour
     public KeyCode anchorKey = KeyCode.E;
 
     [Header("Momentum Settings")]
-    public float UpMultiplier = 1.1f;
+    public float UpMultiplier = 1f;
     public float velocityClampMax = 25f;
 
     [Header("Game Feel Settings")]
@@ -47,7 +47,6 @@ public class ShadowAnchor : MonoBehaviour
         {
             if (rb.linearVelocity.y > 0.1f)
             {
-                // FIX: Only overwrite if the new velocity is higher to capture the absolute peak force
                 if (rb.linearVelocity.y > cachedMaxUpwardInertia)
                 {
                     cachedMaxUpwardInertia = rb.linearVelocity.y;
