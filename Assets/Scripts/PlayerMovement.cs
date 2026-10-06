@@ -1,8 +1,7 @@
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-#endif
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Stats")]
@@ -12,9 +11,12 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump Stats")]
     public float jumpForce = 12f;
+    [Tooltip("Gravedad base sobre la que se aplican los multiplicadores (1 = igual que antes)")]
+    public float baseGravityScale = 1f;
     public float upwardGravityMultiplier = 2f;
     public float fallMultiplier = 2.5f;
-    public float lowJumpMultiplier = 2f;
+    [Tooltip("Debe ser MAYOR que upwardGravityMultiplier para que soltar el salto acorte el salto")]
+    public float lowJumpMultiplier = 3f;
 
     [Header("Invisible Mechanics (Game Feel)")]
     public float coyoteTime = 0.1f;
@@ -27,18 +29,20 @@ public class PlayerMovement : MonoBehaviour
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
 
-    private Rigidbody2D rb;
-    private float horizontalInput;
-    public bool isGrounded { get; private set; } 
-
+    [Header("Corner Correction")]
     public Transform headLeft;
     public Transform headRight;
     public float headCheckDistance = 0.3f;
     public float nudgeAmount = 0.1f;
     public float maxCornerDistance = 0.2f;
+
+    private Rigidbody2D rb;
+    private float horizontalInput;
     private bool isTeleporting = false;
 
-    void Start()
+    public bool isGrounded { get; private set; }
+
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
@@ -53,7 +57,6 @@ public class PlayerMovement : MonoBehaviour
         if (groundCheck != null)
             isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-        horizontalInput = 0f;
         bool jumpPressed = false;
         bool jumpHeld = false;
         bool jumpReleased = false;
@@ -81,8 +84,12 @@ public class PlayerMovement : MonoBehaviour
             if (gp.buttonSouth.wasReleasedThisFrame) jumpReleased = true;
         }
 
-        // If teleporting, force "jumpHeld" to true so the player gets max height automatically
-        if (isTeleporting)
+        if (isBouncing && rb.linearVelocity.y <= 0f)
+        {
+            isBouncing = false;
+        }
+        
+        if (isTeleporting || isBouncing)
         {
             jumpHeld = true;
             jumpReleased = false;
@@ -90,13 +97,14 @@ public class PlayerMovement : MonoBehaviour
 
         horizontalInput = (Mathf.Abs(gamepad) > 0.01f) ? gamepad : keyboard;
 
-        if (isGrounded) coyoteTimeCounter = coyoteTime;
+ 
+        if (isGrounded && rb.linearVelocity.y <= 0.1f) coyoteTimeCounter = coyoteTime;
         else coyoteTimeCounter -= Time.deltaTime;
 
         if (jumpPressed) jumpBufferCounter = jumpBufferTime;
         else jumpBufferCounter -= Time.deltaTime;
 
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
+        if (!isTeleporting && !isBouncing && jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             jumpBufferCounter = 0f;
@@ -109,65 +117,67 @@ public class PlayerMovement : MonoBehaviour
             coyoteTimeCounter = 0f;
         }
 
-        if (rb.linearVelocity.y < 0)
-        {
-            rb.gravityScale = fallMultiplier;
-        }
-        else if (rb.linearVelocity.y > 0 && !jumpHeld)
-        {
-            rb.gravityScale = lowJumpMultiplier;
-        }
-        else
-        {
-            rb.gravityScale = upwardGravityMultiplier;
-        }
+        float vy = rb.linearVelocity.y;
+        float multiplier;
+        if (vy < 0f) multiplier = fallMultiplier;
+        else if (vy > 0f && !jumpHeld) multiplier = lowJumpMultiplier;
+        else multiplier = upwardGravityMultiplier;
+
+        rb.gravityScale = baseGravityScale * multiplier;
     }
 
     void FixedUpdate()
     {
         float targetSpeed = horizontalInput * maxSpeed;
-
-        float accelRate;
-        if (Mathf.Abs(targetSpeed) > 0.01f)
-        {
-            accelRate = acceleration;
-        }
-        else
-        {
-            accelRate = deceleration;
-        }
+        float accelRate = Mathf.Abs(targetSpeed) > 0.01f ? acceleration : deceleration;
 
         float speedDifference = targetSpeed - rb.linearVelocity.x;
         float movement = speedDifference * accelRate;
 
-        rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
+        // * rb.mass para que el movimiento no dependa de la masa del Rigidbody
+        rb.AddForce(movement * rb.mass * Vector2.right, ForceMode2D.Force);
 
-        if (rb.linearVelocity.y > 0f && headLeft != null && headRight != null)
+        CornerCorrection();
+    }
+
+    private void CornerCorrection()
+    {
+        if (rb.linearVelocity.y <= 0f || headLeft == null || headRight == null) return;
+
+        bool hitLeft = Physics2D.Raycast(headLeft.position, Vector2.up, headCheckDistance, groundLayer).collider != null;
+        bool hitRight = Physics2D.Raycast(headRight.position, Vector2.up, headCheckDistance, groundLayer).collider != null;
+
+        if (hitLeft && !hitRight)
         {
-            RaycastHit2D leftHit = Physics2D.Raycast(headLeft.position, Vector2.up, headCheckDistance, groundLayer);
-            RaycastHit2D rightHit = Physics2D.Raycast(headRight.position, Vector2.up, headCheckDistance, groundLayer);
-
-            bool hitLeft = leftHit.collider != null;
-            bool hitRight = rightHit.collider != null;
-
-            if (hitLeft && !hitRight)
-            {
-                Vector2 checkPos = new Vector2(headLeft.position.x + maxCornerDistance, headLeft.position.y);
-                RaycastHit2D check = Physics2D.Raycast(checkPos, Vector2.up, headCheckDistance, groundLayer);
-                if (check.collider == null)
-                {
-                    transform.position = new Vector2(transform.position.x + nudgeAmount, transform.position.y);
-                }
-            }
-            else if (hitRight && !hitLeft)
-            {
-                Vector2 checkPos = new Vector2(headRight.position.x - maxCornerDistance, headRight.position.y);
-                RaycastHit2D check = Physics2D.Raycast(checkPos, Vector2.up, headCheckDistance, groundLayer);
-                if (check.collider == null)
-                {
-                    transform.position = new Vector2(transform.position.x - nudgeAmount, transform.position.y);
-                }
-            }
+            Vector2 checkPos = new Vector2(headLeft.position.x + maxCornerDistance, headLeft.position.y);
+            if (Physics2D.Raycast(checkPos, Vector2.up, headCheckDistance, groundLayer).collider == null)
+                rb.position += Vector2.right * nudgeAmount;
         }
+        else if (hitRight && !hitLeft)
+        {
+            Vector2 checkPos = new Vector2(headRight.position.x - maxCornerDistance, headRight.position.y);
+            if (Physics2D.Raycast(checkPos, Vector2.up, headCheckDistance, groundLayer).collider == null)
+                rb.position += Vector2.left * nudgeAmount;
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
+        Gizmos.color = Color.yellow;
+        if (headLeft != null) Gizmos.DrawLine(headLeft.position, headLeft.position + Vector3.up * headCheckDistance);
+        if (headRight != null) Gizmos.DrawLine(headRight.position, headRight.position + Vector3.up * headCheckDistance);
+    }
+    private bool isBouncing = false;
+    public void Bounce(float force)
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, force);
+        isBouncing = true;
+        jumpBufferCounter = 0f;
+        coyoteTimeCounter = 0f;
     }
 }
