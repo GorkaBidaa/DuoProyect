@@ -1,0 +1,1135 @@
+fileFormatVersion: 2
+guid: 1fec70dc1f0a3a946b77b16bd5ab773b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1655487145900777903
+    second: Alien_Character_SheetR_Spaced_0
+  - first:
+      213: 6218940272697953653
+    second: Alien_Character_SheetR_Spaced_1
+  - first:
+      213: 8584249153500336603
+    second: Alien_Character_SheetR_Spaced_2
+  - first:
+      213: -1926428030424035073
+    second: Alien_Character_SheetR_Spaced_3
+  - first:
+      213: 2754278441836045471
+    second: Alien_Character_SheetR_Spaced_4
+  - first:
+      213: -8546602847624234191
+    second: Alien_Character_SheetR_Spaced_5
+  - first:
+      213: 2764610498047700803
+    second: Alien_Character_SheetR_Spaced_6
+  - first:
+      213: 8415015118308124500
+    second: Alien_Character_SheetR_Spaced_7
+  - first:
+      213: 3613823493890540505
+    second: Alien_Character_SheetR_Spaced_8
+  - first:
+      213: -660412918891191704
+    second: Alien_Character_SheetR_Spaced_9
+  - first:
+      213: -5844374093921340317
+    second: Alien_Character_SheetR_Spaced_10
+  - first:
+      213: -8357865984200979341
+    second: Alien_Character_SheetR_Spaced_11
+  - first:
+      213: 2858442264257149594
+    second: Alien_Character_SheetR_Spaced_12
+  - first:
+      213: 7156156941083797920
+    second: Alien_Character_SheetR_Spaced_13
+  - first:
+      213: -7933732684160807703
+    second: Alien_Character_SheetR_Spaced_14
+  - first:
+      213: 8267524911263621419
+    second: Alien_Character_SheetR_Spaced_15
+  - first:
+      213: 8550919016982793105
+    second: Alien_Character_SheetR_Spaced_16
+  - first:
+      213: 8163656919556170116
+    second: Alien_Character_SheetR_Spaced_17
+  - first:
+      213: 2447782010512399904
+    second: Alien_Character_SheetR_Spaced_18
+  - first:
+      213: -7752624531562738918
+    second: Alien_Character_SheetR_Spaced_19
+  - first:
+      213: 3965423610147947702
+    second: Alien_Character_SheetR_Spaced_20
+  - first:
+      213: -516869663466640254
+    second: Alien_Character_SheetR_Spaced_21
+  - first:
+      213: -4657089971370110949
+    second: Alien_Character_SheetR_Spaced_22
+  - first:
+      213: 2836307083472729660
+    second: Alien_Character_SheetR_Spaced_23
+  - first:
+      213: 7398772059456748988
+    second: Alien_Character_SheetR_Spaced_24
+  - first:
+      213: 5353249049533049026
+    second: Alien_Character_SheetR_Spaced_25
+  - first:
+      213: 7191458233987750090
+    second: Alien_Character_SheetR_Spaced_26
+  - first:
+      213: -9106643071817463289
+    second: Alien_Character_SheetR_Spaced_27
+  - first:
+      213: -8121763314723730854
+    second: Alien_Character_SheetR_Spaced_28
+  - first:
+      213: -2995641263955448787
+    second: Alien_Character_SheetR_Spaced_29
+  - first:
+      213: -951967988641205764
+    second: Alien_Character_SheetR_Spaced_30
+  - first:
+      213: 4697652821573618522
+    second: Alien_Character_SheetR_Spaced_31
+  - first:
+      213: 6014987922689237888
+    second: Alien_Character_SheetR_Spaced_32
+  - first:
+      213: 1678679898913354997
+    second: Alien_Character_SheetR_Spaced_33
+  - first:
+      213: -5705481117659205536
+    second: Alien_Character_SheetR_Spaced_34
+  - first:
+      213: 8780895745050881542
+    second: Alien_Character_SheetR_Spaced_35
+  - first:
+      213: 4324610250278145048
+    second: Alien_Character_SheetR_Spaced_36
+  - first:
+      213: -1884854106351832112
+    second: Alien_Character_SheetR_Spaced_37
+  - first:
+      213: 572866375005029734
+    second: Alien_Character_SheetR_Spaced_38
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DUPE_TEST 2_0
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 1265
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df25be2e0f97052419cb469474088ace
+      internalID: 1485644275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_1
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 1265
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3900519cbd3095e43a11b9c673d5aff4
+      internalID: -1750336860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_2
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 1265
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb4d2322e42d457488ccc6603b575016
+      internalID: 918432153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_3
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 1265
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 26be2133106465744aa5fb9e3194625d
+      internalID: 600558156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_4
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 1107
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c12f4e09d04479e4d8aa305813b18be5
+      internalID: -1889477807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_5
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 1107
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb83669a706ce13448fdeeebb4c01095
+      internalID: -678626850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_6
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 1107
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d8defe2ee8c75d45af71f016afee94e
+      internalID: -387167557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_7
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 1107
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9cc8b7ed3c479b46a1388df7cd3da45
+      internalID: -406404757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_8
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 1107
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42365074d6a8e324fab4b94c2c2c80d3
+      internalID: -609082112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_9
+      rect:
+        serializedVersion: 2
+        x: 1040
+        y: 1107
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 285806245a0ed9f499fb1f521deb2eed
+      internalID: -2007387149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_10
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 949
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2ae08457fffa7d499b7d8f873687c7c
+      internalID: -1221525655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_11
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 949
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f796814c1612e449ad907e7f339f35e
+      internalID: -1878917822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_12
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 949
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c49cae6ea9675346a8e6a06a86cb83e
+      internalID: 2042850116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_13
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 949
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c8863ea221e74b849bda1d2b3426aac8
+      internalID: -960431616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_14
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 949
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f63a52e15fe34143bf0b141cded4f44
+      internalID: -1533110880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_15
+      rect:
+        serializedVersion: 2
+        x: 1040
+        y: 949
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2bb37b08373cbd341be9a47927e7a79a
+      internalID: 1172803190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_16
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 791
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 948d9aae313a57944a5858ec4656a39f
+      internalID: -154930522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_17
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 791
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fcfd93e3a2b9f104dbec630a2afaa73b
+      internalID: -1460849238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_18
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 791
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0bd00a0db06dc75458b06d51377a5d76
+      internalID: -587218943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_19
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 791
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84e67f1e80443ef4697909902989b4cd
+      internalID: 128310444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_20
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 791
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50366c2d15601ea47ae8a16afb9a7fdd
+      internalID: 952507828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_21
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 633
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ed2a2e75a5e1cf4eae9671591c2962c
+      internalID: -1006168245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_22
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 633
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9be6d5f5389cb0940bc2d673491bbf45
+      internalID: -1844599406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_23
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 633
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1e2a07bca7f28e49ba3193a7209a10b
+      internalID: 469440372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_24
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 475
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fe2ed21fabc41247b5ddbbfaa20bb4f
+      internalID: 162733576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_25
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 475
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec2796ebe56151c4bb0b59d7892a5456
+      internalID: 1004838927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_26
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 475
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e433e069d7996b34c9e26f143513352c
+      internalID: 713395492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_27
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 317
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a9454df0d635d84db4548ae38091a8a
+      internalID: -788600215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_28
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 317
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b79b17331eb3eb7469c04ad8f36168ad
+      internalID: -1916572881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_29
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 317
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a607fea7ac456ee4e8db23c317add184
+      internalID: -2129054657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_30
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 317
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f71cd48520e2cb24e9ba7aa89e254072
+      internalID: -602271826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_31
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 159
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bbba414f6b5258a499ee8565547737e3
+      internalID: 1561121273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_32
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 159
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57356a6c1a58fa3428d02defbf92bcb9
+      internalID: -87178223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_33
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 159
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb42faabcda556047a6a0b0eef65b876
+      internalID: -772843362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_34
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 159
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0f588ad419de4f4dafb5e7fc1e99f6d
+      internalID: -1060357998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_35
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 1
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1551e4d157699444c87003671d6cf630
+      internalID: -1172084827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_36
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 1
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7620641bca19e8b4b9124515b82e0627
+      internalID: -189780229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_37
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 1
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5036250cae70a2c44b68c9b4a6a7e6c4
+      internalID: 1452498101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUPE_TEST 2_38
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 1
+        width: 200
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59ee3b8b58ac66048babfb784901ca20
+      internalID: 18960280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 243324c32fb0faa408a5f78421c3e145
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":200.0,"y":151.0},"gridSpriteOffset":{"x":10.0,"y":24.0},"gridSpritePadding":{"x":6.0,"y":7.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      DUPE_TEST 2_0: 1485644275
+      DUPE_TEST 2_1: -1750336860
+      DUPE_TEST 2_10: -1221525655
+      DUPE_TEST 2_11: -1878917822
+      DUPE_TEST 2_12: 2042850116
+      DUPE_TEST 2_13: -960431616
+      DUPE_TEST 2_14: -1533110880
+      DUPE_TEST 2_15: 1172803190
+      DUPE_TEST 2_16: -154930522
+      DUPE_TEST 2_17: -1460849238
+      DUPE_TEST 2_18: -587218943
+      DUPE_TEST 2_19: 128310444
+      DUPE_TEST 2_2: 918432153
+      DUPE_TEST 2_20: 952507828
+      DUPE_TEST 2_21: -1006168245
+      DUPE_TEST 2_22: -1844599406
+      DUPE_TEST 2_23: 469440372
+      DUPE_TEST 2_24: 162733576
+      DUPE_TEST 2_25: 1004838927
+      DUPE_TEST 2_26: 713395492
+      DUPE_TEST 2_27: -788600215
+      DUPE_TEST 2_28: -1916572881
+      DUPE_TEST 2_29: -2129054657
+      DUPE_TEST 2_3: 600558156
+      DUPE_TEST 2_30: -602271826
+      DUPE_TEST 2_31: 1561121273
+      DUPE_TEST 2_32: -87178223
+      DUPE_TEST 2_33: -772843362
+      DUPE_TEST 2_34: -1060357998
+      DUPE_TEST 2_35: -1172084827
+      DUPE_TEST 2_36: -189780229
+      DUPE_TEST 2_37: 1452498101
+      DUPE_TEST 2_38: 18960280
+      DUPE_TEST 2_4: -1889477807
+      DUPE_TEST 2_5: -678626850
+      DUPE_TEST 2_6: -387167557
+      DUPE_TEST 2_7: -406404757
+      DUPE_TEST 2_8: -609082112
+      DUPE_TEST 2_9: -2007387149
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
