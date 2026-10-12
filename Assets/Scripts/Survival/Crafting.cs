@@ -1,142 +1,46 @@
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// Replaces the old single-recipe Crafting component on one base trigger.
+[RequireComponent(typeof(Collider2D))]
 public class Crafting : MonoBehaviour
 {
-    //UI
-    public GameObject craftingUI;
-    public TextMeshProUGUI resourceRequirementText;
+    [SerializeField] private CraftingMenu menu;
+    private readonly HashSet<Collider2D> playerColliders = new HashSet<Collider2D>();
 
-    //Crafting req
-    public ResourceData requiredResource;
-    public int requiredAmount;
+    private void Reset() => GetComponent<Collider2D>().isTrigger = true;
 
-    //Crafted result
-    public ResourceData craftedItem;
-    public int craftedAmount = 1;
-
-    //player inventory reference
-    private PlayerInventory playerInventory;
-
-    //Interaction
-    private Collider2D craftingCollider;
-
-    private bool isCrafted = false;
-    private bool isInCraftingArea = false;
-
-    private void Awake()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (craftingCollider == null)
+        if (other.GetComponentInParent<PlayerInventory>() != menu.Inventory) return;
+        playerColliders.Add(other);
+        menu.SetAtBase(true);
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (!playerColliders.Remove(other)) return;
+        if (playerColliders.Count == 0) menu.SetAtBase(false);
+    }
+
+    private void OnDisable()
+    {
+        playerColliders.Clear();
+        if (menu != null) menu.SetAtBase(false);
+    }
+
+    private void Update()
+    {
+        if (playerColliders.Count == 0) return;
+        bool interact = (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) ||
+            (Gamepad.current != null && Gamepad.current.buttonNorth.wasPressedThisFrame);
+        if (interact)
         {
-            craftingCollider = GetComponent<Collider2D>();
+            if (menu.IsOpen) menu.Close();
+            else menu.Open();
         }
+        if (menu.IsOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            menu.Close();
     }
-
-    void Start()
-    {
-
-    }
-
-
-    void Update()
-    {
-        if (!isInCraftingArea || isCrafted)
-            return;
-
-        UpdateRequirementText();
-
-        var keyboard = Keyboard.current;
-        var gamepad = Gamepad.current;
-
-        bool interactPressed =
-            (keyboard != null && keyboard.fKey.wasPressedThisFrame) ||
-            (gamepad != null && gamepad.buttonNorth.wasPressedThisFrame);
-
-        if (interactPressed)
-            Craft();
-    }
-
-    private void UpdateRequirementText()
-    {
-        if (resourceRequirementText == null)
-            return;
-
-        if (requiredResource == null)
-        {
-            resourceRequirementText.text = "No required resource assigned.";
-            return;
-        }
-
-        int ownedAmount = playerInventory != null
-            ? playerInventory.GetResourceAmount(requiredResource)
-            : 0;
-
-        resourceRequirementText.text = $"{ownedAmount} / {requiredAmount} {requiredResource.resourceName}";
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player") && (!isCrafted))
-        {
-
-            playerInventory = collision.GetComponentInParent<PlayerInventory>();
-            Debug.Log("Player entered crafting area.");
-            UpdateRequirementText();
-            craftingUI.SetActive(true);
-            isInCraftingArea = true;
-
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            Debug.Log("Player exited crafting area.");
-            isInCraftingArea = false;
-            craftingUI.SetActive(false);
-        }
-    }
-
-    public void Interact(InputAction.CallbackContext context)
-    {
-
-        if (!context.performed)
-            return;
-
-
-        if (isInCraftingArea && !isCrafted)
-        {
-            Craft();
-        }
-    }
-
-    private void Craft()
-    {
-
-        if (playerInventory == null)
-            return;
-
-
-
-        if (!playerInventory.HasResource(requiredResource, requiredAmount))
-        {
-            Debug.Log("Not Enough resources to craft the item.");
-            return;
-        }
-        playerInventory.RemoveResource(requiredResource, requiredAmount);
-
-        playerInventory.AddResource(craftedItem, craftedAmount);
-
-        isCrafted = true;
-
-        craftingUI.SetActive(false);
-
-        Debug.Log("Crafting successful! Crafted " + craftedAmount + " " + craftedItem.name);
-    }
-
-
 }
-
-
