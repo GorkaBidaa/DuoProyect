@@ -128,13 +128,24 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        float targetSpeed = horizontalInput * maxSpeed;
-        float accelRate = Mathf.Abs(targetSpeed) > 0.01f ? acceleration : deceleration;
+        Vector2 surfaceVelocity = Vector2.zero;
+        if (isGrounded && groundCheck != null)
+        {
+            Collider2D groundHit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+            if (groundHit != null)
+            {
+                MovingPlatform platform = groundHit.GetComponentInParent<MovingPlatform>();
+                if (platform != null)
+                    surfaceVelocity = platform.Velocity;
+            }
+        }
+
+        float targetSpeed = (horizontalInput * maxSpeed) + surfaceVelocity.x;
+        float accelRate = Mathf.Abs(horizontalInput) > 0.01f ? acceleration : deceleration;
 
         float speedDifference = targetSpeed - rb.linearVelocity.x;
         float movement = speedDifference * accelRate;
 
-        // * rb.mass para que el movimiento no dependa de la masa del Rigidbody
         rb.AddForce(movement * rb.mass * Vector2.right, ForceMode2D.Force);
 
         CornerCorrection();
