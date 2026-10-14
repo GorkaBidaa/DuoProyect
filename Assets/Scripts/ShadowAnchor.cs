@@ -28,6 +28,7 @@ public class ShadowAnchor : MonoBehaviour
     private SpriteRenderer shadowSr;
     private bool ActiveShadow = false;
     private bool isTeleporting = false;
+    private Coroutine teleportCoroutine;
 
     private float currentMaxLaunchVelocity = 0f;
     private float cachedMaxUpwardInertia = 0f;
@@ -67,19 +68,45 @@ public class ShadowAnchor : MonoBehaviour
 
     private void CacheKey()
     {
-        keyValid = System.Enum.TryParse(anchorKey.ToString(), out parsedKey);
+        if (System.Enum.TryParse(anchorKey.ToString(), true, out parsedKey))
+        {
+            keyValid = true;
+            return;
+        }
+
+        // Fallback for KeyCode names that differ in the new Input System
+        parsedKey = anchorKey switch
+        {
+            KeyCode.Return => Key.Enter,
+            KeyCode.LeftControl => Key.LeftCtrl,
+            KeyCode.RightControl => Key.RightCtrl,
+            KeyCode.LeftCommand => Key.LeftMeta,
+            KeyCode.RightCommand => Key.RightMeta,
+            KeyCode.Alpha0 => Key.Digit0,
+            KeyCode.Alpha1 => Key.Digit1,
+            KeyCode.Alpha2 => Key.Digit2,
+            KeyCode.Alpha3 => Key.Digit3,
+            KeyCode.Alpha4 => Key.Digit4,
+            KeyCode.Alpha5 => Key.Digit5,
+            KeyCode.Alpha6 => Key.Digit6,
+            KeyCode.Alpha7 => Key.Digit7,
+            KeyCode.Alpha8 => Key.Digit8,
+            KeyCode.Alpha9 => Key.Digit9,
+            _ => Key.None
+        };
+        keyValid = parsedKey != Key.None;
     }
 
     void Update()
     {
         if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
 
+        if (isTeleporting) return; // ignora input mientras dura el teleport
+
         TrackMomentum();
 
-        if (ActiveShadow && currentShadow != null && !isTeleporting)
+        if (ActiveShadow && currentShadow != null)
             UpdateShadowColor();
-
-        if (isTeleporting) return; // ignora input mientras dura el teleport
 
         if (ReadAnchorInput())
         {
@@ -103,18 +130,18 @@ public class ShadowAnchor : MonoBehaviour
         if (vy > 0.1f)
         {
             if (vy > cachedMaxUpwardInertia) cachedMaxUpwardInertia = vy;
+            if (vy > currentMaxLaunchVelocity) currentMaxLaunchVelocity = vy;
             inertiaTimer = inertiaCoyoteTime;
         }
         else
         {
             inertiaTimer -= Time.deltaTime;
             if (inertiaTimer <= 0f) cachedMaxUpwardInertia = 0f;
-        }
 
-        if (playerMovement != null)
-        {
-            if (playerMovement.isGrounded) currentMaxLaunchVelocity = 0f;
-            else if (vy > currentMaxLaunchVelocity) currentMaxLaunchVelocity = vy;
+            if (playerMovement != null && playerMovement.isGrounded)
+            {
+                currentMaxLaunchVelocity = 0f;
+            }
         }
     }
 
@@ -138,9 +165,10 @@ public class ShadowAnchor : MonoBehaviour
 
         Vector2 toShadow = currentShadow.transform.position - transform.position;
         float dist = toShadow.magnitude;
+        float effectiveForgiveRadius = Mathf.Max(RadiusForgive, maxTeleportRadius);
 
         if (dist <= maxTeleportRadius) return true;
-        if (dist > RadiusForgive) return false;
+        if (dist > effectiveForgiveRadius) return false;
 
         // Zona de perdon: solo si te estas moviendo hacia la sombra
         if (rb == null) return false;
@@ -179,7 +207,7 @@ public class ShadowAnchor : MonoBehaviour
 
         if (IsReachable())
         {
-            StartCoroutine(TeleportRoutine(currentShadow.transform.position));
+            teleportCoroutine = StartCoroutine(TeleportRoutine(currentShadow.transform.position));
         }
         else
         {
@@ -196,6 +224,12 @@ public class ShadowAnchor : MonoBehaviour
         isTeleporting = true;
         float prevTimeScale = Time.timeScale;
 
+        // Snapshot momentum before fade starts
+        float savedUpwardInertia = cachedMaxUpwardInertia;
+        float savedMaxLaunchVel = currentMaxLaunchVelocity;
+        cachedMaxUpwardInertia = 0f;
+        inertiaTimer = 0f;
+
         try
         {
             if (playerMovement != null) playerMovement.SetTeleportingState(true);
@@ -204,23 +238,12 @@ public class ShadowAnchor : MonoBehaviour
             yield return FadePlayer(1f, 0f);
 
             // Mover (usar rb.position mantiene la fisica sincronizada)
-            if (rb != null) rb.position = targetPosition;
-            transform.position = targetPosition;
-
             if (rb != null)
             {
-                float appliedVelocityY = cachedMaxUpwardInertia > 0f
-                    ? cachedMaxUpwardInertia * UpMultiplier
-                    : 0f;
-
-                float dynamicMaxLimit = Mathf.Min(currentMaxLaunchVelocity * UpMultiplier, velocityClampMax);
-                appliedVelocityY = Mathf.Clamp(appliedVelocityY, 0f, dynamicMaxLimit);
-
-                rb.linearVelocity = new Vector2(0f, appliedVelocityY);
+                rb.position = targetPosition;
+                rb.linearVelocity = Vector2.zero;
             }
-
-            cachedMaxUpwardInertia = 0f;
-            inertiaTimer = 0f;
+            transform.position = targetPosition;
 
             if (currentShadow != null) Destroy(currentShadow);
             currentShadow = null;
@@ -233,11 +256,25 @@ public class ShadowAnchor : MonoBehaviour
             // Hitstop
             Time.timeScale = 0f;
             yield return new WaitForSecondsRealtime(hitstopDuration);
+
+            // Apply launch velocity after fade and hitstop
+            if (rb != null)
+            {
+                float appliedVelocityY = savedUpwardInertia > 0f
+                    ? savedUpwardInertia * UpMultiplier
+                    : 0f;
+
+                float dynamicMaxLimit = Mathf.Min(savedMaxLaunchVel * UpMultiplier, velocityClampMax);
+                appliedVelocityY = Mathf.Clamp(appliedVelocityY, 0f, dynamicMaxLimit);
+
+                rb.linearVelocity = new Vector2(0f, appliedVelocityY);
+            }
         }
         finally
         {
             Time.timeScale = prevTimeScale > 0f ? prevTimeScale : 1f;
             isTeleporting = false;
+            teleportCoroutine = null;
             if (playerMovement != null) playerMovement.SetTeleportingState(false);
         }
     }
@@ -271,6 +308,29 @@ public class ShadowAnchor : MonoBehaviour
 
     public void ForceDestroyAnchor()
     {
+        if (teleportCoroutine != null)
+        {
+            StopCoroutine(teleportCoroutine);
+            teleportCoroutine = null;
+        }
+
+        if (isTeleporting)
+        {
+            Time.timeScale = 1f;
+            isTeleporting = false;
+            if (playerSr != null)
+            {
+                Color c = playerSr.color;
+                c.a = 1f;
+                playerSr.color = c;
+            }
+            if (playerMovement != null) playerMovement.SetTeleportingState(false);
+        }
+
+        cachedMaxUpwardInertia = 0f;
+        currentMaxLaunchVelocity = 0f;
+        inertiaTimer = 0f;
+
         if (currentShadow != null) Destroy(currentShadow);
         currentShadow = null;
         shadowSr = null;

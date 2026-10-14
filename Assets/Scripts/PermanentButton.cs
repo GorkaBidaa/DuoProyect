@@ -7,6 +7,12 @@ public class PermanentButton : MonoBehaviour
     public GameObject doorToOpen;
 
     private bool isPressed = false;
+    private SpriteRenderer sr;
+
+    private void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -14,7 +20,7 @@ public class PermanentButton : MonoBehaviour
         {
             isPressed = true;
             doorToOpen.SetActive(false);
-            GetComponent<SpriteRenderer>().color = Color.gray;
+            if (sr != null) sr.color = Color.gray;
         }
     }
 }
