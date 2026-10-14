@@ -5,6 +5,69 @@ public class PlayerInventory : MonoBehaviour
 {
 
     [SerializeField] private List<InventorySlot> inventory = new List<InventorySlot>();
+    [SerializeField] private List<ItemSlot> items = new List<ItemSlot>();
+
+    public event System.Action InventoryChanged;
+
+    public void AddItem(ItemData item, int amount)
+    {
+        if (item == null || amount <= 0)
+            return;
+
+        ItemSlot slot = items.Find(entry => entry.item == item);
+
+        if (slot == null)
+        {
+            items.Add(new ItemSlot
+            {
+                item = item,
+                amount = amount
+            });
+        }
+        else
+        {
+            slot.amount += amount;
+        }
+
+        InventoryChanged?.Invoke();
+    }
+
+    public int GetItemAmount(ItemData item)
+    {
+        if (item == null)
+            return 0;
+
+        ItemSlot slot = items.Find(entry => entry.item == item);
+        return slot != null ? slot.amount : 0;
+    }
+
+    public bool RemoveItem(ItemData item, int amount)
+    {
+        if (item == null || amount <= 0)
+            return false;
+
+        ItemSlot slot = items.Find(entry => entry.item == item);
+
+        if (slot == null || slot.amount < amount)
+            return false;
+
+        slot.amount -= amount;
+
+        if (slot.amount == 0)
+            items.Remove(slot);
+
+        InventoryChanged?.Invoke();
+        return true;
+    }
+
+    public IReadOnlyList<ItemSlot> GetAvailableItems()
+    {
+        return items.FindAll(slot =>
+            slot != null &&
+            slot.item != null &&
+            slot.amount > 0
+        ).AsReadOnly();
+    }
 
     public void AddResource(ResourceData resource, int amount)
     {
@@ -22,6 +85,7 @@ public class PlayerInventory : MonoBehaviour
             inventory.Add(newSlot);
         }
 
+        InventoryChanged?.Invoke();
         Debug.Log($"Added {amount} of {resource.resourceName} to inventory.");
     }
 
@@ -57,6 +121,7 @@ public class PlayerInventory : MonoBehaviour
             inventory.Remove(existingSlot);
         }
 
+        InventoryChanged?.Invoke();
         Debug.Log($"Removed {amount} of {resource.resourceName} from inventory.");
     }
 
@@ -74,3 +139,4 @@ public class PlayerInventory : MonoBehaviour
         return existingSlot.amount;
     }
 }
+
