@@ -8,6 +8,17 @@ public class TimedButton : MonoBehaviour
     public float openTime = 3f;
 
     private bool isPressed = false;
+    private SpriteRenderer sr;
+    private Color originalColor;
+
+    private void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            originalColor = sr.color;
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -21,19 +32,51 @@ public class TimedButton : MonoBehaviour
     {
         isPressed = true;
 
+        Bounds doorBounds = default;
+        bool hasDoorCollider = false;
+
+        if (doorToOpen != null)
+        {
+            Collider2D doorCol = doorToOpen.GetComponent<Collider2D>();
+            if (doorCol != null)
+            {
+                doorBounds = doorCol.bounds;
+                hasDoorCollider = true;
+            }
+        }
+
         // Disable door
         if (doorToOpen != null) doorToOpen.SetActive(false);
 
         // Change the button color
-        GetComponent<SpriteRenderer>().color = Color.gray;
+        if (sr != null) sr.color = Color.gray;
 
         // Wait
         yield return new WaitForSeconds(openTime);
-        if (doorToOpen != null) {
+
+        // Wait until player clears the doorway
+        while (hasDoorCollider && IsPlayerBlockingDoor(doorBounds))
+        {
+            yield return null;
+        }
+
+        if (doorToOpen != null)
+        {
             doorToOpen.SetActive(true);
         }
-        ColorUtility.TryParseHtmlString("#FF00C4", out Color parsedColor);
-        GetComponent<SpriteRenderer>().color = parsedColor;
+
+        if (sr != null) sr.color = originalColor;
         isPressed = false;
+    }
+
+    private bool IsPlayerBlockingDoor(Bounds bounds)
+    {
+        Collider2D[] hits = Physics2D.OverlapBoxAll(bounds.center, bounds.size, 0f);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].CompareTag("Player"))
+                return true;
+        }
+        return false;
     }
 }

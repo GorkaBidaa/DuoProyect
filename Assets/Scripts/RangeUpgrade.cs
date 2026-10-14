@@ -6,6 +6,17 @@ public class RangeUpgrade : MonoBehaviour
     public float newRadius = 20f;
     public TextMeshProUGUI messageText;
     public float messageDuration = 3f;
+    public string customMessage = "";
+
+    private SpriteRenderer sr;
+    private Collider2D col;
+    private bool isCollected = false;
+
+    void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+        col = GetComponent<Collider2D>();
+    }
 
     void Start()
     {
@@ -15,22 +26,28 @@ public class RangeUpgrade : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (isCollected) return;
+
         if (collision.CompareTag("Player"))
         {
             ShadowAnchor anchor = collision.GetComponent<ShadowAnchor>();
             if (anchor != null)
             {
-                anchor.maxTeleportRadius = newRadius;
+                isCollected = true;
 
-                string msg = "Teleport radius upgraded to " + newRadius + "!";
+                // Keep forgive margin proportional to the new radius
+                float forgiveMargin = Mathf.Max(1f, anchor.RadiusForgive - anchor.maxTeleportRadius);
+                anchor.maxTeleportRadius = newRadius;
+                anchor.RadiusForgive = newRadius + forgiveMargin;
+
+                string msg = string.IsNullOrEmpty(customMessage)
+                    ? "Teleport radius upgraded to " + newRadius + "!"
+                    : customMessage;
 
                 if (messageText != null)
                 {
-                    if (GetComponent<SpriteRenderer>() != null)
-                        GetComponent<SpriteRenderer>().enabled = false;
-
-                    if (GetComponent<Collider2D>() != null)
-                        GetComponent<Collider2D>().enabled = false;
+                    if (sr != null) sr.enabled = false;
+                    if (col != null) col.enabled = false;
 
                     StopAllCoroutines();
                     StartCoroutine(ShowMessageRoutine(msg, messageDuration));
@@ -38,7 +55,7 @@ public class RangeUpgrade : MonoBehaviour
                 else
                 {
                     Debug.Log(msg);
-                    Destroy(gameObject); 
+                    Destroy(gameObject);
                 }
             }
         }
@@ -51,8 +68,11 @@ public class RangeUpgrade : MonoBehaviour
 
         yield return new WaitForSeconds(duration);
 
-        messageText.text = "";
-        messageText.gameObject.SetActive(false);
+        if (messageText.text == text)
+        {
+            messageText.text = "";
+            messageText.gameObject.SetActive(false);
+        }
 
         Destroy(gameObject);
     }

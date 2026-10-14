@@ -9,19 +9,21 @@ public class BaseStation : MonoBehaviour
         {
             StaminaSystem playerStamina = collision.GetComponent<StaminaSystem>();
             if (playerStamina != null)
-            {                playerStamina.SetRespawnPoint(transform.position);
+            {
+                playerStamina.SetRespawnPoint(transform.position);
+                playerStamina.SetSafeZone(true);
             }
         }
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
             StaminaSystem playerStamina = collision.GetComponent<StaminaSystem>();
             if (playerStamina != null)
             {
-                playerStamina.RechargeStamina();
+                playerStamina.SetSafeZone(false);
             }
         }
     }

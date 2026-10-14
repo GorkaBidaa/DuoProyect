@@ -10,6 +10,18 @@ public class StaminaSystem : MonoBehaviour
     private float currentStamina;
     private Vector2 startPosition;
     private Vector2 respawnPosition;
+    private bool isInSafeZone = false;
+
+    private Rigidbody2D rb;
+    private PlayerMovement playerMovement;
+    private ShadowAnchor anchor;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        playerMovement = GetComponent<PlayerMovement>();
+        anchor = GetComponent<ShadowAnchor>();
+    }
 
     void Start()
     {
@@ -26,31 +38,34 @@ public class StaminaSystem : MonoBehaviour
 
     void Update()
     {
-        // Drain stamina continuously
-        currentStamina -= drainRate * Time.deltaTime;
+        if (isInSafeZone)
+        {
+            RechargeStamina();
+        }
+        else
+        {
+            // Drain stamina continuously
+            currentStamina -= drainRate * Time.deltaTime;
+        }
 
         if (staminaBar != null)
             staminaBar.value = currentStamina;
 
-        if (currentStamina <= 0)
+        if (currentStamina <= 0f)
         {
             Die();
         }
     }
 
-    //new method to restore stamina with food
-    public bool TryRestoreStamina(float amount)
+    public void SetSafeZone(bool state)
     {
-        if (amount <= 0f || currentStamina >= maxStamina)
-            return false;
-
-        currentStamina = Mathf.Min(maxStamina, currentStamina + amount);
-
-        if (staminaBar != null)
-            staminaBar.value = currentStamina;
-
-        return true;
+        isInSafeZone = state;
+        if (state)
+        {
+            RechargeStamina();
+        }
     }
+
     public void RechargeStamina()
     {
         currentStamina = maxStamina;
@@ -63,17 +78,24 @@ public class StaminaSystem : MonoBehaviour
 
     public void Die()
     {
-        // Teleport to the last saved respawn position
-        transform.position = respawnPosition;
-        currentStamina = maxStamina;
-
         // destroy any deployed Shadow
-        var anchor = GetComponent<ShadowAnchor>();
         if (anchor != null)
         {
             anchor.ForceDestroyAnchor();
         }
 
-    }
+        if (playerMovement != null)
+        {
+            playerMovement.ResetMovementState();
+        }
 
+        // Teleport to the last saved respawn position
+        if (rb != null)
+        {
+            rb.position = respawnPosition;
+            rb.linearVelocity = Vector2.zero;
+        }
+        transform.position = respawnPosition;
+        currentStamina = maxStamina;
+    }
 }
