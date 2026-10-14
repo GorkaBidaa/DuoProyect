@@ -66,6 +66,20 @@ public class StaminaSystem : MonoBehaviour
         }
     }
 
+    public bool TryRestoreStamina(float amount)
+    {
+        if (amount <= 0f || currentStamina >= maxStamina)
+            return false;
+
+        currentStamina = Mathf.Min(maxStamina, currentStamina + amount);
+
+        if (staminaBar != null)
+            staminaBar.value = currentStamina;
+
+        return true;
+    }
+
+
     public void RechargeStamina()
     {
         currentStamina = maxStamina;
