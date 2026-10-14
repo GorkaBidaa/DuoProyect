@@ -28,7 +28,7 @@ MonoBehaviour:
   - m_enabled: 1
     m_path: Assets/Scenes/Tutorial.unity
     m_guid: f5f637bb7736ee743bc2bd26dcc069e0
-  m_HasScriptingDefines: 0
+  m_HasScriptingDefines: 1
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings: []

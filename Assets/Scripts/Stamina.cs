@@ -5,7 +5,7 @@ public class StaminaSystem : MonoBehaviour
 {
     public float maxStamina = 100f;
     public float drainRate = 5f;
-    public Slider staminaBar; //UI bar
+    public Slider staminaBar; // UI bar
 
     private float currentStamina;
     private Vector2 startPosition;
@@ -57,6 +57,20 @@ public class StaminaSystem : MonoBehaviour
         }
     }
 
+    // MÉTODO QUE FALTABA PARA QUE FoodUse FUNCIONE
+    public bool TryRestoreStamina(float amount)
+    {
+        if (amount <= 0f || currentStamina >= maxStamina)
+            return false;
+
+        currentStamina = Mathf.Min(currentStamina + amount, maxStamina);
+
+        if (staminaBar != null)
+            staminaBar.value = currentStamina;
+
+        return true;
+    }
+
     public void SetSafeZone(bool state)
     {
         isInSafeZone = state;
@@ -69,6 +83,9 @@ public class StaminaSystem : MonoBehaviour
     public void RechargeStamina()
     {
         currentStamina = maxStamina;
+
+        if (staminaBar != null)
+            staminaBar.value = currentStamina;
     }
 
     public void SetRespawnPoint(Vector2 newPosition)
@@ -78,7 +95,7 @@ public class StaminaSystem : MonoBehaviour
 
     public void Die()
     {
-        // destroy any deployed Shadow
+        // Destroy any deployed Shadow
         if (anchor != null)
         {
             anchor.ForceDestroyAnchor();
@@ -95,6 +112,7 @@ public class StaminaSystem : MonoBehaviour
             rb.position = respawnPosition;
             rb.linearVelocity = Vector2.zero;
         }
+
         transform.position = respawnPosition;
         currentStamina = maxStamina;
     }
