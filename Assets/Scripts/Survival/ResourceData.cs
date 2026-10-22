@@ -5,6 +5,9 @@ using UnityEngine;
 public class ResourceData : ScriptableObject
 {
     public string resourceName;
-    //public Sprite icon;
-    //public int maxStackSize;
+
+    public Sprite icon;
+
+    [TextArea]
+    public string description;
 }

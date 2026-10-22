@@ -1,0 +1,535 @@
+fileFormatVersion: 2
+guid: c18398b5464d9544bb48b48b4bad7a9c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 790238686161986571
+    second: ground-pound-relic_0
+  - first:
+      213: -5697843257051035760
+    second: ground-pound-relic_1
+  - first:
+      213: 5178224696849087997
+    second: ground-pound-relic_2
+  - first:
+      213: 8931362998853757277
+    second: ground-pound-relic_3
+  - first:
+      213: 1819322226660339751
+    second: ground-pound-relic_4
+  - first:
+      213: 3710682348850990993
+    second: ground-pound-relic_5
+  - first:
+      213: 7304394741802905021
+    second: ground-pound-relic_6
+  - first:
+      213: 759817470096099831
+    second: ground-pound-relic_7
+  - first:
+      213: -3396790505942753958
+    second: ground-pound-relic_8
+  - first:
+      213: 8042733143627736842
+    second: ground-pound-relic_9
+  - first:
+      213: 2846964236891284212
+    second: ground-pound-relic_10
+  - first:
+      213: -6600160718792698969
+    second: ground-pound-relic_11
+  - first:
+      213: 990688909517002577
+    second: ground-pound-relic_12
+  - first:
+      213: 5916414088377093323
+    second: ground-pound-relic_13
+  - first:
+      213: -823704667978721348
+    second: ground-pound-relic_14
+  - first:
+      213: 8844728355195456930
+    second: ground-pound-relic_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ground-pound-relic_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 511
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b04e470f5ed77fa00800000000000000
+      internalID: 790238686161986571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 439
+        width: 35
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0974e950fb13de0b0800000000000000
+      internalID: -5697843257051035760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 501
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfd38d62defbcd740800000000000000
+      internalID: 5178224696849087997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_3
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 501
+        width: 23
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d59eebab35392fb70800000000000000
+      internalID: 8931362998853757277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_4
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 492
+        width: 12
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 720ff0c0de78f3910800000000000000
+      internalID: 1819322226660339751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_5
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 506
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19f439dafedfe7330800000000000000
+      internalID: 3710682348850990993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_6
+      rect:
+        serializedVersion: 2
+        x: 494
+        y: 447
+        width: 15
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbda46c315c6e5560800000000000000
+      internalID: 7304394741802905021
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_7
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 421
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f9c63f96f96b8a00800000000000000
+      internalID: 759817470096099831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_8
+      rect:
+        serializedVersion: 2
+        x: 502
+        y: 415
+        width: 10
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5ddcd4280d2cd0d0800000000000000
+      internalID: -3396790505942753958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_9
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 203
+        width: 11
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0721319e278d9f60800000000000000
+      internalID: 8042733143627736842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_10
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 95
+        width: 74
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f2652cb3e2728720800000000000000
+      internalID: 2846964236891284212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_11
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 77
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a3dfdf9bc48764a0800000000000000
+      internalID: -6600160718792698969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_12
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 47
+        width: 13
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1571ea67052afbd00800000000000000
+      internalID: 990688909517002577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_13
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 49
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcc45d154435b1250800000000000000
+      internalID: 5916414088377093323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_14
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 9
+        width: 29
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb71c49f7fc9194f0800000000000000
+      internalID: -823704667978721348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ground-pound-relic_15
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 0
+        width: 28
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ad0042e399ceba70800000000000000
+      internalID: 8844728355195456930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ground-pound-relic_0: 790238686161986571
+      ground-pound-relic_1: -5697843257051035760
+      ground-pound-relic_10: 2846964236891284212
+      ground-pound-relic_11: -6600160718792698969
+      ground-pound-relic_12: 990688909517002577
+      ground-pound-relic_13: 5916414088377093323
+      ground-pound-relic_14: -823704667978721348
+      ground-pound-relic_15: 8844728355195456930
+      ground-pound-relic_2: 5178224696849087997
+      ground-pound-relic_3: 8931362998853757277
+      ground-pound-relic_4: 1819322226660339751
+      ground-pound-relic_5: 3710682348850990993
+      ground-pound-relic_6: 7304394741802905021
+      ground-pound-relic_7: 759817470096099831
+      ground-pound-relic_8: -3396790505942753958
+      ground-pound-relic_9: 8042733143627736842
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,561 @@
+fileFormatVersion: 2
+guid: d3d90b588c1c17a4b8c164956d1418a4
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7523367641715437610
+    second: shadow-clones-relic_0
+  - first:
+      213: -1158260162358040586
+    second: shadow-clones-relic_1
+  - first:
+      213: -3306772497568029216
+    second: shadow-clones-relic_2
+  - first:
+      213: 2906385467079772649
+    second: shadow-clones-relic_3
+  - first:
+      213: 1420281875739202653
+    second: shadow-clones-relic_4
+  - first:
+      213: -3246670688046820143
+    second: shadow-clones-relic_5
+  - first:
+      213: 7185118043654888048
+    second: shadow-clones-relic_6
+  - first:
+      213: 9037497006400038552
+    second: shadow-clones-relic_7
+  - first:
+      213: -8178608649876657558
+    second: shadow-clones-relic_8
+  - first:
+      213: -3135779678084610252
+    second: shadow-clones-relic_9
+  - first:
+      213: -741610488720859441
+    second: shadow-clones-relic_10
+  - first:
+      213: 8518905065407801291
+    second: shadow-clones-relic_11
+  - first:
+      213: -7931909461633841303
+    second: shadow-clones-relic_12
+  - first:
+      213: -2638330155192755170
+    second: shadow-clones-relic_13
+  - first:
+      213: -8981273359989816183
+    second: shadow-clones-relic_14
+  - first:
+      213: -7698843116296755132
+    second: shadow-clones-relic_15
+  - first:
+      213: -7879134071456804192
+    second: shadow-clones-relic_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: shadow-clones-relic_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 503
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6df02e88df0a79790800000000000000
+      internalID: -7523367641715437610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 359
+        width: 133
+        height: 153
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f7a921e4880defe0800000000000000
+      internalID: -1158260162358040586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_2
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 429
+        width: 50
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e52d69feebfb12d0800000000000000
+      internalID: -3306772497568029216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_3
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 391
+        width: 22
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e9c5a10f2e855820800000000000000
+      internalID: 2906385467079772649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_4
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 383
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d545c5c47dad5b310800000000000000
+      internalID: 1420281875739202653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_5
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 81
+        width: 17
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d4db48f53281f2d0800000000000000
+      internalID: -3246670688046820143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_6
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 81
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07a9c45dacaa6b360800000000000000
+      internalID: 7185118043654888048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_7
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 67
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 896612505a3ab6d70800000000000000
+      internalID: 9037497006400038552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_8
+      rect:
+        serializedVersion: 2
+        x: 380
+        y: 87
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6a2a2bd3cebf7e80800000000000000
+      internalID: -8178608649876657558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_9
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 77
+        width: 29
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 437c0e13ff87b74d0800000000000000
+      internalID: -3135779678084610252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_10
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 79
+        width: 15
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fced612903545b5f0800000000000000
+      internalID: -741610488720859441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_11
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 69
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc768ea950b393670800000000000000
+      internalID: 8518905065407801291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_12
+      rect:
+        serializedVersion: 2
+        x: 402
+        y: 46
+        width: 51
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96741c4ae523ce190800000000000000
+      internalID: -7931909461633841303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_13
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 47
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1cd88bc3b4c26bd0800000000000000
+      internalID: -2638330155192755170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_14
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 33
+        width: 13
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 984c023c67b1c5380800000000000000
+      internalID: -8981273359989816183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_15
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 33
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 448aba7d9f6382590800000000000000
+      internalID: -7698843116296755132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shadow-clones-relic_16
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 33
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a2d325be41b7a290800000000000000
+      internalID: -7879134071456804192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      shadow-clones-relic_0: -7523367641715437610
+      shadow-clones-relic_1: -1158260162358040586
+      shadow-clones-relic_10: -741610488720859441
+      shadow-clones-relic_11: 8518905065407801291
+      shadow-clones-relic_12: -7931909461633841303
+      shadow-clones-relic_13: -2638330155192755170
+      shadow-clones-relic_14: -8981273359989816183
+      shadow-clones-relic_15: -7698843116296755132
+      shadow-clones-relic_16: -7879134071456804192
+      shadow-clones-relic_2: -3306772497568029216
+      shadow-clones-relic_3: 2906385467079772649
+      shadow-clones-relic_4: 1420281875739202653
+      shadow-clones-relic_5: -3246670688046820143
+      shadow-clones-relic_6: 7185118043654888048
+      shadow-clones-relic_7: 9037497006400038552
+      shadow-clones-relic_8: -8178608649876657558
+      shadow-clones-relic_9: -3135779678084610252
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -32,6 +32,14 @@ public class PlayerInventory : MonoBehaviour
         InventoryChanged?.Invoke();
     }
 
+    public IReadOnlyList<InventorySlot> GetAvailableResources()
+    {
+        return inventory.FindAll(slot =>
+            slot != null &&
+            slot.resource != null &&
+            slot.amount > 0
+        ).AsReadOnly();
+    }
     public int GetItemAmount(ItemData item)
     {
         if (item == null)

@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Gloom
   m_EditorClassIdentifier: Assembly-CSharp::ResourceData
   resourceName: Gloom
+  icon: {fileID: -9171205730053500701, guid: 560b359f6e1d4e847908cbaaca1ec2dc, type: 3}
+  description: 

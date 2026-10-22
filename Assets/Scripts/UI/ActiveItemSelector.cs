@@ -15,6 +15,8 @@ public class ActiveItemSelector : MonoBehaviour
     [SerializeField] private PlayerInventory inventory;
     [SerializeField] private CraftingMenu craftingMenu;
 
+    
+
     [Header("HUD")]
     [SerializeField] private Image itemIcon;
     [SerializeField] private TMP_Text itemNameText;
@@ -31,8 +33,10 @@ public class ActiveItemSelector : MonoBehaviour
     public ItemData SelectedItem => availableItems.Count == 0
         ? null : availableItems[selectedIndex];
 
-    private bool CanReadInput => !InputBlocked &&
-        (craftingMenu == null || !craftingMenu.IsOpen);
+    private bool CanReadInput =>
+    !InputBlocked &&
+    Time.timeScale > 0f &&
+    (craftingMenu == null || !craftingMenu.IsOpen);
 
     private void OnEnable()
     {
@@ -99,7 +103,7 @@ public class ActiveItemSelector : MonoBehaviour
         itemIcon.sprite = item != null ? item.icon : null;
         itemIcon.enabled = item != null && item.icon != null;
         itemNameText.text = item != null ? item.itemName : "No items";
-        amountText.text = item != null ? $"×{inventory.GetItemAmount(item)}" : "";
+        amountText.text = item != null ? $"x{inventory.GetItemAmount(item)}" : "";
         previousButton.interactable = availableItems.Count > 1;
         nextButton.interactable = availableItems.Count > 1;
     }

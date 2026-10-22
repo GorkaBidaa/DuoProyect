@@ -1,0 +1,717 @@
+fileFormatVersion: 2
+guid: cd73b27bdfb4c5f449959aca1a91ff44
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7007214579469646127
+    second: wall-jumping-relic_0
+  - first:
+      213: 6388500079049671000
+    second: wall-jumping-relic_1
+  - first:
+      213: 4154782752619758314
+    second: wall-jumping-relic_2
+  - first:
+      213: 6443049914246290033
+    second: wall-jumping-relic_3
+  - first:
+      213: 6826709178512510493
+    second: wall-jumping-relic_4
+  - first:
+      213: -7684442111419123838
+    second: wall-jumping-relic_5
+  - first:
+      213: 533237593878623390
+    second: wall-jumping-relic_6
+  - first:
+      213: 5138086569438736067
+    second: wall-jumping-relic_7
+  - first:
+      213: 2894013894828577305
+    second: wall-jumping-relic_8
+  - first:
+      213: 9044559461209718847
+    second: wall-jumping-relic_9
+  - first:
+      213: 4945838616635098746
+    second: wall-jumping-relic_10
+  - first:
+      213: 6066582395645550583
+    second: wall-jumping-relic_11
+  - first:
+      213: -6131543433228329519
+    second: wall-jumping-relic_12
+  - first:
+      213: 2659963537060749290
+    second: wall-jumping-relic_13
+  - first:
+      213: 7515209299825138350
+    second: wall-jumping-relic_14
+  - first:
+      213: 3555298460704859798
+    second: wall-jumping-relic_15
+  - first:
+      213: -2571315366011462491
+    second: wall-jumping-relic_16
+  - first:
+      213: 8924757104106632672
+    second: wall-jumping-relic_17
+  - first:
+      213: 6520320250188597653
+    second: wall-jumping-relic_18
+  - first:
+      213: -8501067951692705973
+    second: wall-jumping-relic_19
+  - first:
+      213: 5063153715261119552
+    second: wall-jumping-relic_20
+  - first:
+      213: 6497506570302075632
+    second: wall-jumping-relic_21
+  - first:
+      213: 6257915630957049722
+    second: wall-jumping-relic_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: wall-jumping-relic_0
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 0
+        width: 489
+        height: 510
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d606cd377f51ce90800000000000000
+      internalID: -7007214579469646127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_1
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 497
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8518f4369f288a850800000000000000
+      internalID: 6388500079049671000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_2
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 495
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae202d886e0c8a930800000000000000
+      internalID: 4154782752619758314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_3
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 503
+        width: 17
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17ad2c0a2cf4a6950800000000000000
+      internalID: 6443049914246290033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_4
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 503
+        width: 27
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1e032214d75dbe50800000000000000
+      internalID: 6826709178512510493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_5
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 473
+        width: 73
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2877fc31d906b5590800000000000000
+      internalID: -7684442111419123838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_6
+      rect:
+        serializedVersion: 2
+        x: 475
+        y: 501
+        width: 14
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e94f40434c0766700800000000000000
+      internalID: 533237593878623390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_7
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 505
+        width: 13
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cee99c13862e4740800000000000000
+      internalID: 5138086569438736067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_8
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 485
+        width: 21
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9125d40ed4a992820800000000000000
+      internalID: 2894013894828577305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_9
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 479
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f30cd4be8eab48d70800000000000000
+      internalID: 9044559461209718847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_10
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 452
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a76c1f4840623a440800000000000000
+      internalID: 4945838616635098746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_11
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 434
+        width: 23
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ff5715fb84d03450800000000000000
+      internalID: 6066582395645550583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 415
+        width: 19
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dddb89dbb168eaa0800000000000000
+      internalID: -6131543433228329519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_13
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 410
+        width: 21
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aef5ffd6eb61ae420800000000000000
+      internalID: 2659963537060749290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_14
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 415
+        width: 19
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaa1ac87a036b4860800000000000000
+      internalID: 7515209299825138350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_15
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 182
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6966eccfc15f65130800000000000000
+      internalID: 3555298460704859798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_16
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 192
+        width: 9
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ac126b4c4ad05cd0800000000000000
+      internalID: -2571315366011462491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_17
+      rect:
+        serializedVersion: 2
+        x: 486
+        y: 189
+        width: 11
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e57be00d4b1bdb70800000000000000
+      internalID: 8924757104106632672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_18
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 129
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 599074ea8b4dc7a50800000000000000
+      internalID: 6520320250188597653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_19
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 127
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4f06ef0db3260a80800000000000000
+      internalID: -8501067951692705973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 109
+        width: 6
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04c96517a7fe34640800000000000000
+      internalID: 5063153715261119552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_21
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 103
+        width: 6
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f23f98ecc7cb2a50800000000000000
+      internalID: 6497506570302075632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall-jumping-relic_22
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 97
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a773f894c1598d650800000000000000
+      internalID: 6257915630957049722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      wall-jumping-relic_0: -7007214579469646127
+      wall-jumping-relic_1: 6388500079049671000
+      wall-jumping-relic_10: 4945838616635098746
+      wall-jumping-relic_11: 6066582395645550583
+      wall-jumping-relic_12: -6131543433228329519
+      wall-jumping-relic_13: 2659963537060749290
+      wall-jumping-relic_14: 7515209299825138350
+      wall-jumping-relic_15: 3555298460704859798
+      wall-jumping-relic_16: -2571315366011462491
+      wall-jumping-relic_17: 8924757104106632672
+      wall-jumping-relic_18: 6520320250188597653
+      wall-jumping-relic_19: -8501067951692705973
+      wall-jumping-relic_2: 4154782752619758314
+      wall-jumping-relic_20: 5063153715261119552
+      wall-jumping-relic_21: 6497506570302075632
+      wall-jumping-relic_22: 6257915630957049722
+      wall-jumping-relic_3: 6443049914246290033
+      wall-jumping-relic_4: 6826709178512510493
+      wall-jumping-relic_5: -7684442111419123838
+      wall-jumping-relic_6: 533237593878623390
+      wall-jumping-relic_7: 5138086569438736067
+      wall-jumping-relic_8: 2894013894828577305
+      wall-jumping-relic_9: 9044559461209718847
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

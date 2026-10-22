@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Whisper
   m_EditorClassIdentifier: Assembly-CSharp::ResourceData
   resourceName: Whisper
+  icon: {fileID: -3761262162573926202, guid: 60345d4c99e53334cb8fba5f07b2ce04, type: 3}
+  description: 

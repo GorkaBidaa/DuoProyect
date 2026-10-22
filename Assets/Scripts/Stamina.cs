@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class StaminaSystem : MonoBehaviour
 {
     public float maxStamina = 100f;
     public float drainRate = 5f;
     public Slider staminaBar; // UI bar
+    [SerializeField] private TMP_Text staminaText; // UI text
 
     private float currentStamina;
     private Vector2 startPosition;
@@ -36,6 +37,8 @@ public class StaminaSystem : MonoBehaviour
         }
     }
 
+   
+
     void Update()
     {
         if (isInSafeZone)
@@ -57,7 +60,20 @@ public class StaminaSystem : MonoBehaviour
         }
     }
 
-    // MÉTODO QUE FALTABA PARA QUE FoodUse FUNCIONE
+    //Method to update the stamina text in the UI
+    private void LateUpdate()
+    {
+        if (staminaText == null)
+            return;
+
+        int current = Mathf.CeilToInt(
+            Mathf.Clamp(currentStamina, 0f, maxStamina));
+        int maximum = Mathf.CeilToInt(maxStamina);
+
+        staminaText.text = $"{current} / {maximum}";
+    }
+
+    // MÉTODO QUE FALTABA PARA QUE FoodUse FUNCIONE 
     public bool TryRestoreStamina(float amount)
     {
         if (amount <= 0f || currentStamina >= maxStamina)
@@ -78,19 +94,6 @@ public class StaminaSystem : MonoBehaviour
         {
             RechargeStamina();
         }
-    }
-
-    public bool TryRestoreStamina(float amount)
-    {
-        if (amount <= 0f || currentStamina >= maxStamina)
-            return false;
-
-        currentStamina = Mathf.Min(maxStamina, currentStamina + amount);
-
-        if (staminaBar != null)
-            staminaBar.value = currentStamina;
-
-        return true;
     }
 
 
@@ -129,5 +132,11 @@ public class StaminaSystem : MonoBehaviour
 
         transform.position = respawnPosition;
         currentStamina = maxStamina;
+
+        //Reset health after respawn
+        PlayerHealth health = GetComponent<PlayerHealth>();
+
+        if (health != null)
+            health.ResetAfterRespawn();
     }
 }
