@@ -7,21 +7,29 @@ using UnityEngine.InputSystem;
 public class Crafting : MonoBehaviour
 {
     [SerializeField] private CraftingMenu menu;
+    [SerializeField] private GameObject popupUI;
     private readonly HashSet<Collider2D> playerColliders = new HashSet<Collider2D>();
 
     private void Reset() => GetComponent<Collider2D>().isTrigger = true;
+
+    private void Awake()
+    {
+        popupUI.SetActive(false);
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.GetComponentInParent<PlayerInventory>() != menu.Inventory) return;
         playerColliders.Add(other);
         menu.SetAtBase(true);
+        popupUI.SetActive(true);
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!playerColliders.Remove(other)) return;
         if (playerColliders.Count == 0) menu.SetAtBase(false);
+        popupUI.SetActive(false);
     }
 
     private void OnDisable()

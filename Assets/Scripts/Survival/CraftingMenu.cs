@@ -29,6 +29,9 @@ public class CraftingMenu : MonoBehaviour
     [SerializeField] private PlayerHUD hud;
     [SerializeField] private GameObject pinnedPanel;
 
+    [Header("Player")]
+    public bool IsAtBase => atBase;
+
     private readonly List<GameObject> recipeRows = new();
     private readonly List<GameObject> requirementRows = new();
 
