@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -17,11 +18,61 @@ public class StaminaSystem : MonoBehaviour
     private PlayerMovement playerMovement;
     private ShadowAnchor anchor;
 
+    public bool IsInSafeZone => isInSafeZone;
+    public bool IsDead { get; private set; }
+
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private float deathAnimDuration = 1f;
+
     void Awake()
     {
+        if (animator == null) animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         playerMovement = GetComponent<PlayerMovement>();
         anchor = GetComponent<ShadowAnchor>();
+    }
+    public void Die()
+    {
+        if (IsDead) return;
+        StartCoroutine(DieRoutine());
+    }
+
+    private IEnumerator DieRoutine()
+    {
+        IsDead = true;
+
+        if (anchor != null)
+            anchor.ForceDestroyAnchor();
+
+        if (playerMovement != null)
+        {
+            playerMovement.ResetMovementState();
+            playerMovement.enabled = false; // Bloquea el movimiento durante la animación
+        }
+
+        if (animator != null)
+            animator.SetTrigger("Die");
+
+        yield return new WaitForSeconds(deathAnimDuration);
+
+        if (rb != null)
+        {
+            rb.position = respawnPosition;
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        transform.position = respawnPosition;
+        currentStamina = maxStamina;
+
+        PlayerHealth health = GetComponent<PlayerHealth>();
+        if (health != null)
+            health.ResetAfterRespawn();
+
+        if (playerMovement != null)
+            playerMovement.enabled = true;
+
+        IsDead = false;
     }
 
     void Start()
@@ -73,7 +124,6 @@ public class StaminaSystem : MonoBehaviour
         staminaText.text = $"{current} / {maximum}";
     }
 
-    // MÉTODO QUE FALTABA PARA QUE FoodUse FUNCIONE 
     public bool TryRestoreStamina(float amount)
     {
         if (amount <= 0f || currentStamina >= maxStamina)
@@ -108,35 +158,5 @@ public class StaminaSystem : MonoBehaviour
     public void SetRespawnPoint(Vector2 newPosition)
     {
         respawnPosition = newPosition;
-    }
-
-    public void Die()
-    {
-        // Destroy any deployed Shadow
-        if (anchor != null)
-        {
-            anchor.ForceDestroyAnchor();
-        }
-
-        if (playerMovement != null)
-        {
-            playerMovement.ResetMovementState();
-        }
-
-        // Teleport to the last saved respawn position
-        if (rb != null)
-        {
-            rb.position = respawnPosition;
-            rb.linearVelocity = Vector2.zero;
-        }
-
-        transform.position = respawnPosition;
-        currentStamina = maxStamina;
-
-        //Reset health after respawn
-        PlayerHealth health = GetComponent<PlayerHealth>();
-
-        if (health != null)
-            health.ResetAfterRespawn();
     }
 }

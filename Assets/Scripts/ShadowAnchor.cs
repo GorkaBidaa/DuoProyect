@@ -41,8 +41,20 @@ public class ShadowAnchor : MonoBehaviour
     private Key parsedKey;
     private bool keyValid;
 
+
+    [Header("Shadow Dash Settings")]
+    public Key shadowDashKey = Key.LeftShift;
+    public float shadowDashSpeed = 18f;
+    public float shadowDashDuration = 0.25f;
+    public LayerMask shadowObstacleLayer; 
+
+    private bool isShadowDashing = false;
+    private Coroutine shadowDashCoroutine;
+    private PlayerAnimatorController playerAnim;
+    private Animator shadowAnimator;
     void Start()
     {
+        playerAnim = GetComponent<PlayerAnimatorController>();
         rb = GetComponent<Rigidbody2D>();
         playerMovement = GetComponent<PlayerMovement>();
         playerSr = GetComponent<SpriteRenderer>();
@@ -106,7 +118,15 @@ public class ShadowAnchor : MonoBehaviour
         TrackMomentum();
 
         if (ActiveShadow && currentShadow != null)
+        {
             UpdateShadowColor();
+        }
+
+        if (ActiveShadow && currentShadow != null && !isShadowDashing && ReadShadowDashInput())
+        {
+            Vector2 dashDir = GetShadowDashDirection();
+            shadowDashCoroutine = StartCoroutine(ShadowDashRoutine(dashDir));
+        }
 
         if (ReadAnchorInput())
         {
@@ -189,13 +209,23 @@ public class ShadowAnchor : MonoBehaviour
 
     private void DeployAnchor()
     {
+        if (playerAnim == null)
+            Debug.LogError("ShadowAnchor: playerAnim is NULL");
         if (phantomPrefab == null)
         {
-            Debug.LogWarning("ShadowAnchor: falta phantomPrefab.");
+            Debug.LogWarning("ShadowAnchor: there is no phantomPrefab.");
             return;
         }
+
+        if (playerAnim != null) playerAnim.TriggerCastShadow();
+
         currentShadow = Instantiate(phantomPrefab, transform.position, Quaternion.identity);
         shadowSr = currentShadow.GetComponent<SpriteRenderer>();
+        shadowAnimator = currentShadow.GetComponent<Animator>();
+
+        if (shadowSr != null && playerSr != null)
+            shadowSr.flipX = playerSr.flipX;
+
         ActiveShadow = true;
     }
 
@@ -335,5 +365,73 @@ public class ShadowAnchor : MonoBehaviour
         currentShadow = null;
         shadowSr = null;
         ActiveShadow = false;
+    }
+    private bool ReadShadowDashInput()
+    {
+        var gp = Gamepad.current;
+        if (gp != null && gp.leftTrigger.wasPressedThisFrame)
+            return true;
+
+        var kb = Keyboard.current;
+        if (kb != null && kb[shadowDashKey].wasPressedThisFrame)
+            return true;
+
+        return false;
+    }
+
+    private Vector2 GetShadowDashDirection()
+    {
+        Vector2 dir = Vector2.zero;
+        var kb = Keyboard.current;
+        if (kb != null)
+        {
+            if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) dir.x -= 1f;
+            if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) dir.x += 1f;
+            if (kb.wKey.isPressed || kb.upArrowKey.isPressed) dir.y += 1f;
+            if (kb.sKey.isPressed || kb.downArrowKey.isPressed) dir.y -= 1f;
+        }
+
+        var gp = Gamepad.current;
+        if (gp != null && gp.leftStick.ReadValue().sqrMagnitude > 0.1f)
+        {
+            dir = gp.leftStick.ReadValue();
+        }
+
+        if (dir.sqrMagnitude < 0.01f)
+        {
+            bool facingLeft = playerSr != null && playerSr.flipX;
+            dir = facingLeft ? Vector2.left : Vector2.right;
+        }
+
+        return dir.normalized;
+    }
+
+    private IEnumerator ShadowDashRoutine(Vector2 direction)
+    {
+        isShadowDashing = true;
+
+        if (shadowSr != null && Mathf.Abs(direction.x) > 0.01f)
+            shadowSr.flipX = direction.x < 0f;
+
+        if (shadowAnimator != null)
+            shadowAnimator.SetBool("IsDashing", true);
+
+        float elapsed = 0f;
+        while (elapsed < shadowDashDuration && currentShadow != null)
+        {
+            float step = shadowDashSpeed * Time.deltaTime;
+            RaycastHit2D hit = Physics2D.Raycast(currentShadow.transform.position, direction, step + 0.2f, shadowObstacleLayer);
+            if (hit.collider != null)
+                break;
+
+            currentShadow.transform.position += (Vector3)(direction * step);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (shadowAnimator != null && currentShadow != null)
+            shadowAnimator.SetBool("IsDashing", false);
+
+        isShadowDashing = false;
     }
 }

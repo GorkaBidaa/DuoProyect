@@ -51,6 +51,10 @@ public class PlayerMovement : MonoBehaviour
 
     public bool isGrounded { get; private set; }
 
+    public float HorizontalInput => horizontalInput;
+    public bool IsTeleporting => isTeleporting;
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
