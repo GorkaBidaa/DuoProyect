@@ -70,7 +70,7 @@ public class ActiveItemSelector : MonoBehaviour
         else if (scroll < 0f || (pad != null && pad.leftShoulder.wasPressedThisFrame)) Previous();
 
         bool usePressed = (mouse != null && mouse.rightButton.wasPressedThisFrame) ||
-            (pad != null && (pad.buttonEast.wasPressedThisFrame || pad.rightTrigger.wasPressedThisFrame));
+            (pad != null && pad.buttonNorth.wasPressedThisFrame);
         if (usePressed) RequestUse();
     }
 

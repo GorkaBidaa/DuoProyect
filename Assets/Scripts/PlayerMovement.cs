@@ -179,7 +179,7 @@ public class PlayerMovement : MonoBehaviour
 
         horizontalInput = (Mathf.Abs(gamepad) > 0.01f) ? gamepad : keyboard;
 
-        // Evaluamos Coyote Time usando la velocidad relativa a la plataforma
+        // Evaluate coyote time using velocity relative to the platform
         if (isGrounded && !isJumping && !isBouncing && relativeVelY <= 0.1f)
             coyoteTimeCounter = coyoteTime;
         else
@@ -190,7 +190,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isTeleporting && !isBouncing && jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
-            // Si la plataforma sube, sumamos su velocidad vertical para que no absorba el salto
+            // If the platform moves upward, add its vertical velocity so it does not absorb the jump
             float jumpVelY = jumpForce + Mathf.Max(0f, surfaceVelocity.y);
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpVelY);
 
@@ -235,7 +235,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (!wasOnPlatform)
             {
-                // Al pisar la plataforma: igualar su velocidad inmediatamente sin resbalar
+                // When landing on the platform: match its velocity immediately without slipping
                 if (Mathf.Abs(horizontalInput) <= 0.01f)
                 {
                     newVelX = surfaceVelocity.x;
@@ -249,11 +249,11 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                // Mientras seguimos sobre la plataforma: compensar al instante cambios de sentido
+                // While remaining on the platform: immediately compensate for changes in direction
                 newVelX = rb.linearVelocity.x + deltaX;
             }
 
-            // Mantener al jugador pegado a la plataforma cuando se mueve en vertical
+            // Keep the player attached to the platform while it moves vertically
             float newVelY = wasOnPlatform
                 ? surfaceVelocity.y
                 : Mathf.Min(rb.linearVelocity.y, surfaceVelocity.y);

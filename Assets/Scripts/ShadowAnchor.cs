@@ -24,11 +24,28 @@ public class ShadowAnchor : MonoBehaviour
     public float fadeTime = 0.2f;
     public float abilityCooldown = 0.5f;
 
+    [Header("Shadow Dash Settings")]
+    [SerializeField] private bool shadowDashUnlocked = false;
+    public Key shadowDashKey = Key.LeftShift;
+    public float shadowDashSpeed = 18f;
+    public float shadowDashDuration = 0.25f;
+    [Tooltip("Impulso horizontal que recibe el jugador si se teletransporta cortando el dash de la sombra")]
+    public float shadowDashMomentumBoost = 14f;
+    public LayerMask shadowObstacleLayer;
+
+    public bool ShadowDashUnlocked => shadowDashUnlocked;
+
     private GameObject currentShadow;
     private SpriteRenderer shadowSr;
+    private Animator shadowAnimator;
     private bool ActiveShadow = false;
     private bool isTeleporting = false;
     private Coroutine teleportCoroutine;
+
+    private bool isShadowDashing = false;
+    private bool hasShadowDashed = false;
+    private Vector2 shadowFacingDirection = Vector2.right;
+    private Coroutine shadowDashCoroutine;
 
     private float currentMaxLaunchVelocity = 0f;
     private float cachedMaxUpwardInertia = 0f;
@@ -37,27 +54,18 @@ public class ShadowAnchor : MonoBehaviour
 
     private Rigidbody2D rb;
     private PlayerMovement playerMovement;
+    private PlayerAnimatorController playerAnim;
     private SpriteRenderer playerSr;
     private Key parsedKey;
     private bool keyValid;
 
-
-    [Header("Shadow Dash Settings")]
-    public Key shadowDashKey = Key.LeftShift;
-    public float shadowDashSpeed = 18f;
-    public float shadowDashDuration = 0.25f;
-    public LayerMask shadowObstacleLayer; 
-
-    private bool isShadowDashing = false;
-    private Coroutine shadowDashCoroutine;
-    private PlayerAnimatorController playerAnim;
-    private Animator shadowAnimator;
     void Start()
     {
         playerAnim = GetComponent<PlayerAnimatorController>();
         rb = GetComponent<Rigidbody2D>();
         playerMovement = GetComponent<PlayerMovement>();
         playerSr = GetComponent<SpriteRenderer>();
+        if (playerSr == null) playerSr = GetComponentInChildren<SpriteRenderer>();
         CacheKey();
     }
 
@@ -65,7 +73,9 @@ public class ShadowAnchor : MonoBehaviour
 
     void OnDisable()
     {
-        // Evita que el juego se quede congelado o el jugador invisible si se desactiva a mitad de teleport
+        StopShadowDash();
+
+        // Prevent the game from freezing or the player from remaining invisible if disabled during teleport
         if (isTeleporting)
         {
             Time.timeScale = 1f;
@@ -76,6 +86,11 @@ public class ShadowAnchor : MonoBehaviour
             }
             if (playerMovement != null) playerMovement.SetTeleportingState(false);
         }
+    }
+
+    public void UnlockShadowDash()
+    {
+        shadowDashUnlocked = true;
     }
 
     private void CacheKey()
@@ -113,7 +128,7 @@ public class ShadowAnchor : MonoBehaviour
     {
         if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
 
-        if (isTeleporting) return; // ignora input mientras dura el teleport
+        if (isTeleporting) return; // Ignore input while teleporting
 
         TrackMomentum();
 
@@ -122,12 +137,7 @@ public class ShadowAnchor : MonoBehaviour
             UpdateShadowColor();
         }
 
-        if (ActiveShadow && currentShadow != null && !isShadowDashing && ReadShadowDashInput())
-        {
-            Vector2 dashDir = GetShadowDashDirection();
-            shadowDashCoroutine = StartCoroutine(ShadowDashRoutine(dashDir));
-        }
-
+        // Pressing R2 / the anchor key has priority for deploying the anchor or interrupting the dash with teleport
         if (ReadAnchorInput())
         {
             if (!ActiveShadow)
@@ -138,6 +148,13 @@ public class ShadowAnchor : MonoBehaviour
             {
                 Teleport();
             }
+            return;
+        }
+
+        // The player can dash only if the ability is unlocked, a shadow is active, and no dash has been used yet
+        if (shadowDashUnlocked && ActiveShadow && currentShadow != null && !isShadowDashing && !hasShadowDashed && ReadShadowDashInput())
+        {
+            shadowDashCoroutine = StartCoroutine(ShadowDashRoutine(shadowFacingDirection));
         }
     }
 
@@ -168,7 +185,7 @@ public class ShadowAnchor : MonoBehaviour
     private bool ReadAnchorInput()
     {
         var gp = Gamepad.current;
-        if (gp != null && (gp.buttonWest.wasPressedThisFrame || gp.rightShoulder.wasPressedThisFrame))
+        if (gp != null && (gp.rightTrigger.wasPressedThisFrame || gp.buttonWest.wasPressedThisFrame))
             return true;
 
         var kb = Keyboard.current;
@@ -178,7 +195,20 @@ public class ShadowAnchor : MonoBehaviour
         return false;
     }
 
-    // Una sola fuente de verdad para "se puede teletransportar?" (color y teleport usan lo mismo)
+    private bool ReadShadowDashInput()
+    {
+        var gp = Gamepad.current;
+        if (gp != null && gp.leftTrigger.wasPressedThisFrame)
+            return true;
+
+        var kb = Keyboard.current;
+        if (kb != null && kb[shadowDashKey].wasPressedThisFrame)
+            return true;
+
+        return false;
+    }
+
+    // Single source of truth for "can teleport?" (the color and teleport use the same check)
     private bool IsReachable()
     {
         if (currentShadow == null) return false;
@@ -190,7 +220,7 @@ public class ShadowAnchor : MonoBehaviour
         if (dist <= maxTeleportRadius) return true;
         if (dist > effectiveForgiveRadius) return false;
 
-        // Zona de perdon: solo si te estas moviendo hacia la sombra
+        // Forgiveness zone: only when moving toward the shadow
         if (rb == null) return false;
         Vector2 vel = rb.linearVelocity;
         if (vel.magnitude < forgiveMinSpeed) return false;
@@ -223,33 +253,70 @@ public class ShadowAnchor : MonoBehaviour
         shadowSr = currentShadow.GetComponent<SpriteRenderer>();
         shadowAnimator = currentShadow.GetComponent<Animator>();
 
-        if (shadowSr != null && playerSr != null)
-            shadowSr.flipX = playerSr.flipX;
+        bool facingLeft = playerAnim != null
+            ? playerAnim.FacingLeft
+            : (playerSr != null && playerSr.flipX);
 
+        if (shadowSr != null)
+            shadowSr.flipX = facingLeft;
+
+        // Store the fixed horizontal direction when deploying the shadow
+        shadowFacingDirection = facingLeft ? Vector2.left : Vector2.right;
+        hasShadowDashed = false;
+        isShadowDashing = false;
         ActiveShadow = true;
+    }
+
+    private void StopShadowDash()
+    {
+        if (shadowDashCoroutine != null)
+        {
+            StopCoroutine(shadowDashCoroutine);
+            shadowDashCoroutine = null;
+        }
+
+        if (shadowAnimator != null && currentShadow != null)
+            shadowAnimator.SetBool("IsDashing", false);
+
+        isShadowDashing = false;
     }
 
     private void Teleport()
     {
-        if (currentShadow == null) { ActiveShadow = false; return; }
+        if (currentShadow == null)
+        {
+            ActiveShadow = false;
+            return;
+        }
+
+        // Check whether the player was dashing at this exact moment before stopping it
+        bool interruptedDash = isShadowDashing;
+        StopShadowDash();
 
         cooldownTimer = abilityCooldown;
 
         if (IsReachable())
         {
-            teleportCoroutine = StartCoroutine(TeleportRoutine(currentShadow.transform.position));
+            float horizontalBoost = interruptedDash
+                ? shadowFacingDirection.x * shadowDashMomentumBoost
+                : 0f;
+
+            teleportCoroutine = StartCoroutine(
+                TeleportRoutine(currentShadow.transform.position, horizontalBoost));
         }
         else
         {
             GameObject toDestroy = currentShadow;
             currentShadow = null;
             shadowSr = null;
+            shadowAnimator = null;
             ActiveShadow = false;
+            hasShadowDashed = false;
             StartCoroutine(FailAndDestroy(toDestroy));
         }
     }
 
-    private IEnumerator TeleportRoutine(Vector3 targetPosition)
+    private IEnumerator TeleportRoutine(Vector3 targetPosition, float horizontalLaunchVelocity)
     {
         isTeleporting = true;
         float prevTimeScale = Time.timeScale;
@@ -267,7 +334,7 @@ public class ShadowAnchor : MonoBehaviour
             // Fade out
             yield return FadePlayer(1f, 0f);
 
-            // Mover (usar rb.position mantiene la fisica sincronizada)
+            // Move (using rb.position keeps physics synchronized)
             if (rb != null)
             {
                 rb.position = targetPosition;
@@ -278,7 +345,9 @@ public class ShadowAnchor : MonoBehaviour
             if (currentShadow != null) Destroy(currentShadow);
             currentShadow = null;
             shadowSr = null;
+            shadowAnimator = null;
             ActiveShadow = false;
+            hasShadowDashed = false;
 
             // Fade in
             yield return FadePlayer(0f, 1f);
@@ -297,7 +366,7 @@ public class ShadowAnchor : MonoBehaviour
                 float dynamicMaxLimit = Mathf.Min(savedMaxLaunchVel * UpMultiplier, velocityClampMax);
                 appliedVelocityY = Mathf.Clamp(appliedVelocityY, 0f, dynamicMaxLimit);
 
-                rb.linearVelocity = new Vector2(0f, appliedVelocityY);
+                rb.linearVelocity = new Vector2(horizontalLaunchVelocity, appliedVelocityY);
             }
         }
         finally
@@ -338,6 +407,8 @@ public class ShadowAnchor : MonoBehaviour
 
     public void ForceDestroyAnchor()
     {
+        StopShadowDash();
+
         if (teleportCoroutine != null)
         {
             StopCoroutine(teleportCoroutine);
@@ -364,51 +435,15 @@ public class ShadowAnchor : MonoBehaviour
         if (currentShadow != null) Destroy(currentShadow);
         currentShadow = null;
         shadowSr = null;
+        shadowAnimator = null;
         ActiveShadow = false;
-    }
-    private bool ReadShadowDashInput()
-    {
-        var gp = Gamepad.current;
-        if (gp != null && gp.leftTrigger.wasPressedThisFrame)
-            return true;
-
-        var kb = Keyboard.current;
-        if (kb != null && kb[shadowDashKey].wasPressedThisFrame)
-            return true;
-
-        return false;
-    }
-
-    private Vector2 GetShadowDashDirection()
-    {
-        Vector2 dir = Vector2.zero;
-        var kb = Keyboard.current;
-        if (kb != null)
-        {
-            if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) dir.x -= 1f;
-            if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) dir.x += 1f;
-            if (kb.wKey.isPressed || kb.upArrowKey.isPressed) dir.y += 1f;
-            if (kb.sKey.isPressed || kb.downArrowKey.isPressed) dir.y -= 1f;
-        }
-
-        var gp = Gamepad.current;
-        if (gp != null && gp.leftStick.ReadValue().sqrMagnitude > 0.1f)
-        {
-            dir = gp.leftStick.ReadValue();
-        }
-
-        if (dir.sqrMagnitude < 0.01f)
-        {
-            bool facingLeft = playerSr != null && playerSr.flipX;
-            dir = facingLeft ? Vector2.left : Vector2.right;
-        }
-
-        return dir.normalized;
+        hasShadowDashed = false;
     }
 
     private IEnumerator ShadowDashRoutine(Vector2 direction)
     {
         isShadowDashing = true;
+        hasShadowDashed = true;
 
         if (shadowSr != null && Mathf.Abs(direction.x) > 0.01f)
             shadowSr.flipX = direction.x < 0f;
@@ -433,5 +468,6 @@ public class ShadowAnchor : MonoBehaviour
             shadowAnimator.SetBool("IsDashing", false);
 
         isShadowDashing = false;
+        shadowDashCoroutine = null;
     }
 }
