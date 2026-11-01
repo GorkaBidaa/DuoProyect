@@ -1,15 +1,15 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 using UnityEngine.UI;
+using TMPro;
+
 public class StaminaSystem : MonoBehaviour
 {
     public float maxStamina = 100f;
     public float drainRate = 5f;
+    public Slider staminaBar; // UI bar
 
-
-    [SerializeField] private PlayerHUD hud;
+    [SerializeField] private TMP_Text staminaText; // UI text
 
     private float currentStamina;
     private Vector2 startPosition;
@@ -19,24 +19,27 @@ public class StaminaSystem : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerMovement playerMovement;
     private ShadowAnchor anchor;
+    private PlayerAnimatorController animatorController;
 
     public bool IsInSafeZone => isInSafeZone;
     public bool IsDead { get; private set; }
 
     [Header("Animation")]
-    [SerializeField] private Animator animator;
     [SerializeField] private float deathAnimDuration = 1f;
 
-    void Awake()
+    private void Awake()
     {
-        if (animator == null) animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         playerMovement = GetComponent<PlayerMovement>();
         anchor = GetComponent<ShadowAnchor>();
+        animatorController = GetComponent<PlayerAnimatorController>();
     }
+
     public void Die()
     {
-        if (IsDead) return;
+        if (IsDead)
+            return;
+
         StartCoroutine(DieRoutine());
     }
 
@@ -44,76 +47,97 @@ public class StaminaSystem : MonoBehaviour
     {
         IsDead = true;
 
+        // Destroy shadow anchor if exists
         if (anchor != null)
             anchor.ForceDestroyAnchor();
 
+        // Reset and disable movement
         if (playerMovement != null)
         {
             playerMovement.ResetMovementState();
-            playerMovement.enabled = false; // Bloquea el movimiento durante la animación
+            playerMovement.enabled = false; // Block movement during animation
         }
 
-        if (animator != null)
-            animator.SetTrigger("Die");
+        // Trigger death animation through the animator controller
+        if (animatorController != null)
+        {
+            animatorController.TriggerDeath();
+        }
 
+        // Wait for death animation to complete
         yield return new WaitForSeconds(deathAnimDuration);
 
+        // Respawn player
         if (rb != null)
         {
             rb.position = respawnPosition;
             rb.linearVelocity = Vector2.zero;
         }
-
         transform.position = respawnPosition;
+
+        // Reset stamina
         currentStamina = maxStamina;
 
+        // Reset health
         PlayerHealth health = GetComponent<PlayerHealth>();
         if (health != null)
             health.ResetAfterRespawn();
 
+        // Re-enable movement
         if (playerMovement != null)
             playerMovement.enabled = true;
 
         IsDead = false;
     }
 
-    void Start()
+    private void Start()
     {
         currentStamina = maxStamina;
         startPosition = transform.position;
         respawnPosition = startPosition;
 
-
-
+        if (staminaBar != null)
+        {
+            staminaBar.maxValue = maxStamina;
+            staminaBar.value = currentStamina;
+        }
     }
-    void Update()
+
+    private void Update()
     {
-            if (isInSafeZone)
-            {
-                RechargeStamina();
-            }
-            else
-            {
-                // Drain stamina continuously
-                currentStamina -= drainRate * Time.deltaTime;
-            }
+        // Don't drain stamina while dead
+        if (IsDead)
+            return;
 
+        if (isInSafeZone)
+        {
+            RechargeStamina();
+        }
+        else
+        {
+            // Drain stamina continuously
+            currentStamina -= drainRate * Time.deltaTime;
+        }
 
-            if (currentStamina <= 0f)
-            {
-                Die();
-            }
+        if (staminaBar != null)
+            staminaBar.value = currentStamina;
+
+        if (currentStamina <= 0f)
+        {
+            Die();
+        }
     }
-    
 
-    
+    // Method to update the stamina text in the UI
     private void LateUpdate()
     {
-        // Update the radial stamina bar.
-        if (hud != null)
-            hud.SetStamina(currentStamina, maxStamina);
+        if (staminaText == null)
+            return;
 
-        
+        int current = Mathf.CeilToInt(
+            Mathf.Clamp(currentStamina, 0f, maxStamina));
+        int maximum = Mathf.CeilToInt(maxStamina);
+        staminaText.text = $"{current} / {maximum}";
     }
 
     public bool TryRestoreStamina(float amount)
@@ -123,6 +147,8 @@ public class StaminaSystem : MonoBehaviour
 
         currentStamina = Mathf.Min(currentStamina + amount, maxStamina);
 
+        if (staminaBar != null)
+            staminaBar.value = currentStamina;
 
         return true;
     }
@@ -136,11 +162,11 @@ public class StaminaSystem : MonoBehaviour
         }
     }
 
-
     public void RechargeStamina()
     {
         currentStamina = maxStamina;
-
+        if (staminaBar != null)
+            staminaBar.value = currentStamina;
     }
 
     public void SetRespawnPoint(Vector2 newPosition)
