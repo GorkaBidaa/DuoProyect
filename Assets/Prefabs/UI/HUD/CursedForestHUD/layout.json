@@ -1,0 +1,18 @@
+{
+  "canvas": [1024, 1024],
+  "pivot": [0.5, 0.5],
+  "defaultDisplaySize": [256, 256],
+  "arcCenterPixels": [512, 512],
+  "arcRadiusPixels": 365,
+  "arcSweepDegrees": 132,
+  "startGapFromBottomDegrees": 18,
+  "healthClockwise": true,
+  "staminaClockwise": false,
+  "initialHealth": 0,
+  "initialStamina": 0,
+  "initialItem": null,
+  "initialCountText": "",
+  "itemOffsetAt256": [0, 2],
+  "countOffsetAt256": [46.625, -42.625],
+  "layerOrder": ["backplate", "health-track", "stamina-track", "health-fill", "stamina-fill", "item-slot", "count-badge", "health-icon", "stamina-icon"]
+}

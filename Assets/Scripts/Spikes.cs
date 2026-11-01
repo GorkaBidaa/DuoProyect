@@ -5,7 +5,7 @@ public class SpikeTrap : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
-        BatEnemy bat = collision.GetComponent<BatEnemy>();
+        BatEnemy bat = collision.GetComponentInParent<BatEnemy>();
 
         if (bat != null)
         {

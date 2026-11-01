@@ -1,13 +1,15 @@
 using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem.HID;
+using UnityEngine.UI;
 public class StaminaSystem : MonoBehaviour
 {
     public float maxStamina = 100f;
     public float drainRate = 5f;
-    public Slider staminaBar; // UI bar
-    [SerializeField] private TMP_Text staminaText; // UI text
+
+
+    [SerializeField] private PlayerHUD hud;
 
     private float currentStamina;
     private Vector2 startPosition;
@@ -81,47 +83,37 @@ public class StaminaSystem : MonoBehaviour
         startPosition = transform.position;
         respawnPosition = startPosition;
 
-        if (staminaBar != null)
-        {
-            staminaBar.maxValue = maxStamina;
-            staminaBar.value = currentStamina;
-        }
+
+
     }
-
-   
-
     void Update()
     {
-        if (isInSafeZone)
-        {
-            RechargeStamina();
-        }
-        else
-        {
-            // Drain stamina continuously
-            currentStamina -= drainRate * Time.deltaTime;
-        }
+            if (isInSafeZone)
+            {
+                RechargeStamina();
+            }
+            else
+            {
+                // Drain stamina continuously
+                currentStamina -= drainRate * Time.deltaTime;
+            }
 
-        if (staminaBar != null)
-            staminaBar.value = currentStamina;
 
-        if (currentStamina <= 0f)
-        {
-            Die();
-        }
+            if (currentStamina <= 0f)
+            {
+                Die();
+            }
     }
+    
 
-    //Method to update the stamina text in the UI
+    
     private void LateUpdate()
     {
-        if (staminaText == null)
-            return;
+        // Update the radial stamina bar.
+        if (hud != null)
+            hud.SetStamina(currentStamina, maxStamina);
 
-        int current = Mathf.CeilToInt(
-            Mathf.Clamp(currentStamina, 0f, maxStamina));
-        int maximum = Mathf.CeilToInt(maxStamina);
-
-        staminaText.text = $"{current} / {maximum}";
+        
     }
 
     public bool TryRestoreStamina(float amount)
@@ -131,8 +123,6 @@ public class StaminaSystem : MonoBehaviour
 
         currentStamina = Mathf.Min(currentStamina + amount, maxStamina);
 
-        if (staminaBar != null)
-            staminaBar.value = currentStamina;
 
         return true;
     }
@@ -151,8 +141,6 @@ public class StaminaSystem : MonoBehaviour
     {
         currentStamina = maxStamina;
 
-        if (staminaBar != null)
-            staminaBar.value = currentStamina;
     }
 
     public void SetRespawnPoint(Vector2 newPosition)
