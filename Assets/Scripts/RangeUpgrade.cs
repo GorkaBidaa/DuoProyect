@@ -28,35 +28,36 @@ public class RangeUpgrade : MonoBehaviour
     {
         if (isCollected) return;
 
-        if (collision.CompareTag("Player"))
+        ShadowAnchor anchor = collision.GetComponentInParent<ShadowAnchor>();
+        if (anchor == null && collision.CompareTag("Player"))
+            anchor = collision.GetComponent<ShadowAnchor>();
+
+        if (anchor != null)
         {
-            ShadowAnchor anchor = collision.GetComponent<ShadowAnchor>();
-            if (anchor != null)
+            isCollected = true;
+
+            // Keep forgive margin proportional to the new radius and never downgrade
+            float forgiveMargin = Mathf.Max(1f, anchor.RadiusForgive - anchor.maxTeleportRadius);
+            float appliedRadius = Mathf.Max(anchor.maxTeleportRadius, newRadius);
+            anchor.maxTeleportRadius = appliedRadius;
+            anchor.RadiusForgive = appliedRadius + forgiveMargin;
+
+            string msg = string.IsNullOrEmpty(customMessage)
+                ? "Teleport radius upgraded to " + appliedRadius + "!"
+                : customMessage;
+
+            if (messageText != null)
             {
-                isCollected = true;
+                if (sr != null) sr.enabled = false;
+                if (col != null) col.enabled = false;
 
-                // Keep forgive margin proportional to the new radius
-                float forgiveMargin = Mathf.Max(1f, anchor.RadiusForgive - anchor.maxTeleportRadius);
-                anchor.maxTeleportRadius = newRadius;
-                anchor.RadiusForgive = newRadius + forgiveMargin;
-
-                string msg = string.IsNullOrEmpty(customMessage)
-                    ? "Teleport radius upgraded to " + newRadius + "!"
-                    : customMessage;
-
-                if (messageText != null)
-                {
-                    if (sr != null) sr.enabled = false;
-                    if (col != null) col.enabled = false;
-
-                    StopAllCoroutines();
-                    StartCoroutine(ShowMessageRoutine(msg, messageDuration));
-                }
-                else
-                {
-                    Debug.Log(msg);
-                    Destroy(gameObject);
-                }
+                StopAllCoroutines();
+                StartCoroutine(ShowMessageRoutine(msg, messageDuration));
+            }
+            else
+            {
+                Debug.Log(msg);
+                Destroy(gameObject);
             }
         }
     }

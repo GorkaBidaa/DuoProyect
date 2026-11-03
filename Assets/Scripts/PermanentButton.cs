@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class PermanentButton : MonoBehaviour
@@ -16,7 +15,13 @@ public class PermanentButton : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && !isPressed && doorToOpen != null)
+        if (isPressed || doorToOpen == null)
+            return;
+
+        bool isPlayer = collision.CompareTag("Player") ||
+                        collision.GetComponentInParent<PlayerMovement>() != null;
+
+        if (isPlayer)
         {
             isPressed = true;
             doorToOpen.SetActive(false);

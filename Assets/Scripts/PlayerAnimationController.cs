@@ -11,6 +11,7 @@ public class PlayerAnimatorController : MonoBehaviour
     private Rigidbody2D rb;
     private StaminaSystem stamina;
     private float idleTimer;
+    private bool hasIsDeadParam;
 
     public bool FacingLeft => spriteRenderer != null && spriteRenderer.flipX;
 
@@ -22,16 +23,31 @@ public class PlayerAnimatorController : MonoBehaviour
 
         if (animator == null) animator = GetComponentInChildren<Animator>();
         if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        CacheAnimatorParameters();
+    }
+
+    private void CacheAnimatorParameters()
+    {
+        if (animator == null) return;
+
+        foreach (AnimatorControllerParameter param in animator.parameters)
+        {
+            if (param.name == "IsDead" && param.type == AnimatorControllerParameterType.Bool)
+            {
+                hasIsDeadParam = true;
+                break;
+            }
+        }
     }
 
     private void Update()
     {
-        // Don't update any animation parameters when dead
-        // This allows the death animation to play without interruption
-        if (stamina != null && stamina.IsDead)
+        if (animator == null)
             return;
 
-        if (animator == null)
+        // Keep movement parameters zeroed while dead so no AnyState/locomotion transition interrupts death
+        if (stamina != null && stamina.IsDead)
             return;
 
         float inputX = movement.HorizontalInput;
@@ -61,22 +77,52 @@ public class PlayerAnimatorController : MonoBehaviour
         animator.SetFloat("Speed", Mathf.Abs(inputX));
         animator.SetFloat("VelocityY", rb.linearVelocity.y);
         animator.SetBool("IsGrounded", movement.isGrounded);
+        animator.SetBool("IsWallSliding", movement.IsWallSliding);
         animator.SetBool("IsSleeping", idleTimer >= sleepIdleDelay);
     }
 
     public void TriggerCastShadow()
     {
-        if (animator != null)
-            animator.SetTrigger("CastShadow");
+        if (animator == null || (stamina != null && stamina.IsDead))
+            return;
+
+        animator.SetTrigger("CastShadow");
     }
 
     public void TriggerDeath()
     {
-        if (animator != null)
-        {
-            // Reset sleeping state before death
-            animator.SetBool("IsSleeping", false);
-            animator.SetTrigger("Die");
-        }
+        idleTimer = 0f;
+
+        if (animator == null)
+            return;
+
+        animator.ResetTrigger("CastShadow");
+        animator.SetFloat("Speed", 0f);
+        animator.SetFloat("VelocityY", 0f);
+        animator.SetBool("IsGrounded", true);
+        animator.SetBool("IsSleeping", false);
+
+        if (hasIsDeadParam)
+            animator.SetBool("IsDead", true);
+
+        animator.SetTrigger("Die");
+    }
+
+    public void ResetAfterRespawn()
+    {
+        idleTimer = 0f;
+
+        if (animator == null)
+            return;
+
+        animator.ResetTrigger("Die");
+        animator.ResetTrigger("CastShadow");
+        animator.SetBool("IsSleeping", false);
+
+        if (hasIsDeadParam)
+            animator.SetBool("IsDead", false);
+
+        animator.Rebind();
+        animator.Update(0f);
     }
 }

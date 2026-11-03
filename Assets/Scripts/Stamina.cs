@@ -58,6 +58,13 @@ public class StaminaSystem : MonoBehaviour
             playerMovement.enabled = false; // Block movement during animation
         }
 
+        // Freeze physics while death animation plays
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.gravityScale = 0f;
+        }
+
         // Trigger death animation through the animator controller
         if (animatorController != null)
         {
@@ -74,18 +81,26 @@ public class StaminaSystem : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
         }
         transform.position = respawnPosition;
+        Physics2D.SyncTransforms();
 
         // Reset stamina
-        currentStamina = maxStamina;
+        RechargeStamina();
 
         // Reset health
         PlayerHealth health = GetComponent<PlayerHealth>();
         if (health != null)
             health.ResetAfterRespawn();
 
-        // Re-enable movement
+        // Reset animator back to default state
+        if (animatorController != null)
+            animatorController.ResetAfterRespawn();
+
+        // Re-enable movement and restore base gravity
         if (playerMovement != null)
+        {
             playerMovement.enabled = true;
+            playerMovement.ResetMovementState();
+        }
 
         IsDead = false;
     }
@@ -116,7 +131,7 @@ public class StaminaSystem : MonoBehaviour
         else
         {
             // Drain stamina continuously
-            currentStamina -= drainRate * Time.deltaTime;
+            currentStamina = Mathf.Max(0f, currentStamina - drainRate * Time.deltaTime);
         }
 
         if (staminaBar != null)
@@ -142,7 +157,7 @@ public class StaminaSystem : MonoBehaviour
 
     public bool TryRestoreStamina(float amount)
     {
-        if (amount <= 0f || currentStamina >= maxStamina)
+        if (IsDead || amount <= 0f || currentStamina >= maxStamina)
             return false;
 
         currentStamina = Mathf.Min(currentStamina + amount, maxStamina);
@@ -156,7 +171,7 @@ public class StaminaSystem : MonoBehaviour
     public void SetSafeZone(bool state)
     {
         isInSafeZone = state;
-        if (state)
+        if (state && !IsDead)
         {
             RechargeStamina();
         }

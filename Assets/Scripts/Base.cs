@@ -1,30 +1,42 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseStation : MonoBehaviour
 {
-    // save this base as checkpoint
+    private readonly HashSet<Collider2D> playerColliders = new HashSet<Collider2D>();
+    private StaminaSystem cachedPlayerStamina;
+
+    // Save this base as checkpoint
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        StaminaSystem playerStamina = collision.GetComponentInParent<StaminaSystem>();
+        if (playerStamina == null && collision.CompareTag("Player"))
+            playerStamina = collision.GetComponent<StaminaSystem>();
+
+        if (playerStamina != null)
         {
-            StaminaSystem playerStamina = collision.GetComponent<StaminaSystem>();
-            if (playerStamina != null)
-            {
-                playerStamina.SetRespawnPoint(transform.position);
-                playerStamina.SetSafeZone(true);
-            }
+            cachedPlayerStamina = playerStamina;
+            playerColliders.Add(collision);
+            playerStamina.SetRespawnPoint(transform.position);
+            playerStamina.SetSafeZone(true);
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (!playerColliders.Remove(collision))
+            return;
+
+        if (playerColliders.Count == 0 && cachedPlayerStamina != null)
         {
-            StaminaSystem playerStamina = collision.GetComponent<StaminaSystem>();
-            if (playerStamina != null)
-            {
-                playerStamina.SetSafeZone(false);
-            }
+            cachedPlayerStamina.SetSafeZone(false);
         }
+    }
+
+    private void OnDisable()
+    {
+        playerColliders.Clear();
+        if (cachedPlayerStamina != null)
+            cachedPlayerStamina.SetSafeZone(false);
     }
 }

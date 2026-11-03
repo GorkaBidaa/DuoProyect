@@ -7,9 +7,11 @@ public class Trampoline : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!collision.gameObject.CompareTag("Player")) return;
+        PlayerMovement player = collision.collider.GetComponentInParent<PlayerMovement>();
+        if (player == null && collision.gameObject.CompareTag("Player"))
+            player = collision.gameObject.GetComponent<PlayerMovement>();
 
-        if (collision.gameObject.TryGetComponent(out PlayerMovement player))
+        if (player != null)
         {
             player.Bounce(bounceForce);
         }

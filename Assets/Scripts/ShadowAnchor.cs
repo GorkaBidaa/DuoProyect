@@ -33,6 +33,10 @@ public class ShadowAnchor : MonoBehaviour
     public float shadowDashMomentumBoost = 14f;
     public LayerMask shadowObstacleLayer;
 
+    [Header("Optional Menu References (Auto-found if left empty)")]
+    [SerializeField] private InventoryMenu inventoryMenu;
+    [SerializeField] private CraftingMenu craftingMenu;
+
     public bool ShadowDashUnlocked => shadowDashUnlocked;
 
     private GameObject currentShadow;
@@ -55,17 +59,31 @@ public class ShadowAnchor : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerMovement playerMovement;
     private PlayerAnimatorController playerAnim;
+    private StaminaSystem stamina;
     private SpriteRenderer playerSr;
     private Key parsedKey;
     private bool keyValid;
+
+    private bool IsInputBlocked =>
+        Time.timeScale <= 0f ||
+        (stamina != null && stamina.IsDead) ||
+        (inventoryMenu != null && inventoryMenu.IsOpen) ||
+        (craftingMenu != null && craftingMenu.IsOpen);
 
     void Start()
     {
         playerAnim = GetComponent<PlayerAnimatorController>();
         rb = GetComponent<Rigidbody2D>();
         playerMovement = GetComponent<PlayerMovement>();
+        stamina = GetComponent<StaminaSystem>();
         playerSr = GetComponent<SpriteRenderer>();
         if (playerSr == null) playerSr = GetComponentInChildren<SpriteRenderer>();
+
+        if (inventoryMenu == null)
+            inventoryMenu = FindFirstObjectByType<InventoryMenu>();
+        if (craftingMenu == null)
+            craftingMenu = FindFirstObjectByType<CraftingMenu>();
+
         CacheKey();
     }
 
@@ -137,6 +155,9 @@ public class ShadowAnchor : MonoBehaviour
             UpdateShadowColor();
         }
 
+        if (IsInputBlocked)
+            return;
+
         // Pressing R2 / the anchor key has priority for deploying the anchor or interrupting the dash with teleport
         if (ReadAnchorInput())
         {
@@ -173,11 +194,14 @@ public class ShadowAnchor : MonoBehaviour
         else
         {
             inertiaTimer -= Time.deltaTime;
-            if (inertiaTimer <= 0f) cachedMaxUpwardInertia = 0f;
-
-            if (playerMovement != null && playerMovement.isGrounded)
+            if (inertiaTimer <= 0f)
             {
-                currentMaxLaunchVelocity = 0f;
+                cachedMaxUpwardInertia = 0f;
+
+                if (playerMovement != null && playerMovement.isGrounded)
+                {
+                    currentMaxLaunchVelocity = 0f;
+                }
             }
         }
     }
@@ -233,7 +257,7 @@ public class ShadowAnchor : MonoBehaviour
     {
         if (shadowSr == null) return;
         shadowSr.color = IsReachable()
-            ? new Color32(127, 0, 247, 80)
+            ? new Color32(127, 0, 247, 200)
             : new Color(1f, 0.3f, 0.3f, 0.5f);
     }
 
@@ -323,7 +347,7 @@ public class ShadowAnchor : MonoBehaviour
 
         // Snapshot momentum before fade starts
         float savedUpwardInertia = cachedMaxUpwardInertia;
-        float savedMaxLaunchVel = currentMaxLaunchVelocity;
+        float savedMaxLaunchVel = Mathf.Max(currentMaxLaunchVelocity, savedUpwardInertia);
         cachedMaxUpwardInertia = 0f;
         inertiaTimer = 0f;
 
@@ -398,7 +422,7 @@ public class ShadowAnchor : MonoBehaviour
         if (shadowToDestroy == null) yield break;
 
         SpriteRenderer sr = shadowToDestroy.GetComponent<SpriteRenderer>();
-        if (sr != null) sr.color = new Color32(255, 0, 0, 128);
+        if (sr != null) sr.color = new Color32(255, 0, 0, 200);
 
         yield return new WaitForSeconds(0.3f);
 
@@ -451,13 +475,24 @@ public class ShadowAnchor : MonoBehaviour
         if (shadowAnimator != null)
             shadowAnimator.SetBool("IsDashing", true);
 
+        const float wallSkinWidth = 0.2f;
         float elapsed = 0f;
+
         while (elapsed < shadowDashDuration && currentShadow != null)
         {
             float step = shadowDashSpeed * Time.deltaTime;
-            RaycastHit2D hit = Physics2D.Raycast(currentShadow.transform.position, direction, step + 0.2f, shadowObstacleLayer);
+            RaycastHit2D hit = Physics2D.Raycast(
+                currentShadow.transform.position,
+                direction,
+                step + wallSkinWidth,
+                shadowObstacleLayer);
+
             if (hit.collider != null)
+            {
+                float safeAdvance = Mathf.Max(0f, hit.distance - wallSkinWidth);
+                currentShadow.transform.position += (Vector3)(direction * safeAdvance);
                 break;
+            }
 
             currentShadow.transform.position += (Vector3)(direction * step);
             elapsed += Time.deltaTime;

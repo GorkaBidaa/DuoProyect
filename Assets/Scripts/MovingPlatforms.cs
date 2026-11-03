@@ -16,6 +16,14 @@ public class MovingPlatform : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        if (pointA == null || pointB == null)
+        {
+            Debug.LogError("Assign pointA and pointB on MovingPlatform.", this);
+            enabled = false;
+            return;
+        }
+
         a = pointA.position;
         b = pointB.position;
         target = b;
@@ -31,5 +39,10 @@ public class MovingPlatform : MonoBehaviour
 
         if (Vector2.Distance(next, target) < 0.01f)
             target = (target == a) ? b : a;
+    }
+
+    private void OnDisable()
+    {
+        Velocity = Vector2.zero;
     }
 }

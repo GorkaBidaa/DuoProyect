@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TimedButton : MonoBehaviour
@@ -10,6 +11,8 @@ public class TimedButton : MonoBehaviour
     private bool isPressed = false;
     private SpriteRenderer sr;
     private Color originalColor;
+    private Collider2D doorCollider;
+    private readonly List<Collider2D> overlapResults = new List<Collider2D>(8);
 
     private void Awake()
     {
@@ -18,11 +21,22 @@ public class TimedButton : MonoBehaviour
         {
             originalColor = sr.color;
         }
+
+        if (doorToOpen != null)
+        {
+            doorCollider = doorToOpen.GetComponent<Collider2D>();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && !isPressed)
+        if (isPressed)
+            return;
+
+        bool isPlayer = collision.CompareTag("Player") ||
+                        collision.GetComponentInParent<PlayerMovement>() != null;
+
+        if (isPlayer)
         {
             StartCoroutine(PressButtonRoutine());
         }
@@ -35,14 +49,13 @@ public class TimedButton : MonoBehaviour
         Bounds doorBounds = default;
         bool hasDoorCollider = false;
 
-        if (doorToOpen != null)
+        if (doorCollider == null && doorToOpen != null)
+            doorCollider = doorToOpen.GetComponent<Collider2D>();
+
+        if (doorCollider != null)
         {
-            Collider2D doorCol = doorToOpen.GetComponent<Collider2D>();
-            if (doorCol != null)
-            {
-                doorBounds = doorCol.bounds;
-                hasDoorCollider = true;
-            }
+            doorBounds = doorCollider.bounds;
+            hasDoorCollider = true;
         }
 
         // Disable door
@@ -71,10 +84,13 @@ public class TimedButton : MonoBehaviour
 
     private bool IsPlayerBlockingDoor(Bounds bounds)
     {
-        Collider2D[] hits = Physics2D.OverlapBoxAll(bounds.center, bounds.size, 0f);
-        for (int i = 0; i < hits.Length; i++)
+        overlapResults.Clear();
+        Physics2D.OverlapBox(bounds.center, bounds.size, 0f, ContactFilter2D.noFilter, overlapResults);
+
+        for (int i = 0; i < overlapResults.Count; i++)
         {
-            if (hits[i].CompareTag("Player"))
+            Collider2D hit = overlapResults[i];
+            if (hit != null && (hit.CompareTag("Player") || hit.GetComponentInParent<PlayerMovement>() != null))
                 return true;
         }
         return false;

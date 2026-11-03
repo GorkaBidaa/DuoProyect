@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Stats")]
@@ -11,11 +11,11 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump Stats")]
     public float jumpForce = 12f;
-    [Tooltip("Gravedad base sobre la que se aplican los multiplicadores (1 = igual que antes)")]
+    [Tooltip("Base gravity affected by the multipliers (1 = previous behavior)")]
     public float baseGravityScale = 1f;
     public float upwardGravityMultiplier = 2f;
     public float fallMultiplier = 2.5f;
-    [Tooltip("Debe ser MAYOR que upwardGravityMultiplier para que soltar el salto acorte el salto")]
+    [Tooltip("Must be greater than upwardGravityMultiplier to shorten the jump when released")]
     public float lowJumpMultiplier = 3f;
 
     [Header("Invisible Mechanics (Game Feel)")]
@@ -29,6 +29,30 @@ public class PlayerMovement : MonoBehaviour
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
 
+    [Header("Wall Jump & Slide (Hollow Knight Style)")]
+    [SerializeField] private bool wallJumpUnlocked = false;
+    [Tooltip("If set to Nothing, groundLayer is used automatically")]
+    public LayerMask wallLayer;
+    [Tooltip("Raycast distance from the side of the Collider2D")]
+    public float wallCheckDistance = 0.12f;
+    [Tooltip("Distance from the wall where the player stops when sliding so the animation does not clip")]
+    [Min(0f)] public float wallSlideSeparation = 0.08f;
+    [Tooltip("Vertical offset of the two rays from the collider center (0.5 = upper and lower halves)")]
+    [Range(0.1f, 0.9f)] public float wallRayHeightOffset = 0.45f;
+    [Tooltip("When enabled, both rays (chest and legs) must touch the wall to slide")]
+    public bool requireBothWallRays = true;
+
+    public float wallSlideSpeed = 3.5f;
+    [Tooltip("Braking force when hitting a wall while falling faster than wallSlideSpeed")]
+    public float wallSlideBrakeDeceleration = 45f;
+    [Tooltip("Smooth acceleration toward wallSlideSpeed when starting to fall against a wall")]
+    public float wallSlideGravityAcceleration = 20f;
+
+    public Vector2 wallJumpForce = new Vector2(10f, 12.5f);
+    [Tooltip("Time that horizontal input is locked after a wall jump to launch away")]
+    public float wallJumpMovementLockTime = 0.14f;
+    public float wallCoyoteTime = 0.12f;
+
     [Header("Corner Correction")]
     public Transform headLeft;
     public Transform headRight;
@@ -37,11 +61,20 @@ public class PlayerMovement : MonoBehaviour
     public float maxCornerDistance = 0.2f;
 
     private Rigidbody2D rb;
+    private Collider2D col;
     private float horizontalInput;
     private bool isTeleporting = false;
     private bool isBouncing = false;
     private bool isJumping = false;
     private bool jumpCutApplied = false;
+
+    // Current wall interaction state.
+    [SerializeField] private bool isWallSliding = false;
+    private int wallSide = 0; // -1 = left, 1 = right, 0 = none
+    private int lastWallSide = 0;
+    private float wallHitX = 0f;
+    private float wallCoyoteTimeCounter = 0f;
+    private float wallJumpLockCounter = 0f;
 
     private Collider2D lastGroundCollider;
     private MovingPlatform currentPlatform;
@@ -50,14 +83,25 @@ public class PlayerMovement : MonoBehaviour
     private bool wasOnPlatform = false;
 
     public bool isGrounded { get; private set; }
+    public bool IsWallSliding => isWallSliding;
+    public int WallSide => wallSide;
+    public bool WallJumpUnlocked => wallJumpUnlocked;
 
     public float HorizontalInput => horizontalInput;
     public bool IsTeleporting => isTeleporting;
 
-
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
+
+        if (wallLayer.value == 0)
+            wallLayer = groundLayer;
+    }
+
+    public void UnlockWallJump()
+    {
+        wallJumpUnlocked = true;
     }
 
     public void SetTeleportingState(bool state)
@@ -68,6 +112,9 @@ public class PlayerMovement : MonoBehaviour
             isJumping = false;
             isBouncing = false;
             jumpCutApplied = false;
+            isWallSliding = false;
+            wallCoyoteTimeCounter = 0f;
+            wallJumpLockCounter = 0f;
             wasOnPlatform = false;
             lastGroundCollider = null;
             currentPlatform = null;
@@ -83,6 +130,11 @@ public class PlayerMovement : MonoBehaviour
         isJumping = false;
         isBouncing = false;
         jumpCutApplied = false;
+        isWallSliding = false;
+        wallSide = 0;
+        lastWallSide = 0;
+        wallCoyoteTimeCounter = 0f;
+        wallJumpLockCounter = 0f;
         wasOnPlatform = false;
         lastGroundCollider = null;
         currentPlatform = null;
@@ -121,6 +173,73 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void UpdateWallCheck()
+    {
+        if (!wallJumpUnlocked || col == null || isGrounded)
+        {
+            wallSide = 0;
+            return;
+        }
+
+        LayerMask effectiveWallLayer = wallLayer.value != 0 ? wallLayer : groundLayer;
+        Bounds b = col.bounds;
+
+        float topY = b.center.y + (b.extents.y * wallRayHeightOffset);
+        float bottomY = b.center.y - (b.extents.y * wallRayHeightOffset);
+
+        // Ensure ray length is always slightly larger than wallSlideSeparation so contact is never lost when separated
+        float effectiveCheckDist = Mathf.Max(wallCheckDistance, wallSlideSeparation + 0.05f);
+        float rayLength = b.extents.x + effectiveCheckDist;
+
+        Vector2 topCenter = new Vector2(b.center.x, topY);
+        Vector2 bottomCenter = new Vector2(b.center.x, bottomY);
+
+        // Right rays
+        RaycastHit2D rightTopHit = Physics2D.Raycast(topCenter, Vector2.right, rayLength, effectiveWallLayer);
+        RaycastHit2D rightBottomHit = Physics2D.Raycast(bottomCenter, Vector2.right, rayLength, effectiveWallLayer);
+        bool hasRightTop = rightTopHit.collider != null;
+        bool hasRightBottom = rightBottomHit.collider != null;
+        bool touchingRight = requireBothWallRays ? (hasRightTop && hasRightBottom) : (hasRightTop || hasRightBottom);
+
+        // Left rays
+        RaycastHit2D leftTopHit = Physics2D.Raycast(topCenter, Vector2.left, rayLength, effectiveWallLayer);
+        RaycastHit2D leftBottomHit = Physics2D.Raycast(bottomCenter, Vector2.left, rayLength, effectiveWallLayer);
+        bool hasLeftTop = leftTopHit.collider != null;
+        bool hasLeftBottom = leftBottomHit.collider != null;
+        bool touchingLeft = requireBothWallRays ? (hasLeftTop && hasLeftBottom) : (hasLeftTop || hasLeftBottom);
+
+        if (touchingRight && touchingLeft)
+        {
+            wallSide = horizontalInput < -0.01f ? -1 : 1;
+        }
+        else if (touchingRight)
+        {
+            wallSide = 1;
+        }
+        else if (touchingLeft)
+        {
+            wallSide = -1;
+        }
+        else
+        {
+            wallSide = 0;
+        }
+
+        // Store the exact X coordinate of the wall surface
+        if (wallSide == 1)
+        {
+            if (hasRightTop && hasRightBottom) wallHitX = Mathf.Min(rightTopHit.point.x, rightBottomHit.point.x);
+            else if (hasRightTop) wallHitX = rightTopHit.point.x;
+            else wallHitX = rightBottomHit.point.x;
+        }
+        else if (wallSide == -1)
+        {
+            if (hasLeftTop && hasLeftBottom) wallHitX = Mathf.Max(leftTopHit.point.x, leftBottomHit.point.x);
+            else if (hasLeftTop) wallHitX = leftTopHit.point.x;
+            else wallHitX = leftBottomHit.point.x;
+        }
+    }
+
     void Update()
     {
         if (isTeleporting)
@@ -130,6 +249,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         UpdateGroundCheck();
+        UpdateWallCheck();
+
+        if (wallJumpLockCounter > 0f)
+            wallJumpLockCounter -= Time.deltaTime;
 
         bool jumpPressed = false;
         bool jumpHeld = false;
@@ -179,7 +302,28 @@ public class PlayerMovement : MonoBehaviour
 
         horizontalInput = (Mathf.Abs(gamepad) > 0.01f) ? gamepad : keyboard;
 
-        // Evaluate coyote time using velocity relative to the platform
+        bool pressingTowardsWall = (wallSide == 1 && horizontalInput > 0.1f) ||
+                                   (wallSide == -1 && horizontalInput < -0.1f);
+
+        isWallSliding = wallJumpUnlocked &&
+                        !isGrounded &&
+                        !isTeleporting &&
+                        !isBouncing &&
+                        wallJumpLockCounter <= 0f &&
+                        wallSide != 0 &&
+                        pressingTowardsWall &&
+                        rb.linearVelocity.y <= 0.1f;
+
+        if (wallJumpUnlocked && !isGrounded && wallSide != 0 && (isWallSliding || pressingTowardsWall))
+        {
+            wallCoyoteTimeCounter = wallCoyoteTime;
+            lastWallSide = wallSide;
+        }
+        else
+        {
+            wallCoyoteTimeCounter -= Time.deltaTime;
+        }
+
         if (isGrounded && !isJumping && !isBouncing && relativeVelY <= 0.1f)
             coyoteTimeCounter = coyoteTime;
         else
@@ -188,18 +332,39 @@ public class PlayerMovement : MonoBehaviour
         if (jumpPressed) jumpBufferCounter = jumpBufferTime;
         else jumpBufferCounter -= Time.deltaTime;
 
+        // Ground jump
         if (!isTeleporting && !isBouncing && jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
-            // If the platform moves upward, add its vertical velocity so it does not absorb the jump
             float jumpVelY = jumpForce + Mathf.Max(0f, surfaceVelocity.y);
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpVelY);
 
             isJumping = true;
             jumpCutApplied = false;
+            isWallSliding = false;
             wasOnPlatform = false;
             lastSurfaceVelocity = Vector2.zero;
             jumpBufferCounter = 0f;
             coyoteTimeCounter = 0f;
+            wallCoyoteTimeCounter = 0f;
+        }
+        // Wall jump
+        else if (wallJumpUnlocked && !isTeleporting && !isBouncing && jumpBufferCounter > 0f &&
+                 (wallCoyoteTimeCounter > 0f || (!isGrounded && wallSide != 0)))
+        {
+            int jumpWallDir = wallSide != 0 ? wallSide : lastWallSide;
+            float launchX = -jumpWallDir * wallJumpForce.x;
+
+            rb.linearVelocity = new Vector2(launchX, wallJumpForce.y);
+
+            isJumping = true;
+            jumpCutApplied = false;
+            isWallSliding = false;
+            wasOnPlatform = false;
+            lastSurfaceVelocity = Vector2.zero;
+            jumpBufferCounter = 0f;
+            coyoteTimeCounter = 0f;
+            wallCoyoteTimeCounter = 0f;
+            wallJumpLockCounter = wallJumpMovementLockTime;
         }
 
         if (jumpReleased && isJumping && !jumpCutApplied && rb.linearVelocity.y > surfaceVelocity.y)
@@ -210,13 +375,20 @@ public class PlayerMovement : MonoBehaviour
             coyoteTimeCounter = 0f;
         }
 
-        float currentRelVelY = rb.linearVelocity.y - surfaceVelocity.y;
-        float multiplier;
-        if (!isGrounded && currentRelVelY < 0f) multiplier = fallMultiplier;
-        else if (isJumping && currentRelVelY > 0f && !jumpHeld) multiplier = lowJumpMultiplier;
-        else multiplier = upwardGravityMultiplier;
+        if (isWallSliding)
+        {
+            rb.gravityScale = 0f;
+        }
+        else
+        {
+            float currentRelVelY = rb.linearVelocity.y - surfaceVelocity.y;
+            float multiplier;
+            if (!isGrounded && currentRelVelY < 0f) multiplier = fallMultiplier;
+            else if (isJumping && currentRelVelY > 0f && !jumpHeld) multiplier = lowJumpMultiplier;
+            else multiplier = upwardGravityMultiplier;
 
-        rb.gravityScale = baseGravityScale * multiplier;
+            rb.gravityScale = baseGravityScale * multiplier;
+        }
     }
 
     void FixedUpdate()
@@ -224,9 +396,12 @@ public class PlayerMovement : MonoBehaviour
         if (isTeleporting) return;
 
         UpdateGroundCheck();
+        UpdateWallCheck();
 
         bool onPlatform = currentPlatform != null && !isJumping && !isBouncing && !isTeleporting;
-        float targetSpeed = (horizontalInput * maxSpeed) + (onPlatform ? surfaceVelocity.x : 0f);
+
+        float effectiveHorizontalInput = wallJumpLockCounter > 0f ? 0f : horizontalInput;
+        float targetSpeed = (effectiveHorizontalInput * maxSpeed) + (onPlatform ? surfaceVelocity.x : 0f);
 
         if (onPlatform)
         {
@@ -235,7 +410,6 @@ public class PlayerMovement : MonoBehaviour
 
             if (!wasOnPlatform)
             {
-                // When landing on the platform: match its velocity immediately without slipping
                 if (Mathf.Abs(horizontalInput) <= 0.01f)
                 {
                     newVelX = surfaceVelocity.x;
@@ -249,11 +423,9 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                // While remaining on the platform: immediately compensate for changes in direction
                 newVelX = rb.linearVelocity.x + deltaX;
             }
 
-            // Keep the player attached to the platform while it moves vertically
             float newVelY = wasOnPlatform
                 ? surfaceVelocity.y
                 : Mathf.Min(rb.linearVelocity.y, surfaceVelocity.y);
@@ -261,11 +433,50 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector2(newVelX, newVelY);
         }
 
-        float accelRate = Mathf.Abs(horizontalInput) > 0.01f ? acceleration : deceleration;
-        float speedDifference = targetSpeed - rb.linearVelocity.x;
-        float movement = speedDifference * accelRate;
+        // Do not push the player horizontally into the wall while sliding
+        if (wallJumpLockCounter <= 0f && !isWallSliding)
+        {
+            float accelRate = Mathf.Abs(horizontalInput) > 0.01f ? acceleration : deceleration;
+            float speedDifference = targetSpeed - rb.linearVelocity.x;
+            float movement = speedDifference * accelRate;
 
-        rb.AddForce(movement * rb.mass * Vector2.right, ForceMode2D.Force);
+            rb.AddForce(movement * rb.mass * Vector2.right, ForceMode2D.Force);
+        }
+
+        // Gradually control wall slide speed and stop slightly before the wall
+        if (isWallSliding)
+        {
+            float targetSlideVelY = -wallSlideSpeed;
+            float currentVelY = rb.linearVelocity.y;
+
+            float rate = currentVelY < targetSlideVelY
+                ? wallSlideBrakeDeceleration
+                : wallSlideGravityAcceleration;
+
+            float newSlideVelY = Mathf.MoveTowards(currentVelY, targetSlideVelY, rate * Time.fixedDeltaTime);
+            rb.linearVelocity = new Vector2(0f, newSlideVelY);
+
+            if (wallSlideSeparation > 0f && col != null && wallSide != 0)
+            {
+                Bounds b = col.bounds;
+                if (wallSide == 1)
+                {
+                    float currentGap = wallHitX - b.max.x;
+                    if (currentGap < wallSlideSeparation)
+                    {
+                        rb.position = new Vector2(rb.position.x - (wallSlideSeparation - currentGap), rb.position.y);
+                    }
+                }
+                else if (wallSide == -1)
+                {
+                    float currentGap = b.min.x - wallHitX;
+                    if (currentGap < wallSlideSeparation)
+                    {
+                        rb.position = new Vector2(rb.position.x + (wallSlideSeparation - currentGap), rb.position.y);
+                    }
+                }
+            }
+        }
 
         wasOnPlatform = onPlatform;
         lastSurfaceVelocity = onPlatform ? surfaceVelocity : Vector2.zero;
@@ -300,7 +511,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // Binary search for exact corner clearance using upward raycast only
     private float FindExactCornerOffset(Vector2 origin, float directionSign)
     {
         float low = 0f;
@@ -329,6 +539,22 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.color = Color.yellow;
         if (headLeft != null) Gizmos.DrawLine(headLeft.position, headLeft.position + Vector3.up * headCheckDistance);
         if (headRight != null) Gizmos.DrawLine(headRight.position, headRight.position + Vector3.up * headCheckDistance);
+
+        Collider2D gizmoCol = col != null ? col : GetComponent<Collider2D>();
+        if (gizmoCol != null)
+        {
+            Bounds b = gizmoCol.bounds;
+            float topY = b.center.y + (b.extents.y * wallRayHeightOffset);
+            float bottomY = b.center.y - (b.extents.y * wallRayHeightOffset);
+            float effectiveCheckDist = Mathf.Max(wallCheckDistance, wallSlideSeparation + 0.05f);
+            float rayLength = b.extents.x + effectiveCheckDist;
+
+            Gizmos.color = isWallSliding ? Color.green : Color.cyan;
+            Gizmos.DrawLine(new Vector3(b.center.x, topY, 0f), new Vector3(b.center.x + rayLength, topY, 0f));
+            Gizmos.DrawLine(new Vector3(b.center.x, bottomY, 0f), new Vector3(b.center.x + rayLength, bottomY, 0f));
+            Gizmos.DrawLine(new Vector3(b.center.x, topY, 0f), new Vector3(b.center.x - rayLength, topY, 0f));
+            Gizmos.DrawLine(new Vector3(b.center.x, bottomY, 0f), new Vector3(b.center.x - rayLength, bottomY, 0f));
+        }
     }
 
     public void Bounce(float force)
@@ -337,6 +563,9 @@ public class PlayerMovement : MonoBehaviour
         isBouncing = true;
         isJumping = false;
         jumpCutApplied = false;
+        isWallSliding = false;
+        wallCoyoteTimeCounter = 0f;
+        wallJumpLockCounter = 0f;
         wasOnPlatform = false;
         lastGroundCollider = null;
         currentPlatform = null;
