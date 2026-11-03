@@ -1,0 +1,22 @@
+[
+  {
+    "name": "backplate",
+    "prompt": "Use case: background-extraction / precise-object-edit. Extract ONE separate transparent PNG layer from this approved stylized forest HUD for a modular Unity kit. Match the approved shapes, palette, chunky stylized roots, moss and restrained shading closely. No new decoration, no text, no numbers. Actual transparent background. Output only the requested component, centered and fully visible with padding. Keep only the OUTERMOST wooden root and moss rim and its plain dark charcoal disk backing. Remove both gray arc tracks, both colored icons, the INNER wooden item-slot ring and the small count badge. Fill their former positions seamlessly with plain dark charcoal. The result is the approved outer wooden frame surrounding a plain dark disk, no interior elements."
+  },
+  {
+    "name": "item-slot",
+    "prompt": "Use case: background-extraction / precise-object-edit. Extract ONE separate transparent PNG layer from this approved stylized forest HUD for a modular Unity kit. Match the approved shapes, palette, chunky stylized roots, moss and restrained shading closely. No new decoration, no text, no numbers. Actual transparent background. Output only the requested component, centered and fully visible with padding. Extract only the central large blank circular dark item socket WITH its inner wooden root rim and tiny moss patches. Remove outer HUD frame, gray tracks, both colored icons and small quantity badge. Reconstruct the small section of the item ring previously hidden by badge. Preserve the approved organic ring. Dark empty interior, transparent exterior."
+  },
+  {
+    "name": "count-badge",
+    "prompt": "Use case: background-extraction / precise-object-edit. Extract ONE separate transparent PNG layer from this approved stylized forest HUD for a modular Unity kit. Match the approved shapes, palette, chunky stylized roots, moss and restrained shading closely. No new decoration, no text, no numbers. Actual transparent background. Output only the requested component, centered and fully visible with padding. Extract only the small blank rounded rectangular quantity badge with thin brown wooden rim and dark charcoal interior. Preserve its exact approved visual design. Remove absolutely everything else."
+  },
+  {
+    "name": "health-icon",
+    "prompt": "Use case: background-extraction / precise-object-edit. Extract ONE separate transparent PNG layer from this approved stylized forest HUD for a modular Unity kit. Match the approved shapes, palette, chunky stylized roots, moss and restrained shading closely. No new decoration, no text, no numbers. Actual transparent background. Output only the requested component, centered and fully visible with padding. Extract only the coral heart-shaped leaf HEALTH icon from the upper left. Preserve its coral silhouette, black stem/vein and dark outline exactly. Remove absolutely everything else. No enclosing badge."
+  },
+  {
+    "name": "stamina-icon",
+    "prompt": "Use case: background-extraction / precise-object-edit. Extract ONE separate transparent PNG layer from this approved stylized forest HUD for a modular Unity kit. Match the approved shapes, palette, chunky stylized roots, moss and restrained shading closely. No new decoration, no text, no numbers. Actual transparent background. Output only the requested component, centered and fully visible with padding. Extract only the teal lightning bolt STAMINA icon with tiny twig detail from the upper right. Preserve its exact approved bolt silhouette, teal color, twig mark and dark outline. It must remain a lightning bolt, NOT a leaf. Remove absolutely everything else. No enclosing badge."
+  }
+]

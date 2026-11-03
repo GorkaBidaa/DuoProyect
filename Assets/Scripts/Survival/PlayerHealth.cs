@@ -5,6 +5,8 @@ public class PlayerHealth : MonoBehaviour
 {
     [SerializeField, Min(1)] private int maxHealth = 100;
     [SerializeField] private PlayerHUD hud;
+    [SerializeField] private CursedForestHud forestHud;
+
 
     private int currentHealth;
     private StaminaSystem stamina;
@@ -54,6 +56,7 @@ public class PlayerHealth : MonoBehaviour
     {
         if (hud != null)
             hud.SetHealth(currentHealth, maxHealth);
+            
     }
 
     [ContextMenu("Test/Take 25 Damage")]

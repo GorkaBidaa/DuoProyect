@@ -1,44 +1,62 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class PlayerHUD : MonoBehaviour
 {
-    [SerializeField] private Slider healthSlider;
-    [SerializeField] private TextMeshProUGUI healthText;
-    //[SerializeField] private Slider secondLifeSlider;
-    //[SerializeField] private TextMeshProUGUI secondLifeText;
-    [SerializeField] private TextMeshProUGUI questTitle;
-    [SerializeField] private TextMeshProUGUI questObjective;
+    [Header("Status HUD")]
+    [SerializeField] private CursedForestHud statusHud;
+
+    // [Header("Quest")]
+    // [SerializeField] private TextMeshProUGUI questTitle;
+    // [SerializeField] private TextMeshProUGUI questObjective;
+
+    [Header("Crafting")]
     [SerializeField] private TextMeshProUGUI recipeTitle;
     [SerializeField] private TextMeshProUGUI requirementsText;
 
     public void SetHealth(int current, int maximum)
     {
-        maximum = Mathf.Max(1, maximum); 
-        current = Mathf.Clamp(current, 0, maximum);
+        if (statusHud == null) return;
 
-        healthSlider.minValue = 0;
-        healthSlider.maxValue = maximum;
-        healthSlider.value = current;
+        float normalized = maximum > 0
+            ? (float)current / maximum
+            : 0f;
 
-        healthText.text = $"{current} / {maximum}";
+        statusHud.SetHealth(normalized);
     }
 
-   // public void SetSecondLife(int current, int maximum)
-    //{
-     //   secondLifeText.text = $"Second life: {current}/{maximum}";
-    //}
-
-    public void SetQuest(string title, string objective)
+    public void SetStamina(float current, float maximum)
     {
-        questTitle.text = title;
-        questObjective.text = objective;
+        if (statusHud == null) return;
+
+        float normalized = maximum > 0f
+            ? current / maximum
+            : 0f;
+
+        statusHud.SetStamina(normalized);
     }
+
+    public void SetActiveItem(Sprite icon, int quantity)
+    {
+        if (statusHud != null)
+            statusHud.SetItem(icon, quantity);
+    }
+
+    //public void SetQuest(string title, string objective)
+    //{
+    //    if (questTitle != null)
+    //        questTitle.text = title;
+//
+  //      if (questObjective != null)
+   //         questObjective.text = objective;
+   // }
 
     public void SetPinnedRecipe(string title, string requirements)
     {
-        recipeTitle.text = title;
-        requirementsText.text = requirements;
+        if (recipeTitle != null)
+            recipeTitle.text = title;
+
+        if (requirementsText != null)
+            requirementsText.text = requirements;
     }
 }

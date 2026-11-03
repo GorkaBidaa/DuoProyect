@@ -19,10 +19,8 @@ public class ActiveItemSelector : MonoBehaviour
 
     [Header("HUD")]
     [SerializeField] private Image itemIcon;
-    [SerializeField] private TMP_Text itemNameText;
     [SerializeField] private TMP_Text amountText;
-    [SerializeField] private Button previousButton;
-    [SerializeField] private Button nextButton;
+   
 
     [Header("Use request: connect actual item behavior later")]
     public ActiveItemUseEvent onUseRequested = new ActiveItemUseEvent();
@@ -40,24 +38,25 @@ public class ActiveItemSelector : MonoBehaviour
 
     private void OnEnable()
     {
-        if (inventory == null || itemIcon == null || itemNameText == null ||
-            amountText == null || previousButton == null || nextButton == null)
+        if (inventory == null || itemIcon == null || amountText == null)
         {
-            Debug.LogError("Assign all inventory and HUD references on ActiveItemSelector.", this);
+            Debug.LogError(
+                "Assign Inventory, Item Icon, and Amount Text on ActiveItemSelector.",
+                this
+            );
+
             enabled = false;
             return;
         }
+
         inventory.InventoryChanged += RefreshItems;
-        previousButton.onClick.AddListener(Previous);
-        nextButton.onClick.AddListener(Next);
         RefreshItems();
     }
 
     private void OnDisable()
     {
-        if (inventory != null) inventory.InventoryChanged -= RefreshItems;
-        if (previousButton != null) previousButton.onClick.RemoveListener(Previous);
-        if (nextButton != null) nextButton.onClick.RemoveListener(Next);
+        if (inventory != null)
+            inventory.InventoryChanged -= RefreshItems;
     }
 
     private void Update()
@@ -100,12 +99,13 @@ public class ActiveItemSelector : MonoBehaviour
     private void RefreshDisplay()
     {
         ItemData item = SelectedItem;
+
         itemIcon.sprite = item != null ? item.icon : null;
         itemIcon.enabled = item != null && item.icon != null;
-        itemNameText.text = item != null ? item.itemName : "No items";
-        amountText.text = item != null ? $"x{inventory.GetItemAmount(item)}" : "";
-        previousButton.interactable = availableItems.Count > 1;
-        nextButton.interactable = availableItems.Count > 1;
+
+        amountText.text = item != null
+            ? $"x{inventory.GetItemAmount(item)}"
+            : string.Empty;
     }
 
     public void RequestUse()

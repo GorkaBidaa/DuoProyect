@@ -5,6 +5,7 @@ public class SpikeTrap : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         BatEnemy bat = collision.GetComponentInParent<BatEnemy>();
+
         if (bat != null)
         {
             bat.Die();
