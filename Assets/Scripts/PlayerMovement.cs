@@ -1,3 +1,4 @@
+using Unity.AppUI.Redux;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,19 @@ public class PlayerMovement : MonoBehaviour
     public float maxSpeed = 8f;
     public float acceleration = 10f;
     public float deceleration = 12f;
+
+    [Header("Ice Movement Stats")]
+    public string iceTag = "Ice";
+    [Tooltip("max velocity on ice")]
+    public float iceMaxSpeed = 9.5f;
+    [Tooltip("acceleration when starting to move on ice")]
+    public float iceAcceleration = 4f;
+    [Tooltip("deceleration when releasing input (the closer to 0, the further it slides)")]
+    public float iceDeceleration = 0.35f;
+    [Tooltip("force when trying to turn against the slide direction")]
+    public float iceTurnAcceleration = 2.2f;
+
+    public bool isOnIce { get; private set; }
 
     [Header("Jump Stats")]
     public float jumpForce = 12f;
@@ -153,8 +167,23 @@ public class PlayerMovement : MonoBehaviour
     {
         if (groundCheck != null)
         {
-            Collider2D groundHit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-            isGrounded = groundHit != null;
+            Collider2D[] hits = Physics2D.OverlapCircleAll(groundCheck.position, groundCheckRadius, groundLayer);
+            isGrounded = hits.Length > 0;
+            isOnIce = false;
+
+            Collider2D groundHit = null;
+            for (int i = 0; i < hits.Length; i++)
+            {
+                if (groundHit == null)
+                    groundHit = hits[i];
+
+                if (!string.IsNullOrEmpty(iceTag) && hits[i].CompareTag(iceTag))
+                {
+                    isOnIce = true;
+                    groundHit = hits[i];
+                    break;
+                }
+            }
 
             if (groundHit != lastGroundCollider)
             {
@@ -167,6 +196,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             isGrounded = false;
+            isOnIce = false;
             lastGroundCollider = null;
             currentPlatform = null;
             surfaceVelocity = Vector2.zero;
@@ -400,8 +430,9 @@ public class PlayerMovement : MonoBehaviour
 
         bool onPlatform = currentPlatform != null && !isJumping && !isBouncing && !isTeleporting;
 
+        float currentMaxSpeed = isOnIce ? iceMaxSpeed : maxSpeed;
         float effectiveHorizontalInput = wallJumpLockCounter > 0f ? 0f : horizontalInput;
-        float targetSpeed = (effectiveHorizontalInput * maxSpeed) + (onPlatform ? surfaceVelocity.x : 0f);
+        float targetSpeed = (effectiveHorizontalInput * currentMaxSpeed) + (onPlatform ? surfaceVelocity.x : 0f);
 
         if (onPlatform)
         {
@@ -434,9 +465,27 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Do not push the player horizontally into the wall while sliding
+        // Do not push the player horizontally into the wall while sliding
         if (wallJumpLockCounter <= 0f && !isWallSliding)
         {
-            float accelRate = Mathf.Abs(horizontalInput) > 0.01f ? acceleration : deceleration;
+            float accelRate;
+            bool hasInput = Mathf.Abs(horizontalInput) > 0.01f;
+
+            if (isOnIce)
+            {
+                bool isTurning = hasInput &&
+                                 Mathf.Abs(rb.linearVelocity.x) > 0.5f &&
+                                 Mathf.Sign(horizontalInput) != Mathf.Sign(rb.linearVelocity.x);
+
+                accelRate = !hasInput ? iceDeceleration
+                          : isTurning ? iceTurnAcceleration
+                          : iceAcceleration;
+            }
+            else
+            {
+                accelRate = hasInput ? acceleration : deceleration;
+            }
+
             float speedDifference = targetSpeed - rb.linearVelocity.x;
             float movement = speedDifference * accelRate;
 
