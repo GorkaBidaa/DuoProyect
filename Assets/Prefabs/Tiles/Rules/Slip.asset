@@ -52,7 +52,7 @@ MonoBehaviour:
     - {x: -1, y: 0, z: 0}
     - {x: 0, y: 1, z: 0}
     - {x: 0, y: -1, z: 0}
-    m_RuleTransform: 0
+    m_RuleTransform: 5
   - m_Id: 8
     m_Sprites:
     - {fileID: -1678375713, guid: bd49438ead621dc4a90709c4a1e6201d, type: 3}
@@ -71,7 +71,7 @@ MonoBehaviour:
     - {x: 0, y: 1, z: 0}
     - {x: 0, y: -1, z: 0}
     - {x: -1, y: 0, z: 0}
-    m_RuleTransform: 4
+    m_RuleTransform: 5
   - m_Id: 0
     m_Sprites:
     - {fileID: 3081814243929726007, guid: 51a90049631cd7b47847a602e0a39a18, type: 3}
@@ -89,7 +89,7 @@ MonoBehaviour:
     m_NeighborPositions:
     - {x: 0, y: 1, z: 0}
     - {x: 0, y: -1, z: 0}
-    m_RuleTransform: 4
+    m_RuleTransform: 5
   - m_Id: 3
     m_Sprites:
     - {fileID: 6092112273195754007, guid: a67cc4a3d042ce6499be7920056e1c2c, type: 3}
