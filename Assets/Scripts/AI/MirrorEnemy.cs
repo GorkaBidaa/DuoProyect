@@ -289,16 +289,6 @@ public class MirrorEnemy : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        Vector3 center = Application.isPlaying ? new Vector3(homeX, homeY, transform.position.z) : transform.position;
 
-        // Zona exterior (Wake Up Range): Amarillo -> Aquí empieza a saltar para colocarse
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(center, new Vector3(wakeUpRange * 2f, maxVerticalRange * 2f, 0f));
 
-        // Zona interior (Lock Range): Rojo -> Para cuando llegas aquí, ya está 100% colocado en tu Y
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(center, new Vector3(lockRange * 2f, maxVerticalRange * 2f, 0f));
-    }
 }

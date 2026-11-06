@@ -38,6 +38,7 @@ public class ShadowAnchor : MonoBehaviour
     [SerializeField] private CraftingMenu craftingMenu;
 
     public bool ShadowDashUnlocked => shadowDashUnlocked;
+    public bool IsShadowActive => ActiveShadow && currentShadow != null;
 
     private GameObject currentShadow;
     private SpriteRenderer shadowSr;
@@ -70,12 +71,17 @@ public class ShadowAnchor : MonoBehaviour
         (inventoryMenu != null && inventoryMenu.IsOpen) ||
         (craftingMenu != null && craftingMenu.IsOpen);
 
+    void Awake()
+    {
+        ResolveStaminaReference();
+    }
+
     void Start()
     {
         playerAnim = GetComponent<PlayerAnimatorController>();
         rb = GetComponent<Rigidbody2D>();
         playerMovement = GetComponent<PlayerMovement>();
-        stamina = GetComponent<StaminaSystem>();
+        ResolveStaminaReference();
         playerSr = GetComponent<SpriteRenderer>();
         if (playerSr == null) playerSr = GetComponentInChildren<SpriteRenderer>();
 
@@ -85,6 +91,16 @@ public class ShadowAnchor : MonoBehaviour
             craftingMenu = FindFirstObjectByType<CraftingMenu>();
 
         CacheKey();
+    }
+
+    private void ResolveStaminaReference()
+    {
+        if (stamina == null)
+            stamina = GetComponent<StaminaSystem>();
+        if (stamina == null)
+            stamina = GetComponentInParent<StaminaSystem>();
+        if (stamina == null)
+            stamina = FindFirstObjectByType<StaminaSystem>();
     }
 
     void OnValidate() { CacheKey(); }
@@ -289,6 +305,11 @@ public class ShadowAnchor : MonoBehaviour
         hasShadowDashed = false;
         isShadowDashing = false;
         ActiveShadow = true;
+
+        // Consume stamina when deploying the shadow anchor
+        ResolveStaminaReference();
+        if (stamina != null)
+            stamina.ConsumeStamina(stamina.anchorDeployCost);
     }
 
     private void StopShadowDash()
@@ -318,9 +339,14 @@ public class ShadowAnchor : MonoBehaviour
         StopShadowDash();
 
         cooldownTimer = abilityCooldown;
+        ResolveStaminaReference();
 
         if (IsReachable())
         {
+            // Consume stamina on a successful teleport
+            if (stamina != null)
+                stamina.ConsumeStamina(stamina.teleportStaminaCost);
+
             float horizontalBoost = interruptedDash
                 ? shadowFacingDirection.x * shadowDashMomentumBoost
                 : 0f;
@@ -330,6 +356,10 @@ public class ShadowAnchor : MonoBehaviour
         }
         else
         {
+            // Consume half teleport stamina cost when attempting to teleport out of range
+            if (stamina != null)
+                stamina.ConsumeStamina(stamina.teleportStaminaCost * 0.5f);
+
             GameObject toDestroy = currentShadow;
             currentShadow = null;
             shadowSr = null;
@@ -468,6 +498,11 @@ public class ShadowAnchor : MonoBehaviour
     {
         isShadowDashing = true;
         hasShadowDashed = true;
+
+        // Consume stamina when triggering the shadow dash
+        ResolveStaminaReference();
+        if (stamina != null)
+            stamina.ConsumeStamina(stamina.shadowDashStaminaCost);
 
         if (shadowSr != null && Mathf.Abs(direction.x) > 0.01f)
             shadowSr.flipX = direction.x < 0f;

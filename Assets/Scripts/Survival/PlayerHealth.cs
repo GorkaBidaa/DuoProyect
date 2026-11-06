@@ -25,6 +25,10 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        // Ignore all incoming damage when playtest immortality is active
+        if (stamina != null && stamina.isImmortal)
+            return;
+
         if (amount <= 0 || currentHealth <= 0)
             return;
 
@@ -56,7 +60,7 @@ public class PlayerHealth : MonoBehaviour
     {
         if (hud != null)
             hud.SetHealth(currentHealth, maxHealth);
-            
+
     }
 
     [ContextMenu("Test/Take 25 Damage")]
