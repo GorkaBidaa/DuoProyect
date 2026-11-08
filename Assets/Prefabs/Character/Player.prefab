@@ -77,7 +77,6 @@ GameObject:
   - component: {fileID: 8605445236763166955}
   - component: {fileID: 2590819556001018835}
   - component: {fileID: 4799453460433453590}
-  - component: {fileID: 7049980229863896488}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -160,7 +159,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
 --- !u!61 &7058436545237390547
@@ -251,6 +250,21 @@ MonoBehaviour:
   maxSpeed: 7
   acceleration: 8
   deceleration: 8
+  airDeceleration: 3.5
+  airOverSpeedDrag: 0.8
+  airTurnAcceleration: 6
+  iceTag: Ice
+  iceMaxSpeed: 9.5
+  iceAcceleration: 4
+  iceDeceleration: 0.35
+  iceTurnAcceleration: 2.2
+  minSlopeAngle: 25
+  maxSlopeAngle: 75
+  minSlopeSlideSpeed: 7
+  slopeSlideAcceleration: 45
+  slopeSlideMaxSpeed: 16
+  slopeStickSpeed: 3
+  allowJumpOnSlope: 1
   jumpForce: 13
   baseGravityScale: 1
   upwardGravityMultiplier: 3
@@ -263,11 +277,26 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  wallJumpUnlocked: 0
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  wallCheckDistance: 0.12
+  wallSlideSeparation: 0.08
+  wallRayHeightOffset: 0.45
+  requireBothWallRays: 1
+  wallSlideSpeed: 3.5
+  wallSlideBrakeDeceleration: 45
+  wallSlideGravityAcceleration: 20
+  wallJumpForce: {x: 10, y: 12.5}
+  wallJumpMovementLockTime: 0.14
+  wallCoyoteTime: 0.12
   headLeft: {fileID: 5789520751546960517}
   headRight: {fileID: 4542426872948176362}
   headCheckDistance: 0.2
   nudgeAmount: 0.2
   maxCornerDistance: 0.2
+  isWallSliding: 0
 --- !u!114 &2590819556001018835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,6 +321,16 @@ MonoBehaviour:
   hitstopDuration: 0.1
   fadeTime: 0.2
   abilityCooldown: 1
+  shadowDashUnlocked: 0
+  shadowDashKey: 51
+  shadowDashSpeed: 18
+  shadowDashDuration: 0.25
+  shadowDashMomentumBoost: 14
+  shadowObstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  inventoryMenu: {fileID: 0}
+  craftingMenu: {fileID: 0}
 --- !u!114 &4799453460433453590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,26 +343,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 873585414bedb3c49be1e258a09e430c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StaminaSystem
+  isImmortal: 0
   maxStamina: 100
   drainRate: 2
+  moveDrainRate: 0.25
+  wallSlideDrainRate: 0.35
+  activeShadowDrainRate: 0.45
+  jumpStaminaCost: 1.5
+  anchorDeployCost: 5
+  teleportStaminaCost: 8
+  shadowDashStaminaCost: 6
   staminaBar: {fileID: 0}
---- !u!114 &7049980229863896488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6087507517878387013}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a520e4126d0a5048b2ba1c28e8b5a15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
-  inventory:
-  - resource: {fileID: 11400000, guid: ce994d07334f7174bb604bd98b67ae7a, type: 2}
-    amount: 0
-  - resource: {fileID: 11400000, guid: d1125cf11003b8144949870c3db33655, type: 2}
-    amount: 0
+  staminaText: {fileID: 0}
+  playerHud: {fileID: 0}
+  lowStaminaThreshold: 0.35
+  maxDangerAlpha: 0.88
+  dangerPulseSpeed: 3.5
+  dangerPulseAmplitude: 0.18
+  dangerShadowColor: {r: 0.04, g: 0, b: 0.08, a: 1}
+  dangerOverlayImage: {fileID: 0}
+  deathAnimDuration: 1
 --- !u!1 &8524239865558508627
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,13 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private CursedForestHud forestHud;
 
 
+    [Header("Hit response")]
+    [SerializeField, Min(0f)] private float invulnerabilityDuration = 0.85f;
+    [SerializeField] private Vector2 knockback = new Vector2(5f, 3f);
+    [SerializeField, Min(0f)] private float hitStunDuration = 0.16f;
+    [SerializeField] private PlayerHitFeedback hitFeedback;
+    private float invulnerableUntil;
+    public bool IsInvulnerable => Time.time < invulnerableUntil;
     private int currentHealth;
     private StaminaSystem stamina;
 
@@ -16,6 +23,7 @@ public class PlayerHealth : MonoBehaviour
         maxHealth = Mathf.Max(1, maxHealth);
         currentHealth = maxHealth;
         stamina = GetComponent<StaminaSystem>();
+        if (hitFeedback == null) hitFeedback = GetComponent<PlayerHitFeedback>();
     }
 
     private void Start()
@@ -23,20 +31,31 @@ public class PlayerHealth : MonoBehaviour
         RefreshHUD();
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount) => TryTakeHit(amount, Vector2.zero);
+
+    // A zero direction applies damage/feedback without knockback (e.g. a test or hazard).
+    public bool TryTakeHit(int amount, Vector2 attackDirection)
     {
-        // Ignore all incoming damage when playtest immortality is active
-        if (stamina != null && stamina.isImmortal)
-            return;
+        if (amount <= 0 || currentHealth <= 0 || IsInvulnerable ||
+            (stamina != null && (stamina.isImmortal || stamina.IsDead)))
+            return false;
 
-        if (amount <= 0 || currentHealth <= 0)
-            return;
-
+        invulnerableUntil = Time.time + invulnerabilityDuration;
         currentHealth = Mathf.Max(0, currentHealth - amount);
         RefreshHUD();
-
+        if (hitFeedback != null) hitFeedback.Play(invulnerabilityDuration);
         if (currentHealth == 0)
-            stamina.Die();
+        {
+            if (stamina != null) stamina.Die();
+        }
+        else if (attackDirection.sqrMagnitude > 0.001f)
+        {
+            PlayerMovement movement = GetComponent<PlayerMovement>();
+            float sign = Mathf.Abs(attackDirection.x) > 0.01f ? Mathf.Sign(attackDirection.x) : 0f;
+            if (movement != null)
+                movement.ApplyHitKnockback(new Vector2(sign * knockback.x, knockback.y), hitStunDuration);
+        }
+        return true;
     }
 
     public bool TryRestoreHealth(int amount)
@@ -53,6 +72,8 @@ public class PlayerHealth : MonoBehaviour
     public void ResetAfterRespawn()
     {
         currentHealth = maxHealth;
+        invulnerableUntil = 0f;
+        if (hitFeedback != null) hitFeedback.Clear();
         RefreshHUD();
     }
 

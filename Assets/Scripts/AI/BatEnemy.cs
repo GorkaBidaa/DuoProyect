@@ -3,7 +3,7 @@ using Pathfinding;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Seeker))]
-public class BatEnemy : MonoBehaviour
+public class BatEnemy : MonoBehaviour, ITrapTarget
 {
     [Header("References")]
     [SerializeField] private PlayerHealth player;
@@ -53,14 +53,24 @@ public class BatEnemy : MonoBehaviour
     [SerializeField, Min(0.1f)] private float minimumAttackPositionChange = 1.5f;
     [SerializeField, Min(0.5f)] private float repositionTimeout = 6f;
 
+    [Header("Lure response")]
+    [SerializeField, Min(0.1f)] private float investigateSpeed = 3f;
+    [SerializeField, Min(0.1f)] private float lureArrivalDistance = 0.7f;
+
+    [Header("Repellant response")]
+    [SerializeField, Min(0.1f)] private float fleeSpeed = 5f;
+    [SerializeField, Min(0.1f)] private float repellantClearance = 1.5f;
+
     [Header("Gloom reward")]
     [SerializeField] private MagnetResourcePickup gloomDropPrefab;
     [SerializeField] private ResourceData gloomResource;
     [SerializeField, Min(0)] private int gloomDropped = 2;
 
+    private EnemyAttackContact attackContact;
+
     private enum State
     {
-        Patrolling, Approaching, Windup, Swooping, Recovering, BackingAway, Repositioning, Returning
+        Patrolling, Approaching, Windup, Swooping, Recovering, BackingAway, Repositioning, Returning, Investigating, Repelled
     }
 
     private State state;
@@ -81,6 +91,7 @@ public class BatEnemy : MonoBehaviour
     private int navigationVersion;
     private int waypointIndex;
     private bool dead;
+    public bool IsAlive => !dead && isActiveAndEnabled;
     private bool hasSwooped;
     private bool hasCombatTarget;
     private bool aimLocked;
@@ -91,6 +102,13 @@ public class BatEnemy : MonoBehaviour
     private bool reportedPathError;
     private bool reportedReturnError;
     private readonly List<Vector3> waypoints = new List<Vector3>();
+    private EnemyLure activeLure;
+    private readonly HashSet<EnemyLure> unreachableLures = new HashSet<EnemyLure>();
+    private EnemyRepellantUse repellantSource;
+    private Vector2 fleeTarget;
+    private Vector2 fleeSourcePosition;
+    private bool hasFleeTarget;
+    private float nextFleeTargetTime;
 
     private Rect PatrolRect
     {
@@ -154,7 +172,17 @@ public class BatEnemy : MonoBehaviour
         if (dead)
             return;
 
+        if (attackContact == null)
+        {
+            attackContact = gameObject.AddComponent<EnemyAttackContact>();
+            attackContact.Setup(player, visuals);
+        }
+        attackContact.CheckHit(damage, attackDirection);
         stateTime += Time.fixedDeltaTime;
+
+        // Repellant has priority over bait, but a swoop already in flight finishes.
+        if (!CheckForRepellant())
+            CheckForLure();
 
         switch (state)
         {
@@ -225,7 +253,206 @@ public class BatEnemy : MonoBehaviour
             case State.Returning:
                 TickReturn();
                 break;
+
+            case State.Investigating:
+                TickInvestigate();
+                break;
+
+            case State.Repelled:
+                TickRepelled();
+                break;
         }
+    }
+
+    private bool CheckForRepellant()
+    {
+        if (state == State.Swooping)
+            return false;
+
+        EnemyRepellantUse source = null;
+        if (ChaseRect.Contains(body.position))
+        {
+            // Keep backing off while this source is close, avoiding boundary oscillation.
+            if (repellantSource != null &&
+                repellantSource.CanAffect(body.position, repellantClearance + detectionRange))
+                source = repellantSource;
+            else
+                source = EnemyRepellantUse.FindNearest(body.position);
+        }
+
+        if (source == null)
+        {
+            if (state == State.Repelled)
+            {
+                repellantSource = null;
+                ChangeState(State.Returning);
+            }
+            return false;
+        }
+
+        if (state != State.Repelled || source != repellantSource)
+        {
+            repellantSource = source;
+            activeLure = null;
+            hasFleeTarget = false;
+            nextFleeTargetTime = 0f;
+            ChangeState(State.Repelled);
+        }
+        return true;
+    }
+
+    private void TickRepelled()
+    {
+        if (repellantSource == null || !repellantSource.IsActive)
+        {
+            repellantSource = null;
+            ChangeState(State.Returning);
+            return;
+        }
+
+        float safeDistance = repellantSource.Radius + repellantClearance;
+        if (Vector2.Distance(body.position, repellantSource.Position) >= safeDistance)
+        {
+            body.linearVelocity = Vector2.zero;
+            hasFleeTarget = false;
+            return;
+        }
+
+        if (navigationFailed || (hasFleeTarget &&
+            (Vector2.Distance(body.position, fleeTarget) <= homeArrivalDistance ||
+             (Vector2.Distance(fleeSourcePosition, repellantSource.Position) > 0.5f &&
+              Vector2.Distance(fleeTarget, repellantSource.Position) < safeDistance + 0.2f))))
+        {
+            hasFleeTarget = false;
+            ClearNavigation();
+            nextFleeTargetTime = Time.time + repathInterval;
+        }
+
+        if (!hasFleeTarget)
+        {
+            body.linearVelocity = Vector2.zero;
+            if (Time.time < nextFleeTargetTime)
+                return;
+
+            nextFleeTargetTime = Time.time + repathInterval;
+            if (!TryFindFleePoint(out fleeTarget))
+                return;
+            hasFleeTarget = true;
+            fleeSourcePosition = repellantSource.Position;
+            ClearNavigation();
+        }
+
+        FollowPath(fleeTarget, fleeSpeed, false, true);
+    }
+
+    private bool TryFindFleePoint(out Vector2 point)
+    {
+        point = default;
+        if (repellantSource == null || AstarPath.active == null)
+            return false;
+
+        GraphNode startNode = AstarPath.active.GetNearest(WorldPoint(body.position), NNConstraint.Default).node;
+        if (startNode == null)
+            return false;
+
+        Rect area = ChaseRect;
+        PatrolNodeConstraint constraint = new PatrolNodeConstraint(area)
+        {
+            constrainArea = true,
+            area = (int)startNode.Area,
+            constrainDistance = false
+        };
+        Vector2 sourcePosition = repellantSource.Position;
+        Vector2 away = body.position - sourcePosition;
+        float startingDistance = away.magnitude;
+        away = startingDistance > 0.01f ? away.normalized : Vector2.up;
+        float desiredDistance = repellantSource.Radius + repellantClearance + 0.5f;
+        float bestDistance = startingDistance + 0.3f;
+        bool found = false;
+
+        for (int attempt = 0; attempt < 24; attempt++)
+        {
+            float angle = attempt == 0 ? 0f : Random.Range(-100f, 100f);
+            float radians = angle * Mathf.Deg2Rad;
+            Vector2 direction = new Vector2(
+                away.x * Mathf.Cos(radians) - away.y * Mathf.Sin(radians),
+                away.x * Mathf.Sin(radians) + away.y * Mathf.Cos(radians));
+            Vector2 candidate = sourcePosition + direction * desiredDistance;
+            GraphNode node = AstarPath.active.GetNearest(WorldPoint(candidate), constraint).node;
+            if (node == null || !constraint.Suitable(node))
+                continue;
+
+            Vector2 resolved = (Vector2)(Vector3)node.position;
+            float distance = Vector2.Distance(resolved, sourcePosition);
+            if (distance <= bestDistance || Vector2.Distance(resolved, body.position) <= homeArrivalDistance * 2f)
+                continue;
+
+            point = resolved;
+            bestDistance = distance;
+            found = true;
+            if (distance >= desiredDistance - homeArrivalDistance)
+                return true;
+        }
+        return found;
+    }
+
+    private void CheckForLure()
+    {
+        // A distraction does not cancel an attack that is already committed.
+        if (state == State.Windup || state == State.Swooping || state == State.Recovering || state == State.Repelled)
+            return;
+
+        unreachableLures.RemoveWhere(lure => lure == null || !lure.IsAvailable);
+        Rect area = ChaseRect;
+        EnemyLure chosen = null;
+
+        if (area.Contains(body.position))
+        {
+            if (activeLure != null && activeLure.CanAttract(body.position) &&
+                area.Contains(activeLure.Position) && !unreachableLures.Contains(activeLure))
+                chosen = activeLure;
+            else
+                chosen = EnemyLure.FindNearest(body.position, area, unreachableLures);
+        }
+
+        if (chosen == null)
+        {
+            if (state == State.Investigating)
+            {
+                activeLure = null;
+                ChangeState(State.Returning);
+            }
+            return;
+        }
+
+        if (state != State.Investigating || chosen != activeLure)
+        {
+            activeLure = chosen;
+            ChangeState(State.Investigating);
+        }
+    }
+
+    private void TickInvestigate()
+    {
+        if (activeLure == null || !activeLure.IsAvailable)
+        {
+            activeLure = null;
+            ChangeState(State.Returning);
+            return;
+        }
+
+        if (navigationFailed)
+        {
+            unreachableLures.Add(activeLure);
+            activeLure = null;
+            ChangeState(State.Returning);
+            return;
+        }
+
+        if (Vector2.Distance(body.position, activeLure.Position) <= lureArrivalDistance)
+            body.linearVelocity = Vector2.zero;
+        else
+            FollowPath(activeLure.Position, investigateSpeed, false, true);
     }
 
     private bool IsNewAttackPosition(Vector2 position)
@@ -472,7 +699,7 @@ public class BatEnemy : MonoBehaviour
 
     private bool CanPursuePlayer()
     {
-        return HasPlayer && ChaseRect.Contains(body.position) &&
+        return HasPlayer && !EnemyRepellantUse.Protects(player.transform) && ChaseRect.Contains(body.position) &&
             ChaseRect.Contains((Vector2)player.transform.position);
     }
 
@@ -655,6 +882,8 @@ public class BatEnemy : MonoBehaviour
         if (state == State.Swooping && next == State.Recovering)
             nextSwoopTime = Time.time + swoopCooldown;
 
+        if (next == State.Swooping && attackContact != null) attackContact.BeginAttack();
+        if (state == State.Swooping && next != State.Swooping && attackContact != null) attackContact.EndAttack();
         state = next;
         stateTime = 0f;
         body.linearVelocity = Vector2.zero;
@@ -708,8 +937,7 @@ public class BatEnemy : MonoBehaviour
         PlayerHealth hitPlayer = collision.collider.GetComponentInParent<PlayerHealth>();
         if (hitPlayer != null && hitPlayer == player)
         {
-            ChangeState(State.Recovering);
-            hitPlayer.TakeDamage(damage);
+            // Player contact is handled by the swept attack sensor; keep swooping.
             return;
         }
 

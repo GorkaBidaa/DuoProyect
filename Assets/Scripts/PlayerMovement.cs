@@ -210,6 +210,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void ResetMovementState()
     {
+        hitStunUntil = 0f;
         isJumping = false;
         isBouncing = false;
         jumpCutApplied = false;
@@ -695,8 +696,24 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private float hitStunUntil;
+
+    public void ApplyHitKnockback(Vector2 velocity, float duration)
+    {
+        if (isTeleporting) return;
+        ResetMovementState();
+        hitStunUntil = Time.time + Mathf.Max(0f, duration);
+        rb.linearVelocity = velocity;
+    }
+
     void Update()
     {
+        if (Time.time < hitStunUntil && !isTeleporting)
+        {
+            horizontalInput = 0f;
+            jumpBufferCounter = 0f;
+            return;
+        }
         if (isTeleporting)
         {
             rb.gravityScale = 0f;
@@ -887,6 +904,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (Time.time < hitStunUntil && !isTeleporting) return;
         if (isTeleporting) return;
 
         UpdateGroundCheck();
