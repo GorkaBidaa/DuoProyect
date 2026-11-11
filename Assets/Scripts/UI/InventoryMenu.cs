@@ -65,16 +65,10 @@ public class InventoryMenu : MonoBehaviour
 
     private void Update()
     {
-        Keyboard keyboard = Keyboard.current;
-        Gamepad pad = Gamepad.current;
-
-        bool toggle =
-            (keyboard != null && keyboard.iKey.wasPressedThisFrame) ||
-            (pad != null && pad.selectButton.wasPressedThisFrame);
-
-        bool back =
-            (keyboard != null && keyboard.escapeKey.wasPressedThisFrame) ||
-            (pad != null && pad.buttonEast.wasPressedThisFrame);
+        GameInput input = GameInput.Instance;
+        if (input == null || input.DialogueBlocked || Time.timeScale <= 0f) return;
+        bool toggle = input.Pressed("Inventory");
+        bool back = input.Pressed("Back");
 
         // Process closing first so the same press cannot reopen the menu.
         if (IsOpen && (toggle || back))
@@ -93,6 +87,7 @@ public class InventoryMenu : MonoBehaviour
             (craftingMenu != null && craftingMenu.IsOpen))
             return;
 
+        GameInput.Instance?.BlockThisFrame();
         menuRoot.SetActive(true);
 
         if (itemSelector != null)
@@ -103,6 +98,7 @@ public class InventoryMenu : MonoBehaviour
 
     public void Close()
     {
+        if (IsOpen) GameInput.Instance?.BlockThisFrame();
         if (menuRoot != null)
             menuRoot.SetActive(false);
 

@@ -16,9 +16,12 @@ public class BaseStation : MonoBehaviour
         if (playerStamina != null)
         {
             cachedPlayerStamina = playerStamina;
+            bool firstEntry = playerColliders.Count == 0;
             playerColliders.Add(collision);
             playerStamina.SetRespawnPoint(transform.position);
             playerStamina.SetSafeZone(true);
+            if (firstEntry && WorldResetCoordinator.Instance != null)
+                WorldResetCoordinator.Instance.PlayerEnteredBase(playerStamina);
         }
     }
 

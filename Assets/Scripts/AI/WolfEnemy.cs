@@ -90,6 +90,15 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
     private float ChaseMax => CenterX + patrolWidth * Mathf.Max(1f, chaseAreaMultiplier) * 0.5f;
     private bool InsideChase(float x) => x >= ChaseMin && x <= ChaseMax;
 
+    // Called by EnemySpawnPoint while the clone is inactive, before Awake runs.
+    public void ConfigureSpawn(PlayerHealth target, Transform center, bool overrideArea, Vector2 area)
+    {
+        player = target;
+        patrolCenter = center;
+        if (overrideArea) patrolWidth = Mathf.Max(0.1f, area.x);
+        enabled = true;
+    }
+
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();

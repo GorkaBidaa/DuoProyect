@@ -82,17 +82,15 @@ public class CraftingMenu : MonoBehaviour
         if (!IsOpen)
             return;
 
-        Keyboard keyboard = Keyboard.current;
-        Gamepad pad = Gamepad.current;
-
-        if ((keyboard != null && keyboard.escapeKey.wasPressedThisFrame) ||
-            (pad != null && pad.buttonEast.wasPressedThisFrame))
+        GameInput input = GameInput.Instance;
+        if (input == null || input.DialogueBlocked) return;
+        if (input.Pressed("Back"))
         {
             Close();
             return;
         }
 
-        if (keyboard != null && keyboard.pKey.wasPressedThisFrame)
+        if (input.Pressed("PinRecipe"))
             PinSelected();
     }
 
@@ -113,12 +111,14 @@ public class CraftingMenu : MonoBehaviour
             (inventoryMenu != null && inventoryMenu.IsOpen))
             return;
 
+        GameInput.Instance?.BlockThisFrame();
         menuRoot.SetActive(true);
         BuildRecipeList();
     }
 
     public void Close()
     {
+        if (IsOpen) GameInput.Instance?.BlockThisFrame();
         if (menuRoot != null)
             menuRoot.SetActive(false);
     }

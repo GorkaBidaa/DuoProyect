@@ -65,6 +65,8 @@ public class StaminaSystem : MonoBehaviour
 
     public bool IsInSafeZone => isInSafeZone;
     public bool IsDead { get; private set; }
+    public bool IsRespawnArrival { get; private set; }
+    public event System.Action Respawned;
     public float CurrentStamina => currentStamina;
 
     [Header("Animation")]
@@ -94,6 +96,7 @@ public class StaminaSystem : MonoBehaviour
     private IEnumerator DieRoutine()
     {
         IsDead = true;
+        IsRespawnArrival = true;
 
         // Destroy shadow anchor if exists
         if (anchor != null)
@@ -151,6 +154,12 @@ public class StaminaSystem : MonoBehaviour
         }
 
         IsDead = false;
+        Respawned?.Invoke();
+        // Give trigger contacts time to recognize the teleport into the checkpoint.
+        // During these steps base entry still restores safety, but never resources.
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        IsRespawnArrival = false;
     }
 
     private void Start()

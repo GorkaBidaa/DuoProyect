@@ -66,6 +66,7 @@ public class ShadowAnchor : MonoBehaviour
     private bool keyValid;
 
     private bool IsInputBlocked =>
+        GameInput.Instance == null || GameInput.Instance.GameplayBlocked ||
         Time.timeScale <= 0f ||
         (stamina != null && stamina.IsDead) ||
         (inventoryMenu != null && inventoryMenu.IsOpen) ||
@@ -222,31 +223,9 @@ public class ShadowAnchor : MonoBehaviour
         }
     }
 
-    private bool ReadAnchorInput()
-    {
-        var gp = Gamepad.current;
-        if (gp != null && (gp.rightTrigger.wasPressedThisFrame || gp.buttonWest.wasPressedThisFrame))
-            return true;
+    private bool ReadAnchorInput() => GameInput.Instance != null && GameInput.Instance.Pressed("Anchor");
 
-        var kb = Keyboard.current;
-        if (kb != null && keyValid && kb[parsedKey].wasPressedThisFrame)
-            return true;
-
-        return false;
-    }
-
-    private bool ReadShadowDashInput()
-    {
-        var gp = Gamepad.current;
-        if (gp != null && gp.leftTrigger.wasPressedThisFrame)
-            return true;
-
-        var kb = Keyboard.current;
-        if (kb != null && kb[shadowDashKey].wasPressedThisFrame)
-            return true;
-
-        return false;
-    }
+    private bool ReadShadowDashInput() => GameInput.Instance != null && GameInput.Instance.Pressed("ShadowDash");
 
     // Single source of truth for "can teleport?" (the color and teleport use the same check)
     private bool IsReachable()

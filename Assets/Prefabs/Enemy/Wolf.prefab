@@ -236,6 +236,6 @@ MonoBehaviour:
   maximumLureHeightDifference: 1.25
   fleeSpeed: 6
   repellantClearance: 1.5
-  gloomDropPrefab: {fileID: 0}
+  gloomDropPrefab: {fileID: 3576000997659860693, guid: 579434421b3be404bba8c564bf9157c8, type: 3}
   gloomResource: {fileID: 11400000, guid: ce994d07334f7174bb604bd98b67ae7a, type: 2}
   gloomDropped: 3
