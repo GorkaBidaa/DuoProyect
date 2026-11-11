@@ -164,18 +164,46 @@ public class PlayerMovement : MonoBehaviour
         col = GetComponent<Collider2D>();
         stamina = GetComponent<StaminaSystem>();
 
+        if (rb != null)
+        {
+            // Ensure the Rigidbody2D is dynamic and X/Y positions are not frozen in the Inspector
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rb.WakeUp();
+        }
+
         if (col != null)
         {
-            originalPhysicsMaterial = col.sharedMaterial;
             frictionlessMaterial = new PhysicsMaterial2D("PlayerFrictionlessSlope")
             {
                 friction = 0f,
                 bounciness = 0f
             };
+
+            // Use frictionless material if none was assigned so Box2D default friction (0.4) doesn't block AddForce or ice sliding
+            originalPhysicsMaterial = col.sharedMaterial != null ? col.sharedMaterial : frictionlessMaterial;
+            col.sharedMaterial = originalPhysicsMaterial;
         }
 
         if (wallLayer.value == 0)
             wallLayer = groundLayer;
+    }
+
+    void Start()
+    {
+        if (Time.timeScale <= 0f)
+            Debug.LogWarning("[PlayerMovement] Time.timeScale es 0 al iniciar la escena. El jugador no podrá moverse hasta reanudar el tiempo.", this);
+
+        if (stamina != null && stamina.IsDead)
+            Debug.LogWarning("[PlayerMovement] StaminaSystem.IsDead es TRUE al iniciar la escena. Revisa la inicialización de estamina en Awake/Start.", this);
+
+        if (GameInput.Instance == null)
+            Debug.LogWarning("[PlayerMovement] No se encontró GameInput.Instance en la escena. Usando lectura directa de Teclado/Gamepad como respaldo.", this);
+        else if (GameInput.Instance.GameplayBlocked)
+            Debug.LogWarning("[PlayerMovement] GameInput.Instance.GameplayBlocked es TRUE al iniciar. El input del jugador está bloqueado.", this);
+
+        if (groundLayer.value == 0)
+            Debug.LogWarning("[PlayerMovement] 'groundLayer' está configurado en Nothing (0). Asigna la capa del suelo en el Inspector.", this);
     }
 
     private void OnDestroy()
@@ -269,6 +297,52 @@ public class PlayerMovement : MonoBehaviour
         if (col != null && col.sharedMaterial != targetMaterial)
         {
             col.sharedMaterial = targetMaterial;
+        }
+    }
+
+    // Reads input from GameInput singleton if present, or falls back directly to Unity InputSystem (Keyboard/Gamepad)
+    private void ReadPlayerInput(out float moveInput, out bool jumpPressed, out bool jumpHeld, out bool jumpReleased, out bool inputAllowed)
+    {
+        GameInput input = GameInput.Instance;
+        if (input != null)
+        {
+            inputAllowed = !input.GameplayBlocked;
+            moveInput = inputAllowed ? input.Move : 0f;
+            jumpPressed = inputAllowed && input.Pressed("Jump");
+            jumpHeld = inputAllowed && input.Held("Jump");
+            jumpReleased = inputAllowed && input.Released("Jump");
+            return;
+        }
+
+        // Fallback to direct InputSystem when testing a scene without GameInput.Instance
+        inputAllowed = true;
+        moveInput = 0f;
+        jumpPressed = false;
+        jumpHeld = false;
+        jumpReleased = false;
+
+        if (Keyboard.current != null)
+        {
+            float left = (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed) ? -1f : 0f;
+            float right = (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed) ? 1f : 0f;
+            moveInput = left + right;
+
+            jumpPressed |= Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.wKey.wasPressedThisFrame || Keyboard.current.upArrowKey.wasPressedThisFrame;
+            jumpHeld |= Keyboard.current.spaceKey.isPressed || Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed;
+            jumpReleased |= Keyboard.current.spaceKey.wasReleasedThisFrame || Keyboard.current.wKey.wasReleasedThisFrame || Keyboard.current.upArrowKey.wasReleasedThisFrame;
+        }
+
+        if (Gamepad.current != null)
+        {
+            float stickX = Gamepad.current.leftStick.x.ReadValue();
+            float dpadX = Gamepad.current.dpad.x.ReadValue();
+            float padMove = Mathf.Abs(stickX) > Mathf.Abs(dpadX) ? stickX : dpadX;
+            if (Mathf.Abs(padMove) > 0.1f)
+                moveInput = Mathf.Clamp(padMove, -1f, 1f);
+
+            jumpPressed |= Gamepad.current.buttonSouth.wasPressedThisFrame;
+            jumpHeld |= Gamepad.current.buttonSouth.isPressed;
+            jumpReleased |= Gamepad.current.buttonSouth.wasReleasedThisFrame;
         }
     }
 
@@ -609,20 +683,31 @@ public class PlayerMovement : MonoBehaviour
         Vector2 verifyOrigin = new Vector2(origin.x + (probeOffset * probeDir), origin.y);
         int verifyCount = Physics2D.RaycastNonAlloc(verifyOrigin, Vector2.down, verifyHitsBuffer, distance + 0.15f, combinedGroundMask);
 
+        RaycastHit2D bestVerifyHit = default;
+        float closestVerifyDist = float.PositiveInfinity;
+
         for (int i = 0; i < verifyCount; i++)
         {
             RaycastHit2D vHit = verifyHitsBuffer[i];
             if (vHit.collider == null || vHit.collider == col || vHit.collider.isTrigger || vHit.distance <= 0.001f)
                 continue;
 
-            float heightDiff = Mathf.Abs(bestHit.point.y - vHit.point.y);
-            if (IsDiagonalSlopeNormal(vHit.normal) && heightDiff > 0.008f)
+            if (vHit.distance < closestVerifyDist)
+            {
+                closestVerifyDist = vHit.distance;
+                bestVerifyHit = vHit;
+            }
+        }
+
+        if (bestVerifyHit.collider != null)
+        {
+            float heightDiff = Mathf.Abs(bestHit.point.y - bestVerifyHit.point.y);
+            if (IsDiagonalSlopeNormal(bestVerifyHit.normal) && heightDiff > 0.008f)
             {
                 slopeNormal = bestHit.normal.normalized;
                 hitPoint = bestHit.point;
                 return true;
             }
-            break;
         }
 
         return false;
@@ -657,19 +742,29 @@ public class PlayerMovement : MonoBehaviour
         Vector2 upperOrigin = new Vector2(origin.x, origin.y + 0.05f);
         int verifyCount = Physics2D.RaycastNonAlloc(upperOrigin, direction, verifyHitsBuffer, distance + 0.15f, combinedGroundMask);
 
+        RaycastHit2D bestVerifyHit = default;
+        float closestVerifyDist = float.PositiveInfinity;
+
         for (int i = 0; i < verifyCount; i++)
         {
             RaycastHit2D vHit = verifyHitsBuffer[i];
             if (vHit.collider == null || vHit.collider == col || vHit.collider.isTrigger || vHit.distance <= 0.001f)
                 continue;
 
-            if (IsDiagonalSlopeNormal(vHit.normal) && Mathf.Abs(vHit.distance - bestHit.distance) > 0.01f)
+            if (vHit.distance < closestVerifyDist)
             {
-                slopeNormal = bestHit.normal.normalized;
-                hitPoint = bestHit.point;
-                return true;
+                closestVerifyDist = vHit.distance;
+                bestVerifyHit = vHit;
             }
-            break;
+        }
+
+        if (bestVerifyHit.collider != null &&
+            IsDiagonalSlopeNormal(bestVerifyHit.normal) &&
+            Mathf.Abs(bestVerifyHit.distance - bestHit.distance) > 0.01f)
+        {
+            slopeNormal = bestHit.normal.normalized;
+            hitPoint = bestHit.point;
+            return true;
         }
 
         return false;
@@ -784,12 +879,18 @@ public class PlayerMovement : MonoBehaviour
         if (wallJumpLockCounter > 0f)
             wallJumpLockCounter -= Time.deltaTime;
 
-        GameInput input = GameInput.Instance;
-        bool inputAllowed = input != null && !input.GameplayBlocked;
-        bool jumpPressed = inputAllowed && input.Pressed("Jump");
-        bool jumpHeld = inputAllowed && input.Held("Jump");
-        bool jumpReleased = inputAllowed && input.Released("Jump");
-        if (!inputAllowed) jumpBufferCounter = 0f;
+        ReadPlayerInput(
+            out float rawMove,
+            out bool jumpPressed,
+            out bool jumpHeld,
+            out bool jumpReleased,
+            out bool inputAllowed
+        );
+
+        if (!inputAllowed)
+            jumpBufferCounter = 0f;
+
+        horizontalInput = rawMove;
 
         float relativeVelY = rb.linearVelocity.y - surfaceVelocity.y;
 
@@ -809,8 +910,6 @@ public class PlayerMovement : MonoBehaviour
             jumpHeld = true;
             jumpReleased = false;
         }
-
-        horizontalInput = inputAllowed ? input.Move : 0f;
 
         bool pressingTowardsWall = (wallSide == 1 && horizontalInput > 0.1f) ||
                                    (wallSide == -1 && horizontalInput < -0.1f);
