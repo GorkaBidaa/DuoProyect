@@ -7,6 +7,16 @@ public class PlayerAnimatorController : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private float sleepIdleDelay = 2.5f; // Seconds idle at base to trigger sleep
 
+    // Precomputed Animator parameter hashes to avoid per-frame string lookups
+    private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private static readonly int VelocityYHash = Animator.StringToHash("VelocityY");
+    private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private static readonly int IsWallSlidingHash = Animator.StringToHash("IsWallSliding");
+    private static readonly int IsSleepingHash = Animator.StringToHash("IsSleeping");
+    private static readonly int IsDeadHash = Animator.StringToHash("IsDead");
+    private static readonly int CastShadowHash = Animator.StringToHash("CastShadow");
+    private static readonly int DieHash = Animator.StringToHash("Die");
+
     private PlayerMovement movement;
     private Rigidbody2D rb;
     private StaminaSystem stamina;
@@ -33,7 +43,7 @@ public class PlayerAnimatorController : MonoBehaviour
 
         foreach (AnimatorControllerParameter param in animator.parameters)
         {
-            if (param.name == "IsDead" && param.type == AnimatorControllerParameterType.Bool)
+            if (param.nameHash == IsDeadHash && param.type == AnimatorControllerParameterType.Bool)
             {
                 hasIsDeadParam = true;
                 break;
@@ -58,10 +68,12 @@ public class PlayerAnimatorController : MonoBehaviour
             spriteRenderer.flipX = inputX < 0f;
         }
 
+        float relativeVelY = movement.RelativeVelocityY;
+
         // Check if character is resting/sleeping (idle on ground or at Base)
         bool isStillOnGround = movement.isGrounded &&
                                Mathf.Abs(inputX) <= 0.01f &&
-                               Mathf.Abs(rb.linearVelocity.y) <= 0.1f;
+                               Mathf.Abs(relativeVelY) <= 0.1f;
 
         // Only accumulate idle time when still on ground and in safe zone
         if (isStillOnGround && (stamina == null || stamina.IsInSafeZone))
@@ -74,11 +86,11 @@ public class PlayerAnimatorController : MonoBehaviour
         }
 
         // Update animator parameters
-        animator.SetFloat("Speed", Mathf.Abs(inputX));
-        animator.SetFloat("VelocityY", rb.linearVelocity.y);
-        animator.SetBool("IsGrounded", movement.isGrounded);
-        animator.SetBool("IsWallSliding", movement.IsWallSliding);
-        animator.SetBool("IsSleeping", idleTimer >= sleepIdleDelay);
+        animator.SetFloat(SpeedHash, Mathf.Abs(inputX));
+        animator.SetFloat(VelocityYHash, relativeVelY);
+        animator.SetBool(IsGroundedHash, movement.isGrounded);
+        animator.SetBool(IsWallSlidingHash, movement.IsWallSliding);
+        animator.SetBool(IsSleepingHash, idleTimer >= sleepIdleDelay);
     }
 
     public void TriggerCastShadow()
@@ -86,7 +98,7 @@ public class PlayerAnimatorController : MonoBehaviour
         if (animator == null || (stamina != null && stamina.IsDead))
             return;
 
-        animator.SetTrigger("CastShadow");
+        animator.SetTrigger(CastShadowHash);
     }
 
     public void TriggerDeath()
@@ -96,16 +108,17 @@ public class PlayerAnimatorController : MonoBehaviour
         if (animator == null)
             return;
 
-        animator.ResetTrigger("CastShadow");
-        animator.SetFloat("Speed", 0f);
-        animator.SetFloat("VelocityY", 0f);
-        animator.SetBool("IsGrounded", true);
-        animator.SetBool("IsSleeping", false);
+        animator.ResetTrigger(CastShadowHash);
+        animator.SetFloat(SpeedHash, 0f);
+        animator.SetFloat(VelocityYHash, 0f);
+        animator.SetBool(IsGroundedHash, true);
+        animator.SetBool(IsWallSlidingHash, false);
+        animator.SetBool(IsSleepingHash, false);
 
         if (hasIsDeadParam)
-            animator.SetBool("IsDead", true);
+            animator.SetBool(IsDeadHash, true);
 
-        animator.SetTrigger("Die");
+        animator.SetTrigger(DieHash);
     }
 
     public void ResetAfterRespawn()
@@ -115,12 +128,12 @@ public class PlayerAnimatorController : MonoBehaviour
         if (animator == null)
             return;
 
-        animator.ResetTrigger("Die");
-        animator.ResetTrigger("CastShadow");
-        animator.SetBool("IsSleeping", false);
+        animator.ResetTrigger(DieHash);
+        animator.ResetTrigger(CastShadowHash);
+        animator.SetBool(IsSleepingHash, false);
 
         if (hasIsDeadParam)
-            animator.SetBool("IsDead", false);
+            animator.SetBool(IsDeadHash, false);
 
         animator.Rebind();
         animator.Update(0f);

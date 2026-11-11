@@ -1,4 +1,3 @@
-using Unity.AppUI.Redux;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -122,6 +121,9 @@ public class PlayerMovement : MonoBehaviour
     private StaminaSystem stamina;
     private PhysicsMaterial2D originalPhysicsMaterial;
     private PhysicsMaterial2D frictionlessMaterial;
+
+    // Preallocated physics buffers to avoid garbage collection spikes
+    private readonly Collider2D[] groundHitsBuffer = new Collider2D[8];
     private readonly RaycastHit2D[] rayHitsBuffer = new RaycastHit2D[8];
     private readonly RaycastHit2D[] verifyHitsBuffer = new RaycastHit2D[8];
     private readonly ContactPoint2D[] contactBuffer = new ContactPoint2D[16];
@@ -153,6 +155,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float HorizontalInput => horizontalInput;
     public bool IsTeleporting => isTeleporting;
+    public float RelativeVelocityY => rb != null ? rb.linearVelocity.y - surfaceVelocity.y : 0f;
 
     void Awake()
     {
@@ -172,6 +175,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (wallLayer.value == 0)
             wallLayer = groundLayer;
+    }
+
+    private void OnDestroy()
+    {
+        // Clean up dynamically created physics material to prevent memory leaks
+        if (frictionlessMaterial != null)
+            Destroy(frictionlessMaterial);
     }
 
     public void UnlockWallJump()
@@ -211,6 +221,7 @@ public class PlayerMovement : MonoBehaviour
     public void ResetMovementState()
     {
         hitStunUntil = 0f;
+        horizontalInput = 0f;
         isJumping = false;
         isBouncing = false;
         jumpCutApplied = false;
@@ -255,26 +266,32 @@ public class PlayerMovement : MonoBehaviour
     {
         if (groundCheck != null)
         {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(groundCheck.position, groundCheckRadius, groundLayer);
+            // Non-allocating overlap check using ContactFilter2D
+            ContactFilter2D filter = new ContactFilter2D();
+            filter.SetLayerMask(groundLayer);
+            filter.useTriggers = false;
+
+            int hitCount = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, filter, groundHitsBuffer);
             isGrounded = false;
             isOnIce = false;
 
             Collider2D groundHit = null;
-            for (int i = 0; i < hits.Length; i++)
+            for (int i = 0; i < hitCount; i++)
             {
+                Collider2D hit = groundHitsBuffer[i];
                 // Ignore the player's own collider and triggers
-                if (hits[i] == col || hits[i].isTrigger)
+                if (hit == null || hit == col || hit.isTrigger)
                     continue;
 
                 isGrounded = true;
 
                 if (groundHit == null)
-                    groundHit = hits[i];
+                    groundHit = hit;
 
-                if (!string.IsNullOrEmpty(iceTag) && hits[i].CompareTag(iceTag))
+                if (!string.IsNullOrEmpty(iceTag) && hit.CompareTag(iceTag))
                 {
                     isOnIce = true;
-                    groundHit = hits[i];
+                    groundHit = hit;
                     break;
                 }
             }
@@ -282,7 +299,7 @@ public class PlayerMovement : MonoBehaviour
             if (groundHit != lastGroundCollider)
             {
                 lastGroundCollider = groundHit;
-                currentPlatform = isGrounded ? groundHit.GetComponentInParent<MovingPlatform>() : null;
+                currentPlatform = isGrounded && groundHit != null ? groundHit.GetComponentInParent<MovingPlatform>() : null;
             }
 
             surfaceVelocity = currentPlatform != null ? currentPlatform.Velocity : Vector2.zero;
@@ -653,15 +670,15 @@ public class PlayerMovement : MonoBehaviour
         // Right rays (ignore diagonal slopes so the player cannot wall-jump up them)
         RaycastHit2D rightTopHit = Physics2D.Raycast(topCenter, Vector2.right, rayLength, effectiveWallLayer);
         RaycastHit2D rightBottomHit = Physics2D.Raycast(bottomCenter, Vector2.right, rayLength, effectiveWallLayer);
-        bool hasRightTop = rightTopHit.collider != null && !IsDiagonalSlopeNormal(rightTopHit.normal);
-        bool hasRightBottom = rightBottomHit.collider != null && !IsDiagonalSlopeNormal(rightBottomHit.normal);
+        bool hasRightTop = rightTopHit.collider != null && !rightTopHit.collider.isTrigger && !IsDiagonalSlopeNormal(rightTopHit.normal);
+        bool hasRightBottom = rightBottomHit.collider != null && !rightBottomHit.collider.isTrigger && !IsDiagonalSlopeNormal(rightBottomHit.normal);
         bool touchingRight = requireBothWallRays ? (hasRightTop && hasRightBottom) : (hasRightTop || hasRightBottom);
 
         // Left rays (ignore diagonal slopes so the player cannot wall-jump up them)
         RaycastHit2D leftTopHit = Physics2D.Raycast(topCenter, Vector2.left, rayLength, effectiveWallLayer);
         RaycastHit2D leftBottomHit = Physics2D.Raycast(bottomCenter, Vector2.left, rayLength, effectiveWallLayer);
-        bool hasLeftTop = leftTopHit.collider != null && !IsDiagonalSlopeNormal(leftTopHit.normal);
-        bool hasLeftBottom = leftBottomHit.collider != null && !IsDiagonalSlopeNormal(leftBottomHit.normal);
+        bool hasLeftTop = leftTopHit.collider != null && !leftTopHit.collider.isTrigger && !IsDiagonalSlopeNormal(leftTopHit.normal);
+        bool hasLeftBottom = leftBottomHit.collider != null && !leftBottomHit.collider.isTrigger && !IsDiagonalSlopeNormal(leftBottomHit.normal);
         bool touchingLeft = requireBothWallRays ? (hasLeftTop && hasLeftBottom) : (hasLeftTop || hasLeftBottom);
 
         if (touchingRight && touchingLeft)
@@ -708,7 +725,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (Time.time < hitStunUntil && !isTeleporting)
+        // Ignore player input when dead, paused, or hit-stunned
+        if ((Time.time < hitStunUntil || Time.timeScale <= 0f || (stamina != null && stamina.IsDead)) && !isTeleporting)
         {
             horizontalInput = 0f;
             jumpBufferCounter = 0f;
@@ -904,7 +922,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Time.time < hitStunUntil && !isTeleporting) return;
+        if ((Time.time < hitStunUntil || (stamina != null && stamina.IsDead)) && !isTeleporting) return;
         if (isTeleporting) return;
 
         UpdateGroundCheck();

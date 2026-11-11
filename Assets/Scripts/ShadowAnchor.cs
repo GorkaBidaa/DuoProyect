@@ -27,6 +27,7 @@ public class ShadowAnchor : MonoBehaviour
     [Header("Shadow Dash Settings")]
     [SerializeField] private bool shadowDashUnlocked = false;
     public Key shadowDashKey = Key.LeftShift;
+    public Key alternateShadowDashKey = Key.R;
     public float shadowDashSpeed = 18f;
     public float shadowDashDuration = 0.25f;
     [Tooltip("Impulso horizontal que recibe el jugador si se teletransporta cortando el dash de la sombra")]
@@ -64,6 +65,9 @@ public class ShadowAnchor : MonoBehaviour
     private SpriteRenderer playerSr;
     private Key parsedKey;
     private bool keyValid;
+
+    // Preallocated raycast buffer so shadow dash collision checks do not allocate memory
+    private readonly RaycastHit2D[] dashHitsBuffer = new RaycastHit2D[8];
 
     private bool IsInputBlocked =>
         Time.timeScale <= 0f ||
@@ -131,7 +135,7 @@ public class ShadowAnchor : MonoBehaviour
     {
         if (System.Enum.TryParse(anchorKey.ToString(), true, out parsedKey))
         {
-            keyValid = true;
+            keyValid = parsedKey != Key.None;
             return;
         }
 
@@ -242,8 +246,16 @@ public class ShadowAnchor : MonoBehaviour
             return true;
 
         var kb = Keyboard.current;
-        if (kb != null && kb[shadowDashKey].wasPressedThisFrame)
-            return true;
+        if (kb != null)
+        {
+            // Allow triggering the shadow dash with LeftShift, the R key, or the configured alternate key
+            if (shadowDashKey != Key.None && kb[shadowDashKey].wasPressedThisFrame)
+                return true;
+            if (alternateShadowDashKey != Key.None && kb[alternateShadowDashKey].wasPressedThisFrame)
+                return true;
+            if (kb.rKey.wasPressedThisFrame)
+                return true;
+        }
 
         return false;
     }
@@ -516,15 +528,33 @@ public class ShadowAnchor : MonoBehaviour
         while (elapsed < shadowDashDuration && currentShadow != null)
         {
             float step = shadowDashSpeed * Time.deltaTime;
-            RaycastHit2D hit = Physics2D.Raycast(
+            int hitCount = Physics2D.RaycastNonAlloc(
                 currentShadow.transform.position,
                 direction,
+                dashHitsBuffer,
                 step + wallSkinWidth,
                 shadowObstacleLayer);
 
-            if (hit.collider != null)
+            // Find the closest solid non-trigger obstacle
+            float closestHitDistance = float.PositiveInfinity;
+            bool hitSolidWall = false;
+
+            for (int i = 0; i < hitCount; i++)
             {
-                float safeAdvance = Mathf.Max(0f, hit.distance - wallSkinWidth);
+                RaycastHit2D hit = dashHitsBuffer[i];
+                if (hit.collider == null || hit.collider.isTrigger || hit.collider.transform.IsChildOf(transform))
+                    continue;
+
+                if (hit.distance < closestHitDistance)
+                {
+                    closestHitDistance = hit.distance;
+                    hitSolidWall = true;
+                }
+            }
+
+            if (hitSolidWall)
+            {
+                float safeAdvance = Mathf.Max(0f, closestHitDistance - wallSkinWidth);
                 currentShadow.transform.position += (Vector3)(direction * safeAdvance);
                 break;
             }

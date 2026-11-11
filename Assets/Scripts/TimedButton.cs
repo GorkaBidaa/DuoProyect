@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Collider2D))]
 public class TimedButton : MonoBehaviour
 {
     [Header("Door")]
@@ -12,11 +13,23 @@ public class TimedButton : MonoBehaviour
     private SpriteRenderer sr;
     private Color originalColor;
     private Collider2D doorCollider;
+    private ContactFilter2D solidFilter;
     private readonly List<Collider2D> overlapResults = new List<Collider2D>(8);
+
+    private void Reset()
+    {
+        // Ensure the button collider acts as a trigger by default
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.isTrigger = true;
+    }
 
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        if (sr == null)
+            sr = GetComponentInChildren<SpriteRenderer>();
+
         if (sr != null)
         {
             originalColor = sr.color;
@@ -25,21 +38,32 @@ public class TimedButton : MonoBehaviour
         if (doorToOpen != null)
         {
             doorCollider = doorToOpen.GetComponent<Collider2D>();
+            if (doorCollider == null)
+                doorCollider = doorToOpen.GetComponentInChildren<Collider2D>();
         }
+
+        // Ignore trigger colliders when checking if the doorway is blocked
+        solidFilter = new ContactFilter2D();
+        solidFilter.useTriggers = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isPressed)
+        if (isPressed || collision == null || collision.isTrigger)
             return;
 
         bool isPlayer = collision.CompareTag("Player") ||
                         collision.GetComponentInParent<PlayerMovement>() != null;
 
-        if (isPlayer)
-        {
-            StartCoroutine(PressButtonRoutine());
-        }
+        if (!isPlayer)
+            return;
+
+        // Prevent a dead player body from activating the button
+        StaminaSystem stamina = collision.GetComponentInParent<StaminaSystem>();
+        if (stamina != null && stamina.IsDead)
+            return;
+
+        StartCoroutine(PressButtonRoutine());
     }
 
     private IEnumerator PressButtonRoutine()
@@ -50,7 +74,11 @@ public class TimedButton : MonoBehaviour
         bool hasDoorCollider = false;
 
         if (doorCollider == null && doorToOpen != null)
+        {
             doorCollider = doorToOpen.GetComponent<Collider2D>();
+            if (doorCollider == null)
+                doorCollider = doorToOpen.GetComponentInChildren<Collider2D>();
+        }
 
         if (doorCollider != null)
         {
@@ -85,14 +113,27 @@ public class TimedButton : MonoBehaviour
     private bool IsPlayerBlockingDoor(Bounds bounds)
     {
         overlapResults.Clear();
-        Physics2D.OverlapBox(bounds.center, bounds.size, 0f, ContactFilter2D.noFilter, overlapResults);
+        Physics2D.OverlapBox(bounds.center, bounds.size, 0f, solidFilter, overlapResults);
 
         for (int i = 0; i < overlapResults.Count; i++)
         {
             Collider2D hit = overlapResults[i];
-            if (hit != null && (hit.CompareTag("Player") || hit.GetComponentInParent<PlayerMovement>() != null))
+            if (hit != null && !hit.isTrigger && (hit.CompareTag("Player") || hit.GetComponentInParent<PlayerMovement>() != null))
                 return true;
         }
         return false;
+    }
+
+    private void OnDisable()
+    {
+        // Reset state if disabled while active so the button does not remain stuck
+        if (isPressed)
+        {
+            if (doorToOpen != null)
+                doorToOpen.SetActive(true);
+            if (sr != null)
+                sr.color = originalColor;
+            isPressed = false;
+        }
     }
 }

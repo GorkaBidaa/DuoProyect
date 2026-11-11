@@ -58,10 +58,15 @@ public class StaminaSystem : MonoBehaviour
     private Vector2 respawnPosition;
     private bool isInSafeZone = false;
 
+    // Cached integer values to avoid allocating a new UI string every frame in LateUpdate
+    private int lastDisplayedCurrent = -1;
+    private int lastDisplayedMax = -1;
+
     private Rigidbody2D rb;
     private PlayerMovement playerMovement;
     private ShadowAnchor anchor;
     private PlayerAnimatorController animatorController;
+    private PlayerHealth playerHealth;
 
     public bool IsInSafeZone => isInSafeZone;
     public bool IsDead { get; private set; }
@@ -76,6 +81,7 @@ public class StaminaSystem : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         anchor = GetComponent<ShadowAnchor>();
         animatorController = GetComponent<PlayerAnimatorController>();
+        playerHealth = GetComponent<PlayerHealth>();
 
         // Upgrade legacy low serialized Inspector values so shadow abilities visibly drain the stamina bar
         if (Mathf.Approximately(anchorDeployCost, 1.2f)) anchorDeployCost = 5.0f;
@@ -135,9 +141,10 @@ public class StaminaSystem : MonoBehaviour
         RechargeStamina();
 
         // Reset health
-        PlayerHealth health = GetComponent<PlayerHealth>();
-        if (health != null)
-            health.ResetAfterRespawn();
+        if (playerHealth == null)
+            playerHealth = GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+            playerHealth.ResetAfterRespawn();
 
         // Reset animator back to default state
         if (animatorController != null)
@@ -220,7 +227,14 @@ public class StaminaSystem : MonoBehaviour
         int current = Mathf.CeilToInt(
             Mathf.Clamp(currentStamina, 0f, maxStamina));
         int maximum = Mathf.CeilToInt(maxStamina);
-        staminaText.text = $"{current} / {maximum}";
+
+        // Only allocate a new string when the displayed integer values change
+        if (current != lastDisplayedCurrent || maximum != lastDisplayedMax)
+        {
+            lastDisplayedCurrent = current;
+            lastDisplayedMax = maximum;
+            staminaText.text = $"{current} / {maximum}";
+        }
     }
 
     // Consumes an instant amount of stamina when performing actions or abilities

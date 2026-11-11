@@ -1,6 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using TMPro;
 
+[RequireComponent(typeof(Collider2D))]
 public class RangeUpgrade : MonoBehaviour
 {
     public float newRadius = 20f;
@@ -11,10 +13,22 @@ public class RangeUpgrade : MonoBehaviour
     private SpriteRenderer sr;
     private Collider2D col;
     private bool isCollected = false;
+    private string activeDisplayedMessage;
+
+    private void Reset()
+    {
+        // Ensure pickup collider is set as a trigger by default
+        Collider2D triggerCol = GetComponent<Collider2D>();
+        if (triggerCol != null)
+            triggerCol.isTrigger = true;
+    }
 
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        if (sr == null)
+            sr = GetComponentInChildren<SpriteRenderer>();
+
         col = GetComponent<Collider2D>();
     }
 
@@ -26,7 +40,7 @@ public class RangeUpgrade : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isCollected) return;
+        if (isCollected || collision == null) return;
 
         ShadowAnchor anchor = collision.GetComponentInParent<ShadowAnchor>();
         if (anchor == null && collision.CompareTag("Player"))
@@ -62,19 +76,31 @@ public class RangeUpgrade : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator ShowMessageRoutine(string text, float duration)
+    private IEnumerator ShowMessageRoutine(string text, float duration)
     {
+        activeDisplayedMessage = text;
         messageText.text = text;
         messageText.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(duration);
 
-        if (messageText.text == text)
+        ClearMessageIfOwned();
+        Destroy(gameObject);
+    }
+
+    private void OnDisable()
+    {
+        // Ensure UI text does not remain stuck if the object is disabled before the coroutine finishes
+        ClearMessageIfOwned();
+    }
+
+    private void ClearMessageIfOwned()
+    {
+        if (messageText != null && !string.IsNullOrEmpty(activeDisplayedMessage) && messageText.text == activeDisplayedMessage)
         {
             messageText.text = "";
             messageText.gameObject.SetActive(false);
         }
-
-        Destroy(gameObject);
+        activeDisplayedMessage = null;
     }
 }
