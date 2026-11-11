@@ -15,12 +15,12 @@ public class ActiveItemSelector : MonoBehaviour
     [SerializeField] private PlayerInventory inventory;
     [SerializeField] private CraftingMenu craftingMenu;
 
-    
+
 
     [Header("HUD")]
     [SerializeField] private Image itemIcon;
     [SerializeField] private TMP_Text amountText;
-   
+
 
     [Header("Use request: connect actual item behavior later")]
     public ActiveItemUseEvent onUseRequested = new ActiveItemUseEvent();
@@ -32,6 +32,7 @@ public class ActiveItemSelector : MonoBehaviour
         ? null : availableItems[selectedIndex];
 
     private bool CanReadInput =>
+    GameInput.Instance != null && GameInput.Instance.CanUseItem &&
     !InputBlocked &&
     Time.timeScale > 0f &&
     (craftingMenu == null || !craftingMenu.IsOpen);
@@ -62,14 +63,11 @@ public class ActiveItemSelector : MonoBehaviour
     private void Update()
     {
         if (!CanReadInput) return;
-        Mouse mouse = Mouse.current;
-        Gamepad pad = Gamepad.current;
-        float scroll = mouse != null ? mouse.scroll.ReadValue().y : 0f;
-        if (scroll > 0f || (pad != null && pad.rightShoulder.wasPressedThisFrame)) Next();
-        else if (scroll < 0f || (pad != null && pad.leftShoulder.wasPressedThisFrame)) Previous();
-
-        bool usePressed = (mouse != null && mouse.rightButton.wasPressedThisFrame) ||
-            (pad != null && pad.buttonNorth.wasPressedThisFrame);
+        GameInput input = GameInput.Instance;
+        float scroll = input.Cycle;
+        if (scroll > 0f || input.Pressed("NextItem")) Next();
+        else if (scroll < 0f || input.Pressed("PreviousItem")) Previous();
+        bool usePressed = input.Pressed("UseItem");
         if (usePressed) RequestUse();
     }
 

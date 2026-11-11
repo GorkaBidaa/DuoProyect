@@ -70,6 +70,7 @@ public class ShadowAnchor : MonoBehaviour
     private readonly RaycastHit2D[] dashHitsBuffer = new RaycastHit2D[8];
 
     private bool IsInputBlocked =>
+        (GameInput.Instance != null && GameInput.Instance.GameplayBlocked) ||
         Time.timeScale <= 0f ||
         (stamina != null && stamina.IsDead) ||
         (inventoryMenu != null && inventoryMenu.IsOpen) ||
@@ -93,6 +94,9 @@ public class ShadowAnchor : MonoBehaviour
             inventoryMenu = FindFirstObjectByType<InventoryMenu>();
         if (craftingMenu == null)
             craftingMenu = FindFirstObjectByType<CraftingMenu>();
+
+        if (shadowObstacleLayer.value == 0 && playerMovement != null)
+            shadowObstacleLayer = playerMovement.groundLayer;
 
         CacheKey();
     }
@@ -170,9 +174,18 @@ public class ShadowAnchor : MonoBehaviour
 
         TrackMomentum();
 
-        if (ActiveShadow && currentShadow != null)
+        if (ActiveShadow)
         {
-            UpdateShadowColor();
+            if (currentShadow != null)
+            {
+                UpdateShadowColor();
+            }
+            else
+            {
+                ActiveShadow = false;
+                hasShadowDashed = false;
+                isShadowDashing = false;
+            }
         }
 
         if (IsInputBlocked)
@@ -228,8 +241,7 @@ public class ShadowAnchor : MonoBehaviour
 
     private bool ReadAnchorInput()
     {
-        var gp = Gamepad.current;
-        if (gp != null && (gp.rightTrigger.wasPressedThisFrame || gp.buttonWest.wasPressedThisFrame))
+        if (GameInput.Instance != null && GameInput.Instance.Pressed("Anchor"))
             return true;
 
         var kb = Keyboard.current;
@@ -241,6 +253,9 @@ public class ShadowAnchor : MonoBehaviour
 
     private bool ReadShadowDashInput()
     {
+        if (GameInput.Instance != null && GameInput.Instance.Pressed("ShadowDash"))
+            return true;
+
         var gp = Gamepad.current;
         if (gp != null && gp.leftTrigger.wasPressedThisFrame)
             return true;
@@ -248,7 +263,6 @@ public class ShadowAnchor : MonoBehaviour
         var kb = Keyboard.current;
         if (kb != null)
         {
-            // Allow triggering the shadow dash with LeftShift, the R key, or the configured alternate key
             if (shadowDashKey != Key.None && kb[shadowDashKey].wasPressedThisFrame)
                 return true;
             if (alternateShadowDashKey != Key.None && kb[alternateShadowDashKey].wasPressedThisFrame)
@@ -414,6 +428,7 @@ public class ShadowAnchor : MonoBehaviour
             shadowAnimator = null;
             ActiveShadow = false;
             hasShadowDashed = false;
+            isShadowDashing = false;
 
             // Fade in
             yield return FadePlayer(0f, 1f);
@@ -440,6 +455,14 @@ public class ShadowAnchor : MonoBehaviour
             Time.timeScale = prevTimeScale > 0f ? prevTimeScale : 1f;
             isTeleporting = false;
             teleportCoroutine = null;
+
+            if (playerSr != null)
+            {
+                Color c = playerSr.color;
+                c.a = 1f;
+                playerSr.color = c;
+            }
+
             if (playerMovement != null) playerMovement.SetTeleportingState(false);
         }
     }
@@ -449,9 +472,10 @@ public class ShadowAnchor : MonoBehaviour
         if (playerSr == null) yield break;
 
         Color col = playerSr.color;
-        for (float t = 0f; t < fadeTime; t += Time.deltaTime)
+        float effectiveFadeTime = Mathf.Max(0.001f, fadeTime);
+        for (float t = 0f; t < effectiveFadeTime; t += Time.deltaTime)
         {
-            col.a = Mathf.Lerp(from, to, t / fadeTime);
+            col.a = Mathf.Lerp(from, to, t / effectiveFadeTime);
             playerSr.color = col;
             yield return null;
         }

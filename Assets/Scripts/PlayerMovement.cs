@@ -122,7 +122,6 @@ public class PlayerMovement : MonoBehaviour
     private PhysicsMaterial2D originalPhysicsMaterial;
     private PhysicsMaterial2D frictionlessMaterial;
 
-    // Preallocated physics buffers to avoid garbage collection spikes
     private readonly Collider2D[] groundHitsBuffer = new Collider2D[8];
     private readonly RaycastHit2D[] rayHitsBuffer = new RaycastHit2D[8];
     private readonly RaycastHit2D[] verifyHitsBuffer = new RaycastHit2D[8];
@@ -147,6 +146,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 surfaceVelocity;
     private Vector2 lastSurfaceVelocity;
     private bool wasOnPlatform = false;
+
+    private float hitStunUntil;
 
     public bool isGrounded { get; private set; }
     public bool IsWallSliding => isWallSliding;
@@ -213,9 +214,18 @@ public class PlayerMovement : MonoBehaviour
             surfaceVelocity = Vector2.zero;
             lastSurfaceVelocity = Vector2.zero;
             ApplyColliderMaterial(originalPhysicsMaterial);
-            rb.linearVelocity = Vector2.zero;
-            rb.gravityScale = 0f;
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector2.zero;
+                rb.gravityScale = 0f;
+            }
         }
+    }
+
+    public void StopForDialogue()
+    {
+        ResetMovementState();
+        horizontalInput = 0f;
     }
 
     public void ResetMovementState()
@@ -262,6 +272,33 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Helper for non-allocating solid raycasts that ignore triggers and the player's own collider
+    private RaycastHit2D SolidRaycast(Vector2 origin, Vector2 direction, float distance, LayerMask mask)
+    {
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.SetLayerMask(mask);
+        filter.useTriggers = false;
+
+        int count = Physics2D.Raycast(origin, direction, filter, rayHitsBuffer, distance);
+        RaycastHit2D bestHit = default;
+        float closestDist = float.PositiveInfinity;
+
+        for (int i = 0; i < count; i++)
+        {
+            RaycastHit2D hit = rayHitsBuffer[i];
+            if (hit.collider == null || hit.collider == col || hit.collider.isTrigger)
+                continue;
+
+            if (hit.distance < closestDist)
+            {
+                closestDist = hit.distance;
+                bestHit = hit;
+            }
+        }
+
+        return bestHit;
+    }
+
     private void UpdateGroundCheck()
     {
         if (groundCheck != null)
@@ -272,6 +309,7 @@ public class PlayerMovement : MonoBehaviour
             filter.useTriggers = false;
 
             int hitCount = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, filter, groundHitsBuffer);
+
             isGrounded = false;
             isOnIce = false;
 
@@ -667,18 +705,18 @@ public class PlayerMovement : MonoBehaviour
         Vector2 topCenter = new Vector2(b.center.x, topY);
         Vector2 bottomCenter = new Vector2(b.center.x, bottomY);
 
-        // Right rays (ignore diagonal slopes so the player cannot wall-jump up them)
-        RaycastHit2D rightTopHit = Physics2D.Raycast(topCenter, Vector2.right, rayLength, effectiveWallLayer);
-        RaycastHit2D rightBottomHit = Physics2D.Raycast(bottomCenter, Vector2.right, rayLength, effectiveWallLayer);
-        bool hasRightTop = rightTopHit.collider != null && !rightTopHit.collider.isTrigger && !IsDiagonalSlopeNormal(rightTopHit.normal);
-        bool hasRightBottom = rightBottomHit.collider != null && !rightBottomHit.collider.isTrigger && !IsDiagonalSlopeNormal(rightBottomHit.normal);
+        // Right rays (ignore triggers and diagonal slopes so the player cannot wall-jump up them)
+        RaycastHit2D rightTopHit = SolidRaycast(topCenter, Vector2.right, rayLength, effectiveWallLayer);
+        RaycastHit2D rightBottomHit = SolidRaycast(bottomCenter, Vector2.right, rayLength, effectiveWallLayer);
+        bool hasRightTop = rightTopHit.collider != null && !IsDiagonalSlopeNormal(rightTopHit.normal);
+        bool hasRightBottom = rightBottomHit.collider != null && !IsDiagonalSlopeNormal(rightBottomHit.normal);
         bool touchingRight = requireBothWallRays ? (hasRightTop && hasRightBottom) : (hasRightTop || hasRightBottom);
 
-        // Left rays (ignore diagonal slopes so the player cannot wall-jump up them)
-        RaycastHit2D leftTopHit = Physics2D.Raycast(topCenter, Vector2.left, rayLength, effectiveWallLayer);
-        RaycastHit2D leftBottomHit = Physics2D.Raycast(bottomCenter, Vector2.left, rayLength, effectiveWallLayer);
-        bool hasLeftTop = leftTopHit.collider != null && !leftTopHit.collider.isTrigger && !IsDiagonalSlopeNormal(leftTopHit.normal);
-        bool hasLeftBottom = leftBottomHit.collider != null && !leftBottomHit.collider.isTrigger && !IsDiagonalSlopeNormal(leftBottomHit.normal);
+        // Left rays (ignore triggers and diagonal slopes so the player cannot wall-jump up them)
+        RaycastHit2D leftTopHit = SolidRaycast(topCenter, Vector2.left, rayLength, effectiveWallLayer);
+        RaycastHit2D leftBottomHit = SolidRaycast(bottomCenter, Vector2.left, rayLength, effectiveWallLayer);
+        bool hasLeftTop = leftTopHit.collider != null && !IsDiagonalSlopeNormal(leftTopHit.normal);
+        bool hasLeftBottom = leftBottomHit.collider != null && !IsDiagonalSlopeNormal(leftBottomHit.normal);
         bool touchingLeft = requireBothWallRays ? (hasLeftTop && hasLeftBottom) : (hasLeftTop || hasLeftBottom);
 
         if (touchingRight && touchingLeft)
@@ -713,8 +751,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private float hitStunUntil;
-
     public void ApplyHitKnockback(Vector2 velocity, float duration)
     {
         if (isTeleporting) return;
@@ -745,39 +781,15 @@ public class PlayerMovement : MonoBehaviour
         if (slopeCoyoteCounter > 0f)
             slopeCoyoteCounter -= Time.deltaTime;
 
-        UpdateGroundCheck();
-        UpdateSlopeCheck();
-        UpdateWallCheck();
-
         if (wallJumpLockCounter > 0f)
             wallJumpLockCounter -= Time.deltaTime;
 
-        bool jumpPressed = false;
-        bool jumpHeld = false;
-        bool jumpReleased = false;
-
-        var kb = Keyboard.current;
-        float keyboard = 0f;
-        if (kb != null)
-        {
-            if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) keyboard -= 1f;
-            if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) keyboard += 1f;
-            if (kb.spaceKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame || kb.upArrowKey.wasPressedThisFrame) jumpPressed = true;
-            if (kb.spaceKey.isPressed || kb.wKey.isPressed || kb.upArrowKey.isPressed) jumpHeld = true;
-            if (kb.spaceKey.wasReleasedThisFrame || kb.wKey.wasReleasedThisFrame || kb.upArrowKey.wasReleasedThisFrame) jumpReleased = true;
-        }
-
-        var gp = Gamepad.current;
-        float gamepad = 0f;
-        if (gp != null)
-        {
-            gamepad = gp.leftStick.x.ReadValue();
-            if (gp.dpad.left.isPressed) gamepad = -1f;
-            if (gp.dpad.right.isPressed) gamepad = 1f;
-            if (gp.buttonSouth.wasPressedThisFrame) jumpPressed = true;
-            if (gp.buttonSouth.isPressed) jumpHeld = true;
-            if (gp.buttonSouth.wasReleasedThisFrame) jumpReleased = true;
-        }
+        GameInput input = GameInput.Instance;
+        bool inputAllowed = input != null && !input.GameplayBlocked;
+        bool jumpPressed = inputAllowed && input.Pressed("Jump");
+        bool jumpHeld = inputAllowed && input.Held("Jump");
+        bool jumpReleased = inputAllowed && input.Released("Jump");
+        if (!inputAllowed) jumpBufferCounter = 0f;
 
         float relativeVelY = rb.linearVelocity.y - surfaceVelocity.y;
 
@@ -798,7 +810,7 @@ public class PlayerMovement : MonoBehaviour
             jumpReleased = false;
         }
 
-        horizontalInput = (Mathf.Abs(gamepad) > 0.01f) ? gamepad : keyboard;
+        horizontalInput = inputAllowed ? input.Move : 0f;
 
         bool pressingTowardsWall = (wallSide == 1 && horizontalInput > 0.1f) ||
                                    (wallSide == -1 && horizontalInput < -0.1f);
@@ -1131,13 +1143,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded || rb.linearVelocity.y <= 0f || headLeft == null || headRight == null) return;
 
-        bool hitLeft = Physics2D.Raycast(headLeft.position, Vector2.up, headCheckDistance, groundLayer).collider != null;
-        bool hitRight = Physics2D.Raycast(headRight.position, Vector2.up, headCheckDistance, groundLayer).collider != null;
+        bool hitLeft = SolidRaycast(headLeft.position, Vector2.up, headCheckDistance, groundLayer).collider != null;
+        bool hitRight = SolidRaycast(headRight.position, Vector2.up, headCheckDistance, groundLayer).collider != null;
 
         if (hitLeft && !hitRight)
         {
             Vector2 checkPos = new Vector2(headLeft.position.x + maxCornerDistance, headLeft.position.y);
-            if (Physics2D.Raycast(checkPos, Vector2.up, headCheckDistance, groundLayer).collider == null)
+            if (SolidRaycast(checkPos, Vector2.up, headCheckDistance, groundLayer).collider == null)
             {
                 float exactOffset = FindExactCornerOffset(headLeft.position, 1f);
                 rb.position += Vector2.right * exactOffset;
@@ -1146,7 +1158,7 @@ public class PlayerMovement : MonoBehaviour
         else if (hitRight && !hitLeft)
         {
             Vector2 checkPos = new Vector2(headRight.position.x - maxCornerDistance, headRight.position.y);
-            if (Physics2D.Raycast(checkPos, Vector2.up, headCheckDistance, groundLayer).collider == null)
+            if (SolidRaycast(checkPos, Vector2.up, headCheckDistance, groundLayer).collider == null)
             {
                 float exactOffset = FindExactCornerOffset(headRight.position, -1f);
                 rb.position += Vector2.left * exactOffset;
@@ -1163,7 +1175,7 @@ public class PlayerMovement : MonoBehaviour
         {
             float mid = (low + high) * 0.5f;
             Vector2 testPos = new Vector2(origin.x + (mid * directionSign), origin.y);
-            if (Physics2D.Raycast(testPos, Vector2.up, headCheckDistance, groundLayer).collider == null)
+            if (SolidRaycast(testPos, Vector2.up, headCheckDistance, groundLayer).collider == null)
                 high = mid;
             else
                 low = mid;
@@ -1222,5 +1234,6 @@ public class PlayerMovement : MonoBehaviour
         lastSurfaceVelocity = Vector2.zero;
         jumpBufferCounter = 0f;
         coyoteTimeCounter = 0f;
+        ApplyColliderMaterial(originalPhysicsMaterial);
     }
 }

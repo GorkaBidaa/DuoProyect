@@ -134,6 +134,15 @@ public class BatEnemy : MonoBehaviour, ITrapTarget
 
     private bool HasPlayer => player != null && player.isActiveAndEnabled;
 
+    // Called by EnemySpawnPoint while the clone is inactive, before Awake runs.
+    public void ConfigureSpawn(PlayerHealth target, Transform center, bool overrideArea, Vector2 area)
+    {
+        player = target;
+        patrolCenter = center;
+        if (overrideArea) patrolSize = new Vector2(Mathf.Max(0.1f, area.x), Mathf.Max(0.1f, area.y));
+        enabled = true;
+    }
+
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();

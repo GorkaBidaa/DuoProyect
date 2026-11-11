@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3652706eb15a44b40b2da38c4c3e434b, type: 3}
+  m_Name: 02_AboutTheForest
+  m_EditorClassIdentifier: Assembly-CSharp::TreeDialogueData
+  lines:
+  - speaker: Alien
+    text: Has this forest always been like this?
+  - speaker: Alderworn
+    text: Once, water ran beneath these roots. There were voices in every clearing.
+  - speaker: Alien
+    text: What happened to them?
+  - speaker: Alderworn
+    text: Magrenta cursed this place. Those who could leave fled. The others learned to endure.
+  - speaker: Alien
+    text: And you stayed?
+  - speaker: Alderworn
+    text: My roots run deep.
+  - speaker: Alien
+    text: What is that black growth in the forest?
+  - speaker: Alderworn
+    text: Gloom. It gathers where the curse chokes living wood.
+  - speaker: Alien
+    text: Can it be removed?
+  - speaker: Alderworn
+    text: Some of it. Bring what you recover to me. I can turn it into resin - perhaps enough to seal your transmitter.
+  - speaker: Alien
+    text: You would help me leave?
+  - speaker: Alderworn
+    text: Yes. You have people waiting for you.
