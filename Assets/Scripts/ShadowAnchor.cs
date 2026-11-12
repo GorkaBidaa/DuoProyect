@@ -247,6 +247,8 @@ public class ShadowAnchor : MonoBehaviour
             if (playerMovement != null && playerMovement.isGrounded && vy <= 0.05f)
             {
                 currentMaxLaunchVelocity = 0f;
+                cachedMaxUpwardInertia = 0f;
+                inertiaTimer = 0f;
             }
 
             inertiaTimer -= Time.deltaTime;

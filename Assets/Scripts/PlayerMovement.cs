@@ -221,32 +221,44 @@ public class PlayerMovement : MonoBehaviour
     public void SetTeleportingState(bool state)
     {
         isTeleporting = state;
+        isJumping = false;
+        isBouncing = false;
+        jumpCutApplied = false;
+        isWallSliding = false;
+        isOnSlope = false;
+        currentSlopeZone = SlopeZone.None;
+        currentSlopeSlideSpeed = 0f;
+        lastActiveSlopeSpeed = 0f;
+        slopeCoyoteCounter = 0f;
+        slopeJumpCooldownTimer = 0f;
+        slopeUphillLockTimer = 0f;
+        wallSide = 0;
+        lastWallSide = 0;
+        wallCoyoteTimeCounter = 0f;
+        wallJumpLockCounter = 0f;
+        coyoteTimeCounter = 0f;
+        jumpBufferCounter = 0f;
+        wasOnPlatform = false;
+        lastGroundCollider = null;
+        currentPlatform = null;
+        surfaceVelocity = Vector2.zero;
+        lastSurfaceVelocity = Vector2.zero;
+        ApplyColliderMaterial(originalPhysicsMaterial);
+
         if (state)
         {
-            isJumping = false;
-            isBouncing = false;
-            jumpCutApplied = false;
-            isWallSliding = false;
-            isOnSlope = false;
-            currentSlopeZone = SlopeZone.None;
-            currentSlopeSlideSpeed = 0f;
-            lastActiveSlopeSpeed = 0f;
-            slopeCoyoteCounter = 0f;
-            slopeJumpCooldownTimer = 0f;
-            slopeUphillLockTimer = 0f;
-            wallCoyoteTimeCounter = 0f;
-            wallJumpLockCounter = 0f;
-            wasOnPlatform = false;
-            lastGroundCollider = null;
-            currentPlatform = null;
-            surfaceVelocity = Vector2.zero;
-            lastSurfaceVelocity = Vector2.zero;
-            ApplyColliderMaterial(originalPhysicsMaterial);
+            isGrounded = false;
             if (rb != null)
             {
                 rb.linearVelocity = Vector2.zero;
                 rb.gravityScale = 0f;
             }
+        }
+        else
+        {
+            UpdateGroundCheck();
+            coyoteTimeCounter = 0f;
+            jumpBufferCounter = 0f;
         }
     }
 
@@ -446,10 +458,11 @@ public class PlayerMovement : MonoBehaviour
         Vector2 centerOrigin = new Vector2(b.center.x, b.center.y);
         Vector2 rightOrigin = new Vector2(b.center.x + edgeOffset, b.center.y);
 
-        float flatCheckDist = b.extents.y + 0.08f;
         // Reach far enough for a 45-degree diagonal under the center and edges of a BoxCollider2D
         float slopeFootDist = b.extents.y + b.extents.x + 0.25f;
         float slopeCrestProbeDist = b.extents.y + b.extents.x + 0.45f;
+        float flatCheckMargin = (isOnSlope || currentSlopeSlideSpeed > 0.1f) ? 0.22f : 0.08f;
+        float flatCheckDist = b.extents.y + flatCheckMargin;
 
         // 1. Check if any part of the feet is resting on flat ground
         bool leftFlat = TryDetectFlatGroundRay(leftOrigin, flatCheckDist, out Vector2 leftFlatPt);
@@ -1084,18 +1097,37 @@ public class PlayerMovement : MonoBehaviour
         {
             bool tryingToClimbUphill = (horizontalInput * downhillSign) < -0.01f || (rb.linearVelocity.x * downhillSign) < -0.01f;
 
-            if (currentSlopeSlideSpeed > 0.1f)
+            if (currentSlopeSlideSpeed > 0.1f || lastActiveSlopeSpeed > 0.1f)
             {
-                float exitSpeed = Mathf.Max(minSlopeSlideSpeed * 0.6f, currentSlopeSlideSpeed * 0.9f);
-                rb.linearVelocity = new Vector2(downhillSign * exitSpeed, Mathf.Max(0f, rb.linearVelocity.y));
+                float slideSpeed = Mathf.Max(currentSlopeSlideSpeed, lastActiveSlopeSpeed);
+                float exitSpeed = Mathf.Max(minSlopeSlideSpeed * 0.6f, slideSpeed * 0.9f);
+                rb.linearVelocity = new Vector2(downhillSign * exitSpeed, 0f);
                 currentSlopeSlideSpeed = 0f;
+                lastActiveSlopeSpeed = 0f;
             }
             else if (tryingToClimbUphill)
             {
                 float repelSpeed = Mathf.Max(3.5f, minSlopeSlideSpeed * 0.5f);
-                rb.linearVelocity = new Vector2(downhillSign * repelSpeed, Mathf.Max(0f, rb.linearVelocity.y));
+                rb.linearVelocity = new Vector2(downhillSign * repelSpeed, 0f);
                 CornerCorrection();
                 return;
+            }
+            else if (!isJumping && !isBouncing && slopeJumpCooldownTimer <= 0f && rb.linearVelocity.y > 0f)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+            }
+        }
+        else if (currentSlopeZone == SlopeZone.None && slopeCoyoteCounter > 0f && !isJumping && !isBouncing && slopeJumpCooldownTimer <= 0f)
+        {
+            if (lastActiveSlopeSpeed > 0.1f && isGrounded)
+            {
+                float exitSpeed = Mathf.Max(minSlopeSlideSpeed * 0.6f, lastActiveSlopeSpeed * 0.9f);
+                rb.linearVelocity = new Vector2(lastSlopeDownhillSign * exitSpeed, 0f);
+                lastActiveSlopeSpeed = 0f;
+            }
+            else if (rb.linearVelocity.y > 0f)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             }
         }
 
