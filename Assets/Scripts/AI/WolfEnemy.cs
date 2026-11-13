@@ -101,6 +101,8 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
 
     private void Awake()
     {
+        EnemyAudio audio = GetComponent<EnemyAudio>();
+        if (audio != null && player != null) audio.SetListener(player.transform);
         body = GetComponent<Rigidbody2D>();
         shape = GetComponent<CapsuleCollider2D>();
         homePosition = body.position;
@@ -443,6 +445,20 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
 
     private void ChangeState(State next)
     {
+        EnemyAudio audio = GetComponent<EnemyAudio>();
+        if (audio != null)
+        {
+            if (player != null) audio.SetListener(player.transform);
+            if (state == State.Windup && next != State.Windup && next != State.Lunging) audio.StopCue();
+            audio.SetQuietWings(next == State.Windup || next == State.Lunging);
+            if (next != state)
+            {
+                if (next == State.Chasing &&
+                    (state == State.Patrolling || state == State.Returning || state == State.Investigating)) audio.Detection();
+                if (next == State.Windup) audio.Windup();
+                if (next == State.Lunging) audio.Attack();
+            }
+        }
         if (state == State.Lunging && next == State.Recovering)
             nextAttackTime = Time.time + attackCooldown;
         if (next == State.Lunging && attackContact != null) attackContact.BeginAttack();
@@ -486,6 +502,12 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
         if (dead)
             return;
         dead = true;
+        EnemyAudio audio = GetComponent<EnemyAudio>();
+        if (audio != null)
+        {
+            if (player != null) audio.SetListener(player.transform);
+            audio.Death();
+        }
         body.linearVelocity = Vector2.zero;
         DropGloom();
         gameObject.SetActive(false);

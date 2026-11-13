@@ -34,5 +34,6 @@ public class FoodUse : MonoBehaviour
 
         if (item.consumeOnUse)
             inventory.RemoveItem(item, 1);
+        InteractionAudio.Play(InteractionCue.Food, transform.position);
     }
 }

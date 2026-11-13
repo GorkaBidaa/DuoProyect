@@ -105,6 +105,7 @@ public class EnemyLure : MonoBehaviour
                 continue;
 
             landed = true;
+            InteractionAudio.Play(InteractionCue.LureLand, transform.position);
             // The distraction's full duration begins on landing, not on throwing.
             expiresAt = Time.time + Mathf.Max(0.1f, duration);
             body.linearVelocity = Vector2.zero;

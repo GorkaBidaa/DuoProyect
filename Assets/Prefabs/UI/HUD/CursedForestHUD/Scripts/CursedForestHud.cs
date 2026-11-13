@@ -8,7 +8,7 @@ public sealed class CursedForestHud : MonoBehaviour
     public Image staminaFill;
     public Image itemIcon;
     public TextMeshProUGUI itemCount;
-
+    
     [Header("Health animation")]
     public Image healthGhost;
     [Tooltip("A dedicated wrapper around the health arc and its ghost, outside layout control.")]

@@ -56,6 +56,7 @@ public class RopeShortcut : MonoBehaviour
         }
 
         RefreshVisual();
+        InteractionAudio.Play(InteractionCue.RopeDeploy, inventory.transform.position);
         return true;
     }
 

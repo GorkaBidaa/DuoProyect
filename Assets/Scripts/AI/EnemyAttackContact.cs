@@ -58,8 +58,12 @@ public class EnemyAttackContact : MonoBehaviour
                 if (!hit.collider || hit.collider.isTrigger ||
                     hit.collider.GetComponentInParent<PlayerHealth>() != player) continue;
                 attemptedHit = true;
-                if (player.TryTakeHit(damage, direction) && visuals)
-                    StartCoroutine(Flash());
+                if (player.TryTakeHit(damage, direction))
+                {
+                    if (visuals) StartCoroutine(Flash());
+                    EnemyAudio audio = GetComponent<EnemyAudio>();
+                    if (audio != null) audio.Hit();
+                }
                 break;
             }
         }

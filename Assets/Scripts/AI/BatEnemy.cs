@@ -145,6 +145,8 @@ public class BatEnemy : MonoBehaviour, ITrapTarget
 
     private void Awake()
     {
+        EnemyAudio audio = GetComponent<EnemyAudio>();
+        if (audio != null && player != null) audio.SetListener(player.transform);
         body = GetComponent<Rigidbody2D>();
         seeker = GetComponent<Seeker>();
         body.gravityScale = 0f;
@@ -888,6 +890,20 @@ public class BatEnemy : MonoBehaviour, ITrapTarget
 
     private void ChangeState(State next)
     {
+        EnemyAudio audio = GetComponent<EnemyAudio>();
+        if (audio != null)
+        {
+            if (player != null) audio.SetListener(player.transform);
+            if (state == State.Windup && next != State.Windup && next != State.Swooping) audio.StopCue();
+            audio.SetQuietWings(next == State.Windup || next == State.Swooping);
+            if (next != state)
+            {
+                if (next == State.Approaching &&
+                    (state == State.Patrolling || state == State.Returning || state == State.Investigating)) audio.Detection();
+                if (next == State.Windup) audio.Windup();
+                if (next == State.Swooping) audio.Attack();
+            }
+        }
         if (state == State.Swooping && next == State.Recovering)
             nextSwoopTime = Time.time + swoopCooldown;
 
@@ -960,6 +976,12 @@ public class BatEnemy : MonoBehaviour, ITrapTarget
         if (dead)
             return;
         dead = true;
+        EnemyAudio audio = GetComponent<EnemyAudio>();
+        if (audio != null)
+        {
+            if (player != null) audio.SetListener(player.transform);
+            audio.Death();
+        }
         body.linearVelocity = Vector2.zero;
         DropGloom();
         gameObject.SetActive(false);

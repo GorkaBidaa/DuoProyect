@@ -13,6 +13,7 @@ public class LethalResinTrap : MonoBehaviour
     private bool initialized;
     private bool checkedOnArming;
     private bool spent;
+    private bool armedSoundPlayed;
 
     public bool IsConfigured => GetComponent<BoxCollider2D>() != null;
     private bool CanFire => initialized && !spent && isActiveAndEnabled && Time.time >= armsAt;
@@ -46,6 +47,7 @@ public class LethalResinTrap : MonoBehaviour
             return;
 
         checkedOnArming = true;
+        AnnounceArmed();
         // Catch an enemy already inside when the arming delay finishes.
         ContactFilter2D filter = new ContactFilter2D();
         filter.useTriggers = false;
@@ -67,12 +69,14 @@ public class LethalResinTrap : MonoBehaviour
         if (!CanFire || other == null)
             return;
 
+        AnnounceArmed();
         ITrapTarget target = other.GetComponentInParent<ITrapTarget>();
         if (target == null || !target.IsAlive)
             return;
 
         // Mark spent before killing, so several enemy colliders cannot trigger it twice.
         spent = true;
+        InteractionAudio.Play(InteractionCue.TrapTriggered, transform.position);
         trigger.enabled = false;
         try
         {
@@ -82,6 +86,13 @@ public class LethalResinTrap : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void AnnounceArmed()
+    {
+        if (armedSoundPlayed) return;
+        armedSoundPlayed = true;
+        InteractionAudio.Play(InteractionCue.TrapArmed, transform.position);
     }
 
     public static bool HasTrapNear(Vector2 position, float distance)

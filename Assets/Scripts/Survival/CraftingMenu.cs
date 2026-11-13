@@ -249,9 +249,13 @@ public class CraftingMenu : MonoBehaviour
     {
         RecipeData recipe = selectedRecipe;
 
-        if (crafting || !atBase || !IsOpen ||
-            recipe == null || !recipe.CanCraft(inventory))
+        if (crafting || !atBase || !IsOpen || recipe == null)
             return;
+        if (!recipe.CanCraft(inventory))
+        {
+            InteractionAudio.Play(InteractionCue.CraftDenied, inventory.transform.position);
+            return;
+        }
 
         crafting = true;
 
@@ -266,6 +270,7 @@ public class CraftingMenu : MonoBehaviour
             else
                 inventory.AddResource(
                     recipe.resourceOutput, recipe.outputAmount);
+            InteractionAudio.Play(InteractionCue.CraftSuccess, inventory.transform.position);
         }
         finally
         {

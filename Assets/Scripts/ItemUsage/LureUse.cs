@@ -53,6 +53,10 @@ public class LureUse : MonoBehaviour
 
         nextUseTime = Time.time + useCooldown;
         if (item.consumeOnUse && !inventory.RemoveItem(item, 1))
+        {
             Destroy(lure.gameObject);
+            return;
+        }
+        InteractionAudio.Play(InteractionCue.LureThrow, transform.position);
     }
 }

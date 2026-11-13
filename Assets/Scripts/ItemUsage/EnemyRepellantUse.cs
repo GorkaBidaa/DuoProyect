@@ -12,6 +12,7 @@ public class EnemyRepellantUse : MonoBehaviour
     private PlayerInventory inventory;
     private StaminaSystem stamina;
     private float expiresAt;
+    private bool soundActive;
 
     public Vector2 Position => transform.position;
     public float Radius => radius;
@@ -40,6 +41,7 @@ public class EnemyRepellantUse : MonoBehaviour
 
     private void OnDisable()
     {
+        soundActive = false;
         sources.Remove(this);
         expiresAt = 0f;
     }
@@ -47,7 +49,15 @@ public class EnemyRepellantUse : MonoBehaviour
     private void Update()
     {
         if (stamina != null && stamina.IsDead)
+        {
             expiresAt = 0f;
+            soundActive = false;
+        }
+        if (soundActive && !IsActive)
+        {
+            soundActive = false;
+            InteractionAudio.Play(InteractionCue.RepellantOff, transform.position);
+        }
     }
 
     public void UseItem(ItemData item)
@@ -66,6 +76,11 @@ public class EnemyRepellantUse : MonoBehaviour
         expiresAt = Time.time + Mathf.Max(0.1f, duration);
         if (item.consumeOnUse && !inventory.RemoveItem(item, 1))
             expiresAt = 0f;
+        if (IsActive)
+        {
+            soundActive = true;
+            InteractionAudio.Play(InteractionCue.RepellantOn, transform.position);
+        }
     }
 
     public bool CanAffect(Vector2 enemyPosition, float extraDistance = 0f)

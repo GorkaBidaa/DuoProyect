@@ -2,8 +2,6 @@ using UnityEngine;
 
 using UnityEngine.InputSystem;
 
-
-
 [RequireComponent(typeof(PlayerInventory), typeof(PlayerMovement))]
 
 public class RopeUse : MonoBehaviour
@@ -18,15 +16,11 @@ public class RopeUse : MonoBehaviour
 
     [SerializeField] private RopeShortcut[] shortcuts;
 
-
-
     [SerializeField, Min(0.1f)] private float placementDistance = 2f;
 
     [SerializeField, Min(0.1f)] private float interactDistance = 1.5f;
 
     [SerializeField, Min(0.1f)] private float travelCooldown = 0.5f;
-
-
 
     private PlayerInventory inventory;
 
@@ -37,12 +31,6 @@ public class RopeUse : MonoBehaviour
     private ShadowAnchor anchor;
 
     private float nextTravelTime;
-
-
-
-
-
-
 
     private void Awake()
 
@@ -55,8 +43,6 @@ public class RopeUse : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
 
         anchor = GetComponent<ShadowAnchor>();
-
-
 
         if (ropeItem == null || inventoryMenu == null ||
 
@@ -72,8 +58,6 @@ public class RopeUse : MonoBehaviour
 
     }
 
-
-
     public void UseItem(ItemData item)
 
     {
@@ -86,13 +70,9 @@ public class RopeUse : MonoBehaviour
 
             return;
 
-
-
         RopeShortcut nearest = null;
 
         float bestDistance = float.PositiveInfinity;
-
-
 
         foreach (RopeShortcut shortcut in shortcuts)
 
@@ -104,13 +84,9 @@ public class RopeUse : MonoBehaviour
 
                 continue;
 
-
-
             float distance =
 
                 shortcut.PlacementDistanceSquared(transform.position);
-
-
 
             if (distance < bestDistance)
 
@@ -124,8 +100,6 @@ public class RopeUse : MonoBehaviour
 
         }
 
-
-
         if (nearest == null)
 
         {
@@ -136,15 +110,11 @@ public class RopeUse : MonoBehaviour
 
         }
 
-
-
         if (nearest.TryDeploy(inventory, item))
 
             nextTravelTime = Time.time + travelCooldown;
 
     }
-
-
 
     public bool HasAvailableTravel
 
@@ -172,8 +142,6 @@ public class RopeUse : MonoBehaviour
 
     }
 
-
-
     private void Update()
 
     {
@@ -184,15 +152,11 @@ public class RopeUse : MonoBehaviour
 
             return;
 
-
-
         // Crafting gets priority on F / Triangle near a station.
 
         if (craftingMenu != null && craftingMenu.IsAtBase)
 
             return;
-
-
 
         GameInput input = GameInput.Instance;
 
@@ -202,21 +166,15 @@ public class RopeUse : MonoBehaviour
 
         bool interact = input.TryInteract();
 
-
-
         if (!interact)
 
             return;
-
-
 
         bool found = false;
 
         Vector3 destination = default;
 
         float bestDistance = float.PositiveInfinity;
-
-
 
         foreach (RopeShortcut shortcut in shortcuts)
 
@@ -236,8 +194,6 @@ public class RopeUse : MonoBehaviour
 
                 continue;
 
-
-
             if (distance < bestDistance)
 
             {
@@ -252,25 +208,17 @@ public class RopeUse : MonoBehaviour
 
         }
 
-
-
         if (!found)
 
             return;
 
-
-
         nextTravelTime = Time.time + travelCooldown;
-
-
 
         // Clear shadow and movement momentum before changing position.
 
         if (anchor != null)
 
             anchor.ForceDestroyAnchor();
-
-
 
         movement.ResetMovementState();
 
@@ -279,6 +227,7 @@ public class RopeUse : MonoBehaviour
         transform.position = destination;
 
         Physics2D.SyncTransforms();
+        InteractionAudio.Play(InteractionCue.RopeTravel, transform.position);
 
     }
 

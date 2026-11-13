@@ -15,6 +15,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private PlayerHitFeedback hitFeedback;
     private float invulnerableUntil;
     public bool IsInvulnerable => Time.time < invulnerableUntil;
+    public int CurrentHealth => currentHealth;
+    public int MaxHealth => maxHealth;
+    public float NormalizedHealth => maxHealth > 0 ? (float)currentHealth / maxHealth : 0f;
     private int currentHealth;
     private StaminaSystem stamina;
 

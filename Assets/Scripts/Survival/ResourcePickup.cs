@@ -23,6 +23,7 @@ public class ResourcePickup : MonoBehaviour
 
         collected = true;
         inventory.AddResource(resource, amount);
+        InteractionAudio.Play(InteractionCue.ResourceCollect, inventory.transform.position);
         Destroy(gameObject);
     }
 }

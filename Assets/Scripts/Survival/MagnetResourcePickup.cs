@@ -84,6 +84,7 @@ public class MagnetResourcePickup : MonoBehaviour
         try
         {
             target.AddResource(resource, amount);
+            InteractionAudio.Play(InteractionCue.GloomCollect, target.transform.position);
         }
         finally
         {

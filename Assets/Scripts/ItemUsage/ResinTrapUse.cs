@@ -64,6 +64,7 @@ public class ResinTrapUse : MonoBehaviour
         // Follow the supporting platform if it moves.
         trap.transform.SetParent(surface, true);
         trap.Initialize();
+        InteractionAudio.Play(InteractionCue.TrapPlaced, position);
     }
 
     private bool TryGetPlacement(out Vector3 position, out Transform surface)

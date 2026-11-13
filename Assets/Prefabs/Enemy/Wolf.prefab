@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 4578585422359377508}
   - component: {fileID: 1641420277153625716}
   - component: {fileID: 5621273083756345764}
+  - component: {fileID: 6792364326828005638}
   m_Layer: 0
   m_Name: Wolf
   m_TagString: Untagged
@@ -239,3 +240,33 @@ MonoBehaviour:
   gloomDropPrefab: {fileID: 3576000997659860693, guid: 579434421b3be404bba8c564bf9157c8, type: 3}
   gloomResource: {fileID: 11400000, guid: ce994d07334f7174bb604bd98b67ae7a, type: 2}
   gloomDropped: 3
+--- !u!114 &6792364326828005638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2238342669247322418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474d67caa292b964e9f88cadda8108b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAudio
+  detectionClips:
+  - {fileID: 8300000, guid: 631e2a1a231157e48b74becb44229d73, type: 3}
+  - {fileID: 8300000, guid: 171c138f628f89348958311e7035171e, type: 3}
+  - {fileID: 8300000, guid: 207ddb46b408b314bb1b914879460f47, type: 3}
+  windupClips:
+  - {fileID: 8300000, guid: 4976faf3a219de74b9c31ba2ee811cc2, type: 3}
+  attackClips:
+  - {fileID: 8300000, guid: cef5ac4c310955749a3e78e10a979a51, type: 3}
+  hitClips: []
+  deathClips: []
+  wingClips: []
+  wingInterval: {x: 0.45, y: 0.65}
+  wingVolume: 0.15
+  mixerGroup: {fileID: 0}
+  listener: {fileID: 0}
+  audibleDistance: 18
+  volume: 0.55
+  pitchRange: {x: 0.95, y: 1.05}
