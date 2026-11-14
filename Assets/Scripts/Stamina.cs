@@ -282,6 +282,15 @@ public class StaminaSystem : MonoBehaviour
         }
     }
 
+    public void SetMaxStamina(float value)
+    {
+        float oldMaximum = maxStamina;
+        maxStamina = Mathf.Max(1f, value);
+        if (!IsDead) currentStamina = Mathf.Clamp(currentStamina + maxStamina - oldMaximum, 0f, maxStamina);
+        UpdateStaminaUI();
+        UpdateDangerEffect(false);
+    }
+
     public void RechargeStamina()
     {
         currentStamina = maxStamina;

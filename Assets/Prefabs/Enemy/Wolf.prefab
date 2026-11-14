@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 188328432558130584}
   - component: {fileID: 4597547232508402740}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 1641420277153625716}
   - component: {fileID: 5621273083756345764}
   - component: {fileID: 6792364326828005638}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wolf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 2.2, y: 1.2}
+  m_Size: {x: 2, y: 0.99}
   m_Direction: 1
 --- !u!114 &5621273083756345764
 MonoBehaviour:

@@ -1,0 +1,504 @@
+fileFormatVersion: 2
+guid: 757030d72b6ae1040b10e209cc3f3e06
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5642647035305541930
+    second: Cursed_Tree_Animation_0
+  - first:
+      213: -1621292300744795432
+    second: Cursed_Tree_Animation_1
+  - first:
+      213: 7216476306725876177
+    second: Cursed_Tree_Animation_2
+  - first:
+      213: 1805428569736800094
+    second: Cursed_Tree_Animation_3
+  - first:
+      213: -6933404318247964926
+    second: Cursed_Tree_Animation_4
+  - first:
+      213: 9177044642275576118
+    second: Cursed_Tree_Animation_5
+  - first:
+      213: -5074354978720535973
+    second: Cursed_Tree_Animation_6
+  - first:
+      213: 858003613365690583
+    second: Cursed_Tree_Animation_7
+  - first:
+      213: 990174493235865869
+    second: Cursed_Tree_Animation_8
+  - first:
+      213: -3514445728705505479
+    second: Cursed_Tree_Animation_9
+  - first:
+      213: 549922297323217682
+    second: Cursed_Tree_Animation_10
+  - first:
+      213: -1541523244631451043
+    second: Cursed_Tree_Animation_11
+  - first:
+      213: -158842049041907710
+    second: Cursed_Tree_Animation_12
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cursed_Tree_Animation_0
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 387
+        width: 100
+        height: 120
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6deb3bbda6a41b1b0800000000000000
+      internalID: -5642647035305541930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursed_Tree_Animation_1
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 388
+        width: 100
+        height: 120
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dad7011e330089e0800000000000000
+      internalID: -1621292300744795432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursed_Tree_Animation_2
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 387
+        width: 100
+        height: 120
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d13b6867f2162460800000000000000
+      internalID: 7216476306725876177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mouth Closed
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 186
+        width: 24
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e57e086f7bb2e0910800000000000000
+      internalID: 1805428569736800094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursed_Tree_Animation_
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 388
+        width: 100
+        height: 120
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20fabaed18997cf90800000000000000
+      internalID: -6933404318247964926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mouth Open
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 186
+        width: 24
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 639ccb6ea796b5f70800000000000000
+      internalID: 9177044642275576118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyesSet2_0
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 320
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5aa02d28054499b0800000000000000
+      internalID: -5074354978720535973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyesSet2_1
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 320
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d0e9ae8dbd38eb00800000000000000
+      internalID: 858003613365690583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyesSet3_0
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 320
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d09e9f6947ecdbd00800000000000000
+      internalID: 990174493235865869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyesSet3_1
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 320
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9379e16ea3e2a3fc0800000000000000
+      internalID: -3514445728705505479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyesSet4_0
+      rect:
+        serializedVersion: 2
+        x: 433
+        y: 320
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21364027a67b1a700800000000000000
+      internalID: 549922297323217682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyesSet4_1
+      rect:
+        serializedVersion: 2
+        x: 446
+        y: 320
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5a1cbeb6c86b9ae0800000000000000
+      internalID: -1541523244631451043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DefaultMouth
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 187
+        width: 24
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 200467b7ffdabcdf0800000000000000
+      internalID: -158842049041907710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyesSet1_0
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 319
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b481797839bc18940944af2a3a2091ff
+      internalID: 1022256431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyesSet1_1
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 319
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 334255090a748294b84f5a47e74025c5
+      internalID: -58587586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 0a5b8e6b86795bb42b5c899a2243816c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Cursed_Tree_Animation_: -6933404318247964926
+      Cursed_Tree_Animation_0: -5642647035305541930
+      Cursed_Tree_Animation_1: -1621292300744795432
+      Cursed_Tree_Animation_2: 7216476306725876177
+      Cursed_Tree_Animation_4: 2052416458
+      DefaultMouth: -158842049041907710
+      EyesSet1_0: 1022256431
+      EyesSet1_1: -58587586
+      EyesSet2_0: -5074354978720535973
+      EyesSet2_1: 858003613365690583
+      EyesSet3_0: 990174493235865869
+      EyesSet3_1: -3514445728705505479
+      EyesSet4_0: 549922297323217682
+      EyesSet4_1: -1541523244631451043
+      Mouth Closed: 1805428569736800094
+      Mouth Open: 9177044642275576118
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

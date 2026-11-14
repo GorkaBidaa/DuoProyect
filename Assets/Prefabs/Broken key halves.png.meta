@@ -1,0 +1,207 @@
+fileFormatVersion: 2
+guid: 6b4e5a8ce2ad3d040a380359f1cda6d7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7176506888318560535
+    second: Broken forest key halves_0
+  - first:
+      213: 616554370595545411
+    second: Broken forest key halves_1
+  - first:
+      213: -6699073834025168435
+    second: Broken forest key halves_2
+  - first:
+      213: -1177797504930097739
+    second: Broken forest key halves_3
+  - first:
+      213: 7035050606867870075
+    second: Broken forest key halves_4
+  - first:
+      213: 873912255708718247
+    second: Broken forest key halves_5
+  - first:
+      213: -4356968057990828890
+    second: Broken forest key halves_6
+  - first:
+      213: 5701876399958993000
+    second: Broken forest key halves_7
+  - first:
+      213: -8985837869119377514
+    second: Broken forest key halves_8
+  - first:
+      213: 6556174379722722158
+    second: Broken forest key halves_9
+  - first:
+      213: -44025753709468553
+    second: Broken forest key halves_10
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Half2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 945
+        height: 887
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e6d0a1020de76c90800000000000000
+      internalID: -7176506888318560535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Half1
+      rect:
+        serializedVersion: 2
+        x: 945
+        y: 0
+        width: 829
+        height: 887
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6acabbda2a0f883c0800000000000000
+      internalID: -4356968057990828890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 147977a6fff019c4fad626e71bd98dd8
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Broken forest key halves_1: 616554370595545411
+      Broken forest key halves_10: -44025753709468553
+      Broken forest key halves_2: -6699073834025168435
+      Broken forest key halves_3: -1177797504930097739
+      Broken forest key halves_4: 7035050606867870075
+      Broken forest key halves_5: 873912255708718247
+      Broken forest key halves_7: 5701876399958993000
+      Broken forest key halves_8: -8985837869119377514
+      Broken forest key halves_9: 6556174379722722158
+      Half1: -4356968057990828890
+      Half2: -7176506888318560535
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

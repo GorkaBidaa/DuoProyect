@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4965ce368d95b8c4f8bb234249dedecb, type: 3}
+  m_Name: KeyFrag2
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceData
+  resourceName: Key Fragment B
+  icon: {fileID: -4356968057990828890, guid: 6b4e5a8ce2ad3d040a380359f1cda6d7, type: 3}
+  description: The second fragment of the key to escape the forest has been found!

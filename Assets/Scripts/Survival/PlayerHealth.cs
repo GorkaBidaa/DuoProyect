@@ -7,7 +7,6 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private PlayerHUD hud;
     [SerializeField] private CursedForestHud forestHud;
 
-
     [Header("Hit response")]
     [SerializeField, Min(0f)] private float invulnerabilityDuration = 0.85f;
     [SerializeField] private Vector2 knockback = new Vector2(5f, 3f);
@@ -70,6 +69,15 @@ public class PlayerHealth : MonoBehaviour
         currentHealth += Mathf.Min(amount, maxHealth - currentHealth);
         RefreshHUD();
         return true;
+    }
+
+    public void SetMaxHealth(int value)
+    {
+        int oldMaximum = maxHealth;
+        maxHealth = Mathf.Max(1, value);
+        // Preserve missing health, grant the newly added capacity, and never revive here.
+        if (currentHealth > 0) currentHealth = Mathf.Clamp(currentHealth + maxHealth - oldMaximum, 1, maxHealth);
+        RefreshHUD();
     }
 
     public void ResetAfterRespawn()

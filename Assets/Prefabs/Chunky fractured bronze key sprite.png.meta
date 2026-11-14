@@ -1,0 +1,561 @@
+fileFormatVersion: 2
+guid: 52bd9b24ed31cab46874db52da8c6067
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 714598391905592768
+    second: Chunky fractured bronze key sprite_0
+  - first:
+      213: -327385750641505824
+    second: Chunky fractured bronze key sprite_1
+  - first:
+      213: 3626111695905225635
+    second: Chunky fractured bronze key sprite_2
+  - first:
+      213: 4514859324418964411
+    second: Chunky fractured bronze key sprite_3
+  - first:
+      213: 4190654523389474405
+    second: Chunky fractured bronze key sprite_4
+  - first:
+      213: 4195285786689387614
+    second: Chunky fractured bronze key sprite_5
+  - first:
+      213: -5965744574438360236
+    second: Chunky fractured bronze key sprite_6
+  - first:
+      213: -3919896489721583306
+    second: Chunky fractured bronze key sprite_7
+  - first:
+      213: 252386187242225009
+    second: Chunky fractured bronze key sprite_8
+  - first:
+      213: 6971773101012685546
+    second: Chunky fractured bronze key sprite_9
+  - first:
+      213: 6129997396033418883
+    second: Chunky fractured bronze key sprite_10
+  - first:
+      213: -1664532351509741903
+    second: Chunky fractured bronze key sprite_11
+  - first:
+      213: -463859566854218626
+    second: Chunky fractured bronze key sprite_12
+  - first:
+      213: -9215123624703286605
+    second: Chunky fractured bronze key sprite_13
+  - first:
+      213: -7357208209283636113
+    second: Chunky fractured bronze key sprite_14
+  - first:
+      213: -7999683528058566482
+    second: Chunky fractured bronze key sprite_15
+  - first:
+      213: 8486626574419068271
+    second: Chunky fractured bronze key sprite_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 2083
+        height: 719
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c5299a8373cae900800000000000000
+      internalID: 714598391905592768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_1
+      rect:
+        serializedVersion: 2
+        x: 951
+        y: 698
+        width: 25
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e90d74f464e47bf0800000000000000
+      internalID: -327385750641505824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_2
+      rect:
+        serializedVersion: 2
+        x: 2074
+        y: 513
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3abf15e1069825230800000000000000
+      internalID: 3626111695905225635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_3
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 276
+        width: 19
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbb3ad282a008ae30800000000000000
+      internalID: 4514859324418964411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 255
+        width: 5
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56673030612382a30800000000000000
+      internalID: 4190654523389474405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_5
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 260
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5cbdd60236a83a30800000000000000
+      internalID: 4195285786689387614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_6
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 79
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45b33ebdaea653da0800000000000000
+      internalID: -5965744574438360236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_7
+      rect:
+        serializedVersion: 2
+        x: 1919
+        y: 65
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63928dd39eab999c0800000000000000
+      internalID: -3919896489721583306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_8
+      rect:
+        serializedVersion: 2
+        x: 597
+        y: 45
+        width: 23
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17db9cc66e7a08300800000000000000
+      internalID: 252386187242225009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_9
+      rect:
+        serializedVersion: 2
+        x: 1929
+        y: 69
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae21c7482b6b0c060800000000000000
+      internalID: 6971773101012685546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_10
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 49
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38634a05720221550800000000000000
+      internalID: 6129997396033418883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_11
+      rect:
+        serializedVersion: 2
+        x: 1642
+        y: 47
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bebd1735a466e8e0800000000000000
+      internalID: -1664532351509741903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_12
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 23
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7cdcfb7e2a0099f0800000000000000
+      internalID: -463859566854218626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_13
+      rect:
+        serializedVersion: 2
+        x: 695
+        y: 22
+        width: 11
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b2204c13ed4d1080800000000000000
+      internalID: -9215123624703286605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_14
+      rect:
+        serializedVersion: 2
+        x: 1676
+        y: 27
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f64af032d12f5e990800000000000000
+      internalID: -7357208209283636113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_15
+      rect:
+        serializedVersion: 2
+        x: 328
+        y: 16
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea88682273a6bf090800000000000000
+      internalID: -7999683528058566482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chunky fractured bronze key sprite_16
+      rect:
+        serializedVersion: 2
+        x: 1604
+        y: 17
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6583a5c7ed86c570800000000000000
+      internalID: 8486626574419068271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Chunky fractured bronze key sprite_0: 714598391905592768
+      Chunky fractured bronze key sprite_1: -327385750641505824
+      Chunky fractured bronze key sprite_10: 6129997396033418883
+      Chunky fractured bronze key sprite_11: -1664532351509741903
+      Chunky fractured bronze key sprite_12: -463859566854218626
+      Chunky fractured bronze key sprite_13: -9215123624703286605
+      Chunky fractured bronze key sprite_14: -7357208209283636113
+      Chunky fractured bronze key sprite_15: -7999683528058566482
+      Chunky fractured bronze key sprite_16: 8486626574419068271
+      Chunky fractured bronze key sprite_2: 3626111695905225635
+      Chunky fractured bronze key sprite_3: 4514859324418964411
+      Chunky fractured bronze key sprite_4: 4190654523389474405
+      Chunky fractured bronze key sprite_5: 4195285786689387614
+      Chunky fractured bronze key sprite_6: -5965744574438360236
+      Chunky fractured bronze key sprite_7: -3919896489721583306
+      Chunky fractured bronze key sprite_8: 252386187242225009
+      Chunky fractured bronze key sprite_9: 6971773101012685546
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

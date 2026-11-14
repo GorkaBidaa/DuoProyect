@@ -133,6 +133,26 @@ public class PlayerInventory : MonoBehaviour
         Debug.Log($"Removed {amount} of {resource.resourceName} from inventory.");
     }
 
+    // Validate and commit the full price before notifying any inventory listeners.
+    public bool TrySpendResources(RecipeIngredient[] costs)
+    {
+        if (costs == null || costs.Length == 0) return false;
+        var slots = new List<InventorySlot>();
+        for (int i = 0; i < costs.Length; i++)
+        {
+            var cost = costs[i];
+            if (cost == null || cost.resource == null || cost.amount <= 0) return false;
+            for (int j = 0; j < i; j++) if (costs[j].resource == cost.resource) return false;
+            var slot = inventory.Find(entry => entry != null && entry.resource == cost.resource);
+            if (slot == null || slot.amount < cost.amount) return false;
+            slots.Add(slot);
+        }
+        for (int i = 0; i < costs.Length; i++) slots[i].amount -= costs[i].amount;
+        inventory.RemoveAll(slot => slot != null && slot.amount <= 0);
+        InventoryChanged?.Invoke();
+        return true;
+    }
+
     public int GetResourceAmount(ResourceData resource)
     {
         InventorySlot existingSlot = inventory.Find(

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4a48f7f2b364f74eb3b75bb6a0ad04d, type: 3}
+  m_Name: Magic Key
+  m_EditorClassIdentifier: Assembly-CSharp::RecipeData
+  recipeName: Magic Key
+  description: 'Combining the fractured key fragments with the help of the forests gloom allows you to repair the key to a functional state '
+  ingredients:
+  - resource: {fileID: 11400000, guid: 2cd709f9264adf140a4bfbdd1675aeb7, type: 2}
+    amount: 1
+  - resource: {fileID: 11400000, guid: 725a7b59c85762f46a376db0e25a8551, type: 2}
+    amount: 1
+  - resource: {fileID: 11400000, guid: ce994d07334f7174bb604bd98b67ae7a, type: 2}
+    amount: 10
+  - resource: {fileID: 11400000, guid: 6fe6bf9f80d9bdd4e881a8ee6bd12ac0, type: 2}
+    amount: 2
+  outputType: 1
+  resourceOutput: {fileID: 0}
+  itemOutput: {fileID: 11400000, guid: 6cdf807b7fe790749a2c7ef65ad9b324, type: 2}
+  outputAmount: 1
