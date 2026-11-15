@@ -15,7 +15,7 @@ MonoBehaviour:
   kind: 2
   upgradeName: Anchor Range
   description: Increase the range you are able to teleport to your shadow from.
-  icon: {fileID: 0}
+  icon: {fileID: -6821893677000105744, guid: fe7a05f6f87e19c40a82b39548b15ef2, type: 3}
   levels:
   - amount: 5
     costs:

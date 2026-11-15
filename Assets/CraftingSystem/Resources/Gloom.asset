@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ResourceData
   resourceName: Gloom
   icon: {fileID: -9171205730053500701, guid: 560b359f6e1d4e847908cbaaca1ec2dc, type: 3}
-  description: 
+  description: 'An evil goo found throughout the forest, maybe something useful could come out of it if the evil was cleansed. '

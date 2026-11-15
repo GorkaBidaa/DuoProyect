@@ -19,7 +19,7 @@ MonoBehaviour:
     amount: 1
   - resource: {fileID: 11400000, guid: 6fe6bf9f80d9bdd4e881a8ee6bd12ac0, type: 2}
     amount: 2
-  outputType: 0
+  outputType: 1
   resourceOutput: {fileID: 0}
-  itemOutput: {fileID: 0}
+  itemOutput: {fileID: 11400000, guid: 7176b244e1a3d5e4a887673f969da310, type: 2}
   outputAmount: 1

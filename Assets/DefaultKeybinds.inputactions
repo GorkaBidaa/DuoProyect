@@ -70,7 +70,7 @@
                     "name": "PinRecipe",
                     "type": "Button",
                     "id": "1e536a36-83ef-4787-8d65-311c4bc6bd43",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false,
@@ -355,6 +355,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
+                    "action": "PinRecipe",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4d9eb8c-701c-4219-9a83-a57b33e9bf6d",
+                    "path": "<Gamepad>/rightStick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "PinRecipe",
                     "isComposite": false,
                     "isPartOfComposite": false

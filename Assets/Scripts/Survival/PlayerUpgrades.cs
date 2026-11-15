@@ -20,6 +20,8 @@ public class PlayerUpgrades : MonoBehaviour
     private readonly Dictionary<PlayerUpgradeKind, PlayerUpgradeData> catalog = new Dictionary<PlayerUpgradeKind, PlayerUpgradeData>();
     private readonly Dictionary<PlayerUpgradeKind, int> purchased = new Dictionary<PlayerUpgradeKind, int>();
     private bool ready, purchasing;
+    private int lastPurchaseFrame = -1;
+    public bool IsReady => ready && isActiveAndEnabled;
     public event Action UpgradesChanged;
     public IReadOnlyList<PlayerUpgradeData> Catalog => upgrades;
 
@@ -68,11 +70,24 @@ public class PlayerUpgrades : MonoBehaviour
         int level = GetLevel(kind);
         return level < data.levels.Length ? data.levels[level] : null;
     }
+    public float GetCurrentValue(PlayerUpgradeKind kind)
+    {
+        switch (kind)
+        {
+            case PlayerUpgradeKind.MaxHealth: return health ? health.MaxHealth : 0f;
+            case PlayerUpgradeKind.MaxStamina: return stamina ? stamina.maxStamina : 0f;
+            case PlayerUpgradeKind.AnchorRange: return anchor ? anchor.maxTeleportRadius : 0f;
+            default: return GetLevel(kind);
+        }
+    }
+
     public bool CanPurchase(PlayerUpgradeKind kind, out string reason)
     {
         reason = "";
         if (!ready || !isActiveAndEnabled || purchasing) { reason = "Upgrades are not available."; return false; }
         if (stamina.IsDead || health.CurrentHealth <= 0 || Time.timeScale <= 0f) { reason = "Player must be alive and gameplay active."; return false; }
+        if (GameInput.Instance && GameInput.Instance.DialogueBlocked)
+        { reason = "Close other menus before upgrading."; return false; }
         if (onlyAtBase && !stamina.IsInSafeZone) { reason = "Return to base to upgrade."; return false; }
         if (!catalog.TryGetValue(kind, out var data) || !data.IsValid()) { reason = "Upgrade is not configured."; return false; }
         PlayerUpgradeLevel next = GetNextLevel(kind);
@@ -84,8 +99,11 @@ public class PlayerUpgrades : MonoBehaviour
     }
     public bool Purchase(PlayerUpgradeKind kind)
     {
+        if (lastPurchaseFrame == Time.frameCount) return false;
         if (!CanPurchase(kind, out string reason)) { Debug.Log(reason, this); return false; }
+        lastPurchaseFrame = Time.frameCount;
         purchasing = true;
+        bool completed = false;
         try
         {
             var next = GetNextLevel(kind);
@@ -94,11 +112,16 @@ public class PlayerUpgrades : MonoBehaviour
             Apply(catalog[kind], next.amount);
             purchased[kind] = newLevel;
             if (saveBetweenSessions) { PlayerPrefs.SetInt(Key(kind), newLevel); PlayerPrefs.Save(); }
-            UpgradesChanged?.Invoke();
+            completed = true;
             Debug.Log(catalog[kind].upgradeName + " upgraded to level " + newLevel + ".", this);
             return true;
         }
-        finally { purchasing = false; }
+        finally
+        {
+            // Listeners can now query the next affordable level after the purchase lock is released.
+            purchasing = false;
+            if (completed) UpgradesChanged?.Invoke();
+        }
     }
     private void Apply(PlayerUpgradeData data, float amount)
     {

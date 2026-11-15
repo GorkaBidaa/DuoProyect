@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4a48f7f2b364f74eb3b75bb6a0ad04d, type: 3}
   m_Name: Resin Trap
   m_EditorClassIdentifier: Assembly-CSharp::RecipeData
-  recipeName: 
-  description: 
+  recipeName: Resin Trap
+  description: A trap able to kill any foe.
   ingredients:
   - resource: {fileID: 11400000, guid: ce994d07334f7174bb604bd98b67ae7a, type: 2}
     amount: 2

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUpgradeData
   kind: 1
   upgradeName: Max Stamina
-  description: Increase your total max health.
-  icon: {fileID: 0}
+  description: Increase your total max stamina.
+  icon: {fileID: 7391255930643154453, guid: fe7a05f6f87e19c40a82b39548b15ef2, type: 3}
   levels:
   - amount: 20
     costs:

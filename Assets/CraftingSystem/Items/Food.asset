@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Food
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Food
-  icon: {fileID: 7224441717321094439, guid: 8f8f994e3cc01fe44bb7293ed718924d, type: 3}
+  icon: {fileID: 9141776288291733178, guid: fe7a05f6f87e19c40a82b39548b15ef2, type: 3}
   description: Food used to regenerate health & stamina, but could also be used as bait!
   consumeOnUse: 1

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Lure
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Lure
-  icon: {fileID: 0}
-  description: 
+  icon: {fileID: -169844413059994398, guid: fe7a05f6f87e19c40a82b39548b15ef2, type: 3}
+  description: Starving creatures of the forest can easily be distracted with this item.
   consumeOnUse: 1

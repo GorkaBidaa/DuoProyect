@@ -15,7 +15,7 @@ MonoBehaviour:
   kind: 4
   upgradeName: Wall Jump
   description: You are now able to glide and jump from walls.
-  icon: {fileID: 0}
+  icon: {fileID: -4671533985425982684, guid: fe7a05f6f87e19c40a82b39548b15ef2, type: 3}
   levels:
   - amount: 1
     costs:

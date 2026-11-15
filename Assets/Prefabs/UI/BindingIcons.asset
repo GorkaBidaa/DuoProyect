@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daed1c6d18cb7774eb8796a5162d24b3, type: 3}
+  m_Name: BindingIcons
+  m_EditorClassIdentifier: Assembly-CSharp::BindingIconSet
+  keyboardIcons:
+  - controlPath: <Keyboard>/a
+    sprite: {fileID: -705398921320836462, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/d
+    sprite: {fileID: 6722573676383376583, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/w
+    sprite: {fileID: 124596748425520283, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/f
+    sprite: {fileID: -604347472306105412, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/i
+    sprite: {fileID: -6653649410388282213, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/p
+    sprite: {fileID: -4303401063228601796, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/e
+    sprite: {fileID: 398461165271328630, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/space
+    sprite: {fileID: -2735809043402957312, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/escape
+    sprite: {fileID: -7170562876106508765, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/leftShift
+    sprite: {fileID: 1884823638763116012, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/leftArrow
+    sprite: {fileID: 4982396924874861963, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/rightArrow
+    sprite: {fileID: 5913870273358768496, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/upArrow
+    sprite: {fileID: -3401717340846866385, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/q
+    sprite: {fileID: -4893784280694879426, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/r
+    sprite: {fileID: -279133538691268285, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  - controlPath: <Keyboard>/t
+    sprite: {fileID: -1149607215196779441, guid: 1ec746c471dcdd54292a66c730506eef, type: 3}
+  mouseIcons:
+  - controlPath: <Mouse>/rightButton
+    sprite: {fileID: -5406972848313041961, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Mouse>/scroll/y
+    sprite: {fileID: -3235820870238631759, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Mouse>/leftButton
+    sprite: {fileID: -7219032186391807377, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Mouse>/middleButton
+    sprite: {fileID: -3235820870238631759, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Mouse>/forwardButton
+    sprite: {fileID: -4133800902237080227, guid: 4fa076ac6e8d4bb4cb1d9299bb3407f7, type: 3}
+  - controlPath: <Mouse>/backButton
+    sprite: {fileID: -6795935346411263927, guid: 4fa076ac6e8d4bb4cb1d9299bb3407f7, type: 3}
+  controllerIcons:
+  - controlPath: <Gamepad>/buttonSouth
+    sprite: {fileID: 3425698845563253702, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/buttonNorth
+    sprite: {fileID: 1047434734406159805, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/buttonEast
+    sprite: {fileID: 3993749675285404217, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/buttonWest
+    sprite: {fileID: -1900821782253288296, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/select
+    sprite: {fileID: 3346731608315831530, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/start
+    sprite: {fileID: -2543294679312162336, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/leftTrigger
+    sprite: {fileID: -4375772265404703375, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/rightTrigger
+    sprite: {fileID: 1605647948947086463, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/leftShoulder
+    sprite: {fileID: 318492763479407081, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/rightShoulder
+    sprite: {fileID: 3951210420297775527, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/leftStick/x
+    sprite: {fileID: 3494972670720578988, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/dpad/x
+    sprite: {fileID: -2396348783502085639, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/leftStick
+    sprite: {fileID: -3900187718882495816, guid: cdc85501b9cf3504c8c368d7d6fbdd27, type: 3}
+  - controlPath: <Gamepad>/rightStick
+    sprite: {fileID: 8882603249980330064, guid: cdc85501b9cf3504c8c368d7d6fbdd27, type: 3}
+  - controlPath: <Gamepad>/leftStickPress
+    sprite: {fileID: 4379120142140545521, guid: cdc85501b9cf3504c8c368d7d6fbdd27, type: 3}
+  - controlPath: <Gamepad>/rightStickPress
+    sprite: {fileID: 6642145165292974568, guid: cdc85501b9cf3504c8c368d7d6fbdd27, type: 3}
+  - controlPath: <Gamepad>/dpad
+    sprite: {fileID: 7444620009271902004, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/dpad/up
+    sprite: {fileID: 3748167293724885773, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/dpad/down
+    sprite: {fileID: -5843400385420062974, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/dpad/left
+    sprite: {fileID: -1149440019849829769, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}
+  - controlPath: <Gamepad>/dpad/right
+    sprite: {fileID: 7077469740812172911, guid: 6bc608eeaf6af0345a4e863c2065707f, type: 3}

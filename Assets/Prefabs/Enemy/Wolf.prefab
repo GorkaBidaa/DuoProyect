@@ -208,7 +208,7 @@ MonoBehaviour:
   visuals: {fileID: 4597547232508402740}
   solidLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 1088
   patrolCenter: {fileID: 0}
   patrolWidth: 10
   chaseAreaMultiplier: 2.5
@@ -265,7 +265,7 @@ MonoBehaviour:
   wingClips: []
   wingInterval: {x: 0.45, y: 0.65}
   wingVolume: 0.15
-  mixerGroup: {fileID: 0}
+  mixerGroup: {fileID: -7755064860990913184, guid: b8ba364b186aabc4dad814a322d26695, type: 2}
   listener: {fileID: 0}
   audibleDistance: 18
   volume: 0.55

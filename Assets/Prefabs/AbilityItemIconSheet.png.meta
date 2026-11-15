@@ -1,0 +1,592 @@
+fileFormatVersion: 2
+guid: fe7a05f6f87e19c40a82b39548b15ef2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6821893677000105744
+    second: AbilityItemIconSheet_0
+  - first:
+      213: -7321043685519076709
+    second: AbilityItemIconSheet_1
+  - first:
+      213: 7391255930643154453
+    second: AbilityItemIconSheet_2
+  - first:
+      213: 1371916746049690070
+    second: AbilityItemIconSheet_3
+  - first:
+      213: -4671533985425982684
+    second: AbilityItemIconSheet_4
+  - first:
+      213: -2828485773244210097
+    second: AbilityItemIconSheet_5
+  - first:
+      213: 9141776288291733178
+    second: AbilityItemIconSheet_6
+  - first:
+      213: -169844413059994398
+    second: AbilityItemIconSheet_7
+  - first:
+      213: -5777571922052733394
+    second: AbilityItemIconSheet_8
+  - first:
+      213: 3696854085995470297
+    second: AbilityItemIconSheet_9
+  - first:
+      213: 7918284260214945218
+    second: AbilityItemIconSheet_10
+  - first:
+      213: 8356363791277622786
+    second: AbilityItemIconSheet_11
+  - first:
+      213: 8198402623057989961
+    second: AbilityItemIconSheet_12
+  - first:
+      213: 8729882328397238242
+    second: AbilityItemIconSheet_13
+  - first:
+      213: 7148961559256038215
+    second: AbilityItemIconSheet_14
+  - first:
+      213: 5726661414025655221
+    second: AbilityItemIconSheet_15
+  - first:
+      213: -9082392226663735502
+    second: AbilityItemIconSheet_16
+  - first:
+      213: 5849621048061109411
+    second: AbilityItemIconSheet_17
+  - first:
+      213: 1729836461684247023
+    second: AbilityItemIconSheet_18
+  - first:
+      213: -2720476611493842758
+    second: AbilityItemIconSheet_19
+  - first:
+      213: 6702254389551660955
+    second: AbilityItemIconSheet_20
+  - first:
+      213: 6825050947597950526
+    second: AbilityItemIconSheet_21
+  - first:
+      213: 413839040949455851
+    second: AbilityItemIconSheet_22
+  - first:
+      213: -1096447597632091141
+    second: AbilityItemIconSheet_23
+  - first:
+      213: 7184705373660074410
+    second: AbilityItemIconSheet_24
+  - first:
+      213: -3139300129095310384
+    second: AbilityItemIconSheet_25
+  - first:
+      213: 2715220759771310215
+    second: AbilityItemIconSheet_26
+  - first:
+      213: 2188949636181551476
+    second: AbilityItemIconSheet_27
+  - first:
+      213: 6719079261754759441
+    second: AbilityItemIconSheet_28
+  - first:
+      213: -575663392898990052
+    second: AbilityItemIconSheet_29
+  - first:
+      213: -6306695862952664521
+    second: AbilityItemIconSheet_30
+  - first:
+      213: 4185324060135729086
+    second: AbilityItemIconSheet_31
+  - first:
+      213: 5414023249513435338
+    second: AbilityItemIconSheet_32
+  - first:
+      213: 8829522773026185239
+    second: AbilityItemIconSheet_33
+  - first:
+      213: 5441408744537560884
+    second: AbilityItemIconSheet_34
+  - first:
+      213: 7103999267613622877
+    second: AbilityItemIconSheet_35
+  - first:
+      213: 2601297860667287290
+    second: AbilityItemIconSheet_36
+  - first:
+      213: 3920298496246518772
+    second: AbilityItemIconSheet_37
+  - first:
+      213: -2316006315108658756
+    second: AbilityItemIconSheet_38
+  - first:
+      213: 4433713367977196108
+    second: AbilityItemIconSheet_39
+  - first:
+      213: -9178318369425822695
+    second: AbilityItemIconSheet_40
+  - first:
+      213: 4103654899802701114
+    second: AbilityItemIconSheet_41
+  - first:
+      213: -2661732456311512690
+    second: AbilityItemIconSheet_42
+  - first:
+      213: 5877228695630053325
+    second: AbilityItemIconSheet_43
+  - first:
+      213: -6831566780054772710
+    second: AbilityItemIconSheet_44
+  - first:
+      213: -4319784411319441867
+    second: AbilityItemIconSheet_45
+  - first:
+      213: -520523280978108403
+    second: AbilityItemIconSheet_46
+  - first:
+      213: 6905127585961507684
+    second: AbilityItemIconSheet_47
+  - first:
+      213: -4337681276982197190
+    second: AbilityItemIconSheet_48
+  - first:
+      213: -5799063161668664179
+    second: AbilityItemIconSheet_49
+  - first:
+      213: 2056044896969433847
+    second: AbilityItemIconSheet_50
+  - first:
+      213: -1936925136762615827
+    second: AbilityItemIconSheet_51
+  - first:
+      213: 1098325581693966825
+    second: AbilityItemIconSheet_52
+  - first:
+      213: 8404574566723917051
+    second: AbilityItemIconSheet_53
+  - first:
+      213: -2820388041009515206
+    second: AbilityItemIconSheet_54
+  - first:
+      213: -5785872962092493404
+    second: AbilityItemIconSheet_55
+  - first:
+      213: -1632693758231359591
+    second: AbilityItemIconSheet_56
+  - first:
+      213: -7835696817000051101
+    second: AbilityItemIconSheet_57
+  - first:
+      213: 8826249139269854174
+    second: AbilityItemIconSheet_58
+  - first:
+      213: -4572235304323149021
+    second: AbilityItemIconSheet_59
+  - first:
+      213: -3910705484806567044
+    second: AbilityItemIconSheet_60
+  - first:
+      213: 4192313322308040810
+    second: AbilityItemIconSheet_61
+  - first:
+      213: -2239950875756789887
+    second: AbilityItemIconSheet_62
+  - first:
+      213: 1553827230702125633
+    second: AbilityItemIconSheet_63
+  - first:
+      213: -6783513870243180673
+    second: AbilityItemIconSheet_64
+  - first:
+      213: -4906748348416045091
+    second: AbilityItemIconSheet_65
+  - first:
+      213: 5619065735194077799
+    second: AbilityItemIconSheet_66
+  - first:
+      213: 388790775659766790
+    second: AbilityItemIconSheet_67
+  - first:
+      213: 3199542602229710981
+    second: AbilityItemIconSheet_68
+  - first:
+      213: 8152343043993915918
+    second: AbilityItemIconSheet_69
+  - first:
+      213: -4356329315415118458
+    second: AbilityItemIconSheet_70
+  - first:
+      213: 6991244535559893519
+    second: AbilityItemIconSheet_71
+  - first:
+      213: 4793199646057899704
+    second: AbilityItemIconSheet_72
+  - first:
+      213: 5745434908854037346
+    second: AbilityItemIconSheet_73
+  - first:
+      213: 6157492112518995309
+    second: AbilityItemIconSheet_74
+  - first:
+      213: 193961915285471925
+    second: AbilityItemIconSheet_75
+  - first:
+      213: -8523189693633440414
+    second: AbilityItemIconSheet_76
+  - first:
+      213: -3505537553732393762
+    second: AbilityItemIconSheet_77
+  - first:
+      213: -4410047798024987951
+    second: AbilityItemIconSheet_78
+  - first:
+      213: -5119869635579014726
+    second: AbilityItemIconSheet_79
+  - first:
+      213: -7434569581329867419
+    second: AbilityItemIconSheet_80
+  - first:
+      213: 1701417780982130933
+    second: AbilityItemIconSheet_81
+  - first:
+      213: -4955159530156846675
+    second: AbilityItemIconSheet_82
+  - first:
+      213: -5388740936477492220
+    second: AbilityItemIconSheet_83
+  - first:
+      213: 9218344906043639887
+    second: AbilityItemIconSheet_84
+  - first:
+      213: -9209236762387341062
+    second: AbilityItemIconSheet_85
+  - first:
+      213: 6477006264228650233
+    second: AbilityItemIconSheet_86
+  - first:
+      213: 946315884416244262
+    second: AbilityItemIconSheet_87
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Anchor Range
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 836
+        width: 417
+        height: 418
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f0ecee38d3c351a0800000000000000
+      internalID: -6821893677000105744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Max Health
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 836
+        width: 417
+        height: 418
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b92d48b7e8d666a90800000000000000
+      internalID: -7321043685519076709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Max Stamina
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 836
+        width: 417
+        height: 418
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5160cfdbb14039660800000000000000
+      internalID: 7391255930643154453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadow Dash
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 418
+        width: 417
+        height: 418
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d993b503070a0310800000000000000
+      internalID: 1371916746049690070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Wall Jump
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 418
+        width: 417
+        height: 418
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42bf48257906b2fb0800000000000000
+      internalID: -4671533985425982684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Repellant
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 418
+        width: 417
+        height: 418
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f446889dc233fb8d0800000000000000
+      internalID: -2828485773244210097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Food
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 417
+        height: 418
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abeb7b7591d1ede70800000000000000
+      internalID: 9141776288291733178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lure
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 0
+        width: 417
+        height: 418
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ec697cf76794adf0800000000000000
+      internalID: -169844413059994398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Trap
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 0
+        width: 417
+        height: 418
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e26a6c1a2f0f1dfa0800000000000000
+      internalID: -5777571922052733394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: daf270ccc63834c41979511d29142d01
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":417.0,"y":418.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Anchor Range: -6821893677000105744
+      Food: 9141776288291733178
+      Lure: -169844413059994398
+      Max Health: -7321043685519076709
+      Max Stamina: 7391255930643154453
+      Repellant: -2828485773244210097
+      Shadow Dash: 1371916746049690070
+      Trap: -5777571922052733394
+      Wall Jump: -4671533985425982684
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -25,9 +25,15 @@ MonoBehaviour:
   - m_enabled: 0
     m_path: Assets/Scenes/SampleScene.unity
     m_guid: 8c9cfa26abfee488c85f1582747f6a02
-  - m_enabled: 1
+  - m_enabled: 0
     m_path: Assets/Scenes/Tutorial.unity
     m_guid: f5f637bb7736ee743bc2bd26dcc069e0
+  - m_enabled: 1
+    m_path: Assets/Scenes/MainMenu.unity
+    m_guid: 1f10f4a9057a57a43af08552c7c451fd
+  - m_enabled: 1
+    m_path: Assets/Scenes/BACKUPTutorial.unity
+    m_guid: 7e77eb22664e3f443bb04bd82a39a032
   m_HasScriptingDefines: 1
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:

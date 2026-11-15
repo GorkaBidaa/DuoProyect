@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 7736601624395917498}
   - component: {fileID: 2681584092224630726}
   - component: {fileID: 3480037810967018680}
-  m_Layer: 0
+  - component: {fileID: 7841729517553522471}
+  m_Layer: 13
   m_Name: KeyFrag2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,6 +95,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ResourcePickup
   resource: {fileID: 11400000, guid: 2cd709f9264adf140a4bfbdd1675aeb7, type: 2}
   amount: 1
+--- !u!114 &7841729517553522471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718705763153867119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21da5c0e040d85f4cbd184064c884a19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceBob
+  visual: {fileID: 2631789504249573000}
+  bobHeight: 0.1
+  cyclesPerSecond: 0.6
+  randomStartPhase: 1
 --- !u!1 &7281518073293387875
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,8 +121,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2631789504249573000}
   - component: {fileID: 3518554725916844728}
-  m_Layer: 0
-  m_Name: Half2
+  m_Layer: 13
+  m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

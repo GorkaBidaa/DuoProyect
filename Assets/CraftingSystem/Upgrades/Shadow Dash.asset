@@ -15,7 +15,7 @@ MonoBehaviour:
   kind: 3
   upgradeName: Shadow Dash
   description: Your shadow can now dash in the direction they are facing.
-  icon: {fileID: 0}
+  icon: {fileID: 1371916746049690070, guid: fe7a05f6f87e19c40a82b39548b15ef2, type: 3}
   levels:
   - amount: 1
     costs:

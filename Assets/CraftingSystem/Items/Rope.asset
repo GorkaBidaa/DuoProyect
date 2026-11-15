@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Rope
   icon: {fileID: -7671959770660438167, guid: 3937f7b2be2fa344aba844a89e29994c, type: 3}
-  description: Can be used to create shortcuts on specific POIs
+  description: A rope that can be attached at specific hooks, allows for easy travel through the forest.
   consumeOnUse: 1

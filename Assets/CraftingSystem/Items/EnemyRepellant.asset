@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: EnemyRepellant
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Enemy Repellant
-  icon: {fileID: 0}
+  icon: {fileID: -2828485773244210097, guid: fe7a05f6f87e19c40a82b39548b15ef2, type: 3}
   description: Repel enemies away from you for a short duration.
   consumeOnUse: 1

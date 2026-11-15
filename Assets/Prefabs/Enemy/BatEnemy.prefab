@@ -146,7 +146,7 @@ MonoBehaviour:
   detectionRange: 7
   solidLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 1088
   approachSpeed: 3.5
   returnSpeed: 3
   repathInterval: 0.4
@@ -161,7 +161,7 @@ MonoBehaviour:
   spikeAssistEnabled: 1
   spikeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   spikeSearchRadius: 4
   spikeAssistAngle: 12
   minimumDistanceBehindPlayer: 0.35
@@ -274,7 +274,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 2d652169228f8ed41a29078826b5568a, type: 3}
   wingInterval: {x: 0.45, y: 0.65}
   wingVolume: 0.15
-  mixerGroup: {fileID: 0}
+  mixerGroup: {fileID: -7755064860990913184, guid: b8ba364b186aabc4dad814a322d26695, type: 2}
   listener: {fileID: 0}
   audibleDistance: 18
   volume: 0.55

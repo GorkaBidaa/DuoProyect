@@ -1,27 +1,50 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
+// One action/direction label, with as many alternative binding buttons as it needs.
 public class KeybindRow : MonoBehaviour
 {
     [SerializeField] private TMP_Text actionLabel;
-    [SerializeField] private TMP_Text bindingLabel;
-    [SerializeField] private Button changeButton;
-    public bool IsConfigured => actionLabel && bindingLabel && changeButton;
+    [SerializeField] private Transform bindingsRoot;
+    [Tooltip("The existing ChangeBTN, with KeybindSlot attached, inside BindingsRoot. It becomes a hidden template in Play Mode.")]
+    [SerializeField] private KeybindSlot slotTemplate;
+    private readonly List<KeybindSlot> slots = new List<KeybindSlot>();
+    public bool IsConfigured => actionLabel && bindingsRoot && slotTemplate &&
+        slotTemplate.IsConfigured && bindingsRoot.IsChildOf(transform) &&
+        bindingsRoot != transform && slotTemplate.transform.parent == bindingsRoot;
 
-    public void Setup(string title, string binding, UnityEngine.Events.UnityAction onChange)
+    private void Awake()
     {
-        actionLabel.text = title;
-        bindingLabel.text = binding;
-        changeButton.onClick.RemoveAllListeners();
-        changeButton.onClick.AddListener(onChange);
+        if (slotTemplate) slotTemplate.gameObject.SetActive(false);
     }
 
-    public void SetBinding(string binding) => bindingLabel.text = binding;
-    public void SetInteractable(bool value) => changeButton.interactable = value;
+    public void Setup(string title)
+    {
+        actionLabel.text = title;
+        slotTemplate.gameObject.SetActive(false);
+        foreach (KeybindSlot slot in slots)
+            if (slot) { slot.gameObject.SetActive(false); Destroy(slot.gameObject); }
+        slots.Clear();
+    }
+
+    public KeybindSlot AddBinding(string binding, Sprite icon, UnityEngine.Events.UnityAction onChange)
+    {
+        KeybindSlot slot = Instantiate(slotTemplate, bindingsRoot, false);
+        slot.name = "Binding_" + (slots.Count + 1);
+        slot.Setup(binding, icon, onChange);
+        slot.gameObject.SetActive(true);
+        slots.Add(slot);
+        return slot;
+    }
+
+    public void SetInteractable(bool value)
+    {
+        foreach (KeybindSlot slot in slots) if (slot) slot.SetInteractable(value);
+    }
+
     public void Select()
     {
-        if (UnityEngine.EventSystems.EventSystem.current)
-            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(changeButton.gameObject);
+        if (slots.Count > 0 && slots[0]) slots[0].Select();
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6458149529221853380}
   - component: {fileID: 8716801634186786329}
   - component: {fileID: 3576000997659860693}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: WhisperDrop
   m_TagString: Untagged
   m_Icon: {fileID: 0}

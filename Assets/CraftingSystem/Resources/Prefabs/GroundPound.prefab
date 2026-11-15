@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8758718350965724041}
   - component: {fileID: 2152571353838373154}
   - component: {fileID: 4833962073366704276}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: GroundPound
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerHealth), typeof(StaminaSystem))]
@@ -22,6 +23,10 @@ public class LowHealthDanger : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float ambienceVolume = 0.18f;
     [SerializeField, Range(40f, 180f)] private float startingBpm = 70f;
     [SerializeField, Range(40f, 180f)] private float criticalBpm = 135f;
+
+    [Header("Audio routing")]
+    [SerializeField] private AudioMixerGroup heartbeatMixerGroup;
+    [SerializeField] private AudioMixerGroup dangerAmbienceMixerGroup;
 
     private PlayerHealth health;
     private StaminaSystem stamina;
@@ -57,8 +62,8 @@ public class LowHealthDanger : MonoBehaviour
         vignette.raycastTarget = false;
         if (!vignette.sprite) vignette.sprite = CreateVignette();
         vignette.type = Image.Type.Simple;
-        heartbeat = CreateAudio("LowHealthHeartbeat", false);
-        ambience = CreateAudio("LowHealthAmbience", true);
+        heartbeat = CreateAudio("LowHealthHeartbeat", false, heartbeatMixerGroup);
+        ambience = CreateAudio("LowHealthAmbience", true, dangerAmbienceMixerGroup);
         if (!heartbeatClip) heartbeatClip = generatedHeartbeat = CreateHeartbeat();
         if (!dangerAmbienceClip) dangerAmbienceClip = generatedAmbience = CreateDrone();
         heartbeat.clip = heartbeatClip;
@@ -66,7 +71,7 @@ public class LowHealthDanger : MonoBehaviour
         Clear();
     }
 
-    private AudioSource CreateAudio(string name, bool loop)
+    private AudioSource CreateAudio(string name, bool loop, AudioMixerGroup output)
     {
         var child = new GameObject(name);
         child.transform.SetParent(transform, false);
@@ -75,6 +80,7 @@ public class LowHealthDanger : MonoBehaviour
         source.loop = loop;
         source.spatialBlend = 0f;
         source.volume = 0f;
+        source.outputAudioMixerGroup = output;
         return source;
     }
 

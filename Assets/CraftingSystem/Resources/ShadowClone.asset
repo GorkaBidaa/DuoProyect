@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4965ce368d95b8c4f8bb234249dedecb, type: 3}
   m_Name: ShadowClone
   m_EditorClassIdentifier: Assembly-CSharp::ResourceData
-  resourceName: Shadow Clone Relic
+  resourceName: Shadow Dash Relic
   icon: {fileID: -7523367641715437610, guid: d3d90b588c1c17a4b8c164956d1418a4, type: 3}
-  description: 
+  description: 'A unique relic found in the forest, your shadow clone feels a strong connection to it, maybe something can be achieved with this. '

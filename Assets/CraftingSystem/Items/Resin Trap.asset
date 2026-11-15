@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd9394425a131be44bc71e2b246313a7, type: 3}
   m_Name: Resin Trap
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: 
-  icon: {fileID: 21300000, guid: 25534d7e0c9de5646aee54d576a28388, type: 3}
-  description: 
+  itemName: Resin Trap
+  icon: {fileID: -5777571922052733394, guid: fe7a05f6f87e19c40a82b39548b15ef2, type: 3}
+  description: The assembly of this trap could kill any foe who decides to step on it.
   consumeOnUse: 1

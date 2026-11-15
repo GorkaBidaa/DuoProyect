@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: f6e94e1b3ec96c5479fd7da74a862fcb
+AssetOrigin:
+  serializedVersion: 1
+  productId: 199010
+  packageName: Dark Theme UI
+  packageVersion: 1.1
+  assetPath: Assets/Dark UI/Ribbons/Ribbons Dark Theme.png
+  uploadId: 761092
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -86,7 +93,9 @@ TextureImporter:
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
+  spriteTessellationMethod: 0
   spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -152,7 +161,7 @@ TextureImporter:
         height: 158
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 58, y: 0, z: 57, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -174,7 +183,7 @@ TextureImporter:
         height: 158
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 50, y: 0, z: 51, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -191,12 +200,12 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 60
-        y: 1566
+        y: 1567
         width: 960
         height: 191
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 112, y: 0, z: 113, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -240,7 +249,7 @@ TextureImporter:
         height: 152
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 56, y: 0, z: 57, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -262,7 +271,7 @@ TextureImporter:
         height: 152
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 46, y: 0, z: 46, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -348,10 +357,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 199010
-  packageName: Dark Theme UI
-  packageVersion: 1.1
-  assetPath: Assets/Dark UI/Ribbons/Ribbons Dark Theme.png
-  uploadId: 761092

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ResourceData
   resourceName: Wall Climb Relic
   icon: {fileID: -5935305407033800999, guid: 4d81eb74d5f758047a7a88123033fc7c, type: 3}
-  description: 
+  description: A unique relic found within the forest, it has a very rough surface able to grip any surface without struggle.
