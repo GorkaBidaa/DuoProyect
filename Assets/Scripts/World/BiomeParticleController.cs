@@ -16,8 +16,13 @@ public class BiomeParticleController : MonoBehaviour
     [Tooltip("Clear old particles after a large player or camera position jump.")]
     [SerializeField, Min(0.1f)] private float teleportClearDistance = 12f;
 
+    [Header("Smooth Crossfade Settings")]
+    [Tooltip("Speed at which emission rates blend when transitioning between Forest and Snow.")]
+    [SerializeField, Min(0.1f)] private float crossfadeSpeed = 1.2f;
+
     private ParticleSystem[] forestSystems, snowSystems;
-    private BiomeParticleType currentBiome;
+    private float[] forestBaseRates, snowBaseRates;
+    private float currentForestWeight, currentSnowWeight;
     private Vector3 previousPlayer, previousView;
     private float effectPlaneZ;
     private bool refresh = true;
@@ -44,9 +49,10 @@ public class BiomeParticleController : MonoBehaviour
             enabled = false;
             return;
         }
+
         effectPlaneZ = transform.position.z;
-        Configure(forestSystems);
-        Configure(snowSystems);
+        forestBaseRates = CacheAndConfigure(forestSystems);
+        snowBaseRates = CacheAndConfigure(snowSystems);
         StopAndClear(forestSystems);
         StopAndClear(snowSystems);
         initialized = true;
@@ -55,16 +61,22 @@ public class BiomeParticleController : MonoBehaviour
     private bool ValidRoot(GameObject root) => root && root.activeInHierarchy &&
         root.transform != transform && root.transform.IsChildOf(transform);
 
-    private static void Configure(ParticleSystem[] systems)
+    private static float[] CacheAndConfigure(ParticleSystem[] systems)
     {
-        foreach (ParticleSystem system in systems)
+        float[] baseRates = new float[systems.Length];
+        for (int i = 0; i < systems.Length; i++)
         {
+            ParticleSystem system = systems[i];
             var main = system.main;
             main.playOnAwake = false;
             main.useUnscaledTime = false;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             main.stopAction = ParticleSystemStopAction.None;
+
+            var emission = system.emission;
+            baseRates[i] = Mathf.Max(1f, emission.rateOverTimeMultiplier);
         }
+        return baseRates;
     }
 
     private void OnEnable() => refresh = true;
@@ -72,34 +84,67 @@ public class BiomeParticleController : MonoBehaviour
     private void LateUpdate()
     {
         if (!initialized || !player || !followTarget || Time.timeScale <= 0f) return;
+
         Vector3 view = followTarget.position;
         transform.position = new Vector3(view.x + followOffset.x, view.y + followOffset.y, effectPlaneZ);
-        BiomeParticleType next = BiomeParticleZone.Resolve(player.position, defaultBiome);
+
+        BiomeParticleZone.ResolveBlend(player.position, defaultBiome, out float targetForest, out float targetSnow);
+
         float thresholdSquared = teleportClearDistance * teleportClearDistance;
         bool jumped = !refresh &&
             (((Vector2)(player.position - previousPlayer)).sqrMagnitude > thresholdSquared ||
              ((Vector2)(view - previousView)).sqrMagnitude > thresholdSquared);
 
-        if (refresh || jumped || next != currentBiome)
+        if (refresh || jumped)
         {
             StopAndClear(forestSystems);
             StopAndClear(snowSystems);
-            currentBiome = next;
-            if (next == BiomeParticleType.Forest) StartEffect(forestSystems);
-            else if (next == BiomeParticleType.Snow) StartEffect(snowSystems);
+
+            currentForestWeight = targetForest;
+            currentSnowWeight = targetSnow;
+
+            ApplyWeights(forestSystems, forestBaseRates, currentForestWeight, true);
+            ApplyWeights(snowSystems, snowBaseRates, currentSnowWeight, true);
             refresh = false;
         }
+        else
+        {
+            float step = crossfadeSpeed * Time.deltaTime;
+            currentForestWeight = Mathf.MoveTowards(currentForestWeight, targetForest, step);
+            currentSnowWeight = Mathf.MoveTowards(currentSnowWeight, targetSnow, step);
+
+            ApplyWeights(forestSystems, forestBaseRates, currentForestWeight, false);
+            ApplyWeights(snowSystems, snowBaseRates, currentSnowWeight, false);
+        }
+
         previousPlayer = player.position;
         previousView = view;
     }
 
-    private void StartEffect(ParticleSystem[] systems)
+    private void ApplyWeights(ParticleSystem[] systems, float[] baseRates, float weight, bool instantWarmup)
     {
-        foreach (ParticleSystem system in systems)
+        for (int i = 0; i < systems.Length; i++)
         {
+            ParticleSystem system = systems[i];
             if (!system || !system.gameObject.activeInHierarchy) continue;
-            if (warmupSeconds > 0f) system.Simulate(warmupSeconds, false, true, false);
-            system.Play(false);
+
+            var emission = system.emission;
+            emission.rateOverTimeMultiplier = baseRates[i] * weight;
+
+            if (weight > 0.01f)
+            {
+                if (!system.isPlaying)
+                {
+                    if (instantWarmup && warmupSeconds > 0f)
+                        system.Simulate(warmupSeconds, false, true, false);
+                    system.Play(false);
+                }
+            }
+            else if (system.isPlaying)
+            {
+                // Stop emitting new particles, but let existing airborne particles finish falling naturally
+                system.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            }
         }
     }
 

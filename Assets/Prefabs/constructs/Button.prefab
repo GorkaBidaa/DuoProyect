@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5875525723268010437}
   - component: {fileID: 1838954179928305833}
   - component: {fileID: 6750714036865776047}
+  - component: {fileID: 2339783692753269683}
   m_Layer: 14
   m_Name: Button
   m_TagString: Untagged
@@ -154,3 +155,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimedButton
   doorToOpen: {fileID: 0}
   openTime: 3
+--- !u!114 &2339783692753269683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010756226171829395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4771920394f0f474cad7f9c7d916cc5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnvironmentalGlow
+  preset: 5
+  customColor: {r: 1, g: 0.55, b: 0.1, a: 1}
+  glowSize: {x: 2, y: 2}
+  baseAlpha: 0.05
+  sortingOrderOffset: 1
+  pulseSpeed: 2.2
+  pulseAmplitude: 0.08
+  scalePulse: 0.05
+  syncWithParentSpriteColor: 0
