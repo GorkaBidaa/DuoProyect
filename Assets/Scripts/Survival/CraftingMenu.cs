@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -49,6 +50,7 @@ public class CraftingMenu : MonoBehaviour
     private bool crafting;
     private RecipeData selectedRecipe;
     private RecipeData pinnedRecipe;
+    private PlayerUpgradeData pinnedUpgrade;
     private int pinChangedFrame = -1;
     private PlayerUpgradeData selectedUpgrade;
     private PlayerUpgradeData feedbackUpgrade;
@@ -59,9 +61,22 @@ public class CraftingMenu : MonoBehaviour
     public PlayerInventory Inventory => inventory;
     public RecipeData SelectedRecipe => selectedRecipe;
     public RecipeData PinnedRecipe => pinnedRecipe;
-    public bool CanPinSelected => category != 2 && isActiveAndEnabled && IsOpen && atBase && !crafting &&
-        Time.timeScale > 0f && selectedRecipe && selectedRecipe.IsValid() &&
-        (!GameInput.Instance || !GameInput.Instance.DialogueBlocked);
+    public PlayerUpgradeData SelectedUpgrade => selectedUpgrade;
+    public PlayerUpgradeData PinnedUpgrade => pinnedUpgrade;
+    public bool HasPinnedTarget => pinnedRecipe || pinnedUpgrade;
+    public bool IsSelectedPinned => category == 2
+        ? selectedUpgrade && selectedUpgrade == pinnedUpgrade
+        : selectedRecipe && selectedRecipe == pinnedRecipe;
+    public string PinnedTitle => pinnedUpgrade
+        ? UpgradeTitle(pinnedUpgrade) + (pinnedUpgrade.IsUnlock ? "" :
+            " - Level " + (playerUpgrades.GetLevel(pinnedUpgrade.kind) + 1))
+        : pinnedRecipe ? pinnedRecipe.recipeName : "";
+    public bool CanPinSelected => isActiveAndEnabled && IsOpen && atBase && !crafting &&
+        Time.timeScale > 0f && (!GameInput.Instance || !GameInput.Instance.DialogueBlocked) &&
+        (category == 2
+            ? playerUpgrades && playerUpgrades.IsReady && selectedUpgrade && selectedUpgrade.IsValid() &&
+              playerUpgrades.GetNextLevel(selectedUpgrade.kind) != null
+            : selectedRecipe && selectedRecipe.IsValid());
     public event System.Action ViewChanged;
     public bool IsOpen => menuRoot != null && menuRoot.activeSelf;
 
@@ -245,8 +260,9 @@ public class CraftingMenu : MonoBehaviour
 
     private void OnUpgradesChanged()
     {
-        if (crafting || !IsOpen || category != 2) return;
-        if (recipeRows.Count == 0) BuildRecipeList();
+        if (crafting) return;
+        // A pinned upgrade must advance/clear even when the crafting menu is closed.
+        if (IsOpen && category == 2 && recipeRows.Count == 0) BuildRecipeList();
         else Refresh();
     }
 
@@ -479,9 +495,17 @@ public class CraftingMenu : MonoBehaviour
         GameInput.Instance?.BlockThisFrame();
         MenuUISounds.PlayClick();
 
-        // Pinning the same recipe again clears the tracker.
-        pinnedRecipe = pinnedRecipe == selectedRecipe
-            ? null : selectedRecipe;
+        // Recipes and upgrades share one tracker. Pinning the same selection unpins it.
+        if (category == 2)
+        {
+            pinnedUpgrade = IsSelectedPinned ? null : selectedUpgrade;
+            pinnedRecipe = null;
+        }
+        else
+        {
+            pinnedRecipe = IsSelectedPinned ? null : selectedRecipe;
+            pinnedUpgrade = null;
+        }
 
         RefreshPinned();
     }
@@ -489,21 +513,47 @@ public class CraftingMenu : MonoBehaviour
     public void Unpin()
     {
         pinnedRecipe = null;
+        pinnedUpgrade = null;
         RefreshPinned();
+    }
+
+    private static string UpgradeTitle(PlayerUpgradeData upgrade) =>
+        string.IsNullOrEmpty(upgrade.upgradeName) ? upgrade.name : upgrade.upgradeName;
+
+    private string GetPinnedUpgradeRequirements()
+    {
+        PlayerUpgradeLevel next = playerUpgrades.GetNextLevel(pinnedUpgrade.kind);
+        if (next == null) return "";
+        var text = new StringBuilder();
+        foreach (RecipeIngredient cost in next.costs)
+        {
+            int owned = inventory.GetResourceAmount(cost.resource);
+            int missing = Mathf.Max(0, cost.amount - owned);
+            string status = missing == 0 ? "Ready" : "Missing " + missing;
+            text.AppendLine(cost.resource.resourceName + ": " + owned + " / " + cost.amount + " - " + status);
+        }
+        return text.ToString();
     }
 
     private void RefreshPinned()
     {
+        // One-time unlocks and maxed upgrades no longer have a next-level cost to track.
+        if (pinnedUpgrade && (!playerUpgrades || !pinnedUpgrade.IsValid() ||
+            (playerUpgrades.IsReady && playerUpgrades.GetNextLevel(pinnedUpgrade.kind) == null)))
+            pinnedUpgrade = null;
+
         if (pinnedPanel != null && hud != null)
         {
-            bool show = pinnedRecipe != null;
+            bool show = pinnedRecipe || (pinnedUpgrade && playerUpgrades.IsReady);
             pinnedPanel.SetActive(show);
             if (show)
-                hud.SetPinnedRecipe(pinnedRecipe.recipeName, pinnedRecipe.GetRequirements(inventory));
+                hud.SetPinnedRecipe(PinnedTitle, pinnedUpgrade
+                    ? GetPinnedUpgradeRequirements() : pinnedRecipe.GetRequirements(inventory));
         }
         foreach (GameObject row in recipeRows)
             if (row && row.TryGetComponent(out UIRecipeButton recipeButton))
-                recipeButton.SetPinned(pinnedRecipe && recipeButton.BoundRecipe == pinnedRecipe);
+                recipeButton.SetPinned((pinnedRecipe && recipeButton.BoundRecipe == pinnedRecipe) ||
+                    (pinnedUpgrade && recipeButton.BoundUpgrade == pinnedUpgrade));
         ViewChanged?.Invoke();
     }
 

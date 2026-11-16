@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 
 public class ShadowAnchor : MonoBehaviour
@@ -33,6 +34,18 @@ public class ShadowAnchor : MonoBehaviour
     [Tooltip("Impulso horizontal que recibe el jugador si se teletransporta cortando el dash de la sombra")]
     public float shadowDashMomentumBoost = 14f;
     public LayerMask shadowObstacleLayer;
+
+    [Header("Ability Audio")]
+    [SerializeField] private AudioClip anchorPlaceClip;
+    [SerializeField] private AudioClip shadowDashClip;
+    [SerializeField] private AudioClip teleportClip;
+    [SerializeField] private AudioMixerGroup abilityMixerGroup;
+    [SerializeField, Range(0f, 1f)] private float anchorPlaceVolume = 0.65f;
+    [SerializeField, Range(0f, 1f)] private float shadowDashVolume = 0.65f;
+    [SerializeField, Range(0f, 1f)] private float teleportVolume = 0.65f;
+    private AudioSource teleportSource;
+    private AudioSource anchorPlaceSource;
+    private AudioSource shadowDashSource;
 
     [Header("Optional Menu References (Auto-found if left empty)")]
     [SerializeField] private InventoryMenu inventoryMenu;
@@ -88,6 +101,9 @@ public class ShadowAnchor : MonoBehaviour
 
         ResolveStaminaReference();
         CacheKey();
+        anchorPlaceSource = CreateAbilityAudioSource("AnchorPlaceAudio");
+        shadowDashSource = CreateAbilityAudioSource("ShadowDashAudio");
+        teleportSource = CreateAbilityAudioSource("ShadowTeleportAudio");
     }
 
     void Start()
@@ -103,6 +119,29 @@ public class ShadowAnchor : MonoBehaviour
             shadowObstacleLayer = playerMovement.groundLayer;
 
         CacheKey();
+    }
+
+    private AudioSource CreateAbilityAudioSource(string objectName)
+    {
+        var audioObject = new GameObject(objectName);
+        audioObject.transform.SetParent(transform, false);
+        AudioSource source = audioObject.AddComponent<AudioSource>();
+        source.playOnAwake = false;
+        source.loop = false;
+        source.spatialBlend = 0f;
+        source.dopplerLevel = 0f;
+        source.outputAudioMixerGroup = abilityMixerGroup;
+        return source;
+    }
+
+    private void PlayAbilitySound(AudioSource source, AudioClip clip, float volume)
+    {
+        if (!source || !clip) return;
+        source.outputAudioMixerGroup = abilityMixerGroup;
+        source.clip = clip;
+        source.volume = volume;
+        // Each action reuses its own voice, preventing repeated tails from stacking.
+        source.Play();
     }
 
     private void ResolveStaminaReference()
@@ -122,6 +161,9 @@ public class ShadowAnchor : MonoBehaviour
 
     void OnDisable()
     {
+        if (anchorPlaceSource) anchorPlaceSource.Stop();
+        if (shadowDashSource) shadowDashSource.Stop();
+        if (teleportSource) teleportSource.Stop();
         StopShadowDash();
         RestoreTeleportStateIfInterrupted();
     }
@@ -369,6 +411,8 @@ public class ShadowAnchor : MonoBehaviour
         ActiveShadow = true;
         UpdateShadowColor();
 
+        PlayAbilitySound(anchorPlaceSource, anchorPlaceClip, anchorPlaceVolume);
+
         // Consume stamina when deploying the shadow anchor
         ResolveStaminaReference();
         if (stamina != null)
@@ -446,6 +490,7 @@ public class ShadowAnchor : MonoBehaviour
     private IEnumerator TeleportRoutine(Vector3 targetPosition, float horizontalLaunchVelocity)
     {
         isTeleporting = true;
+        PlayAbilitySound(teleportSource, teleportClip, teleportVolume);
         float prevTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f;
 
         // Snapshot momentum before fade starts
@@ -618,6 +663,8 @@ public class ShadowAnchor : MonoBehaviour
                 yield break;
             }
         }
+
+        PlayAbilitySound(shadowDashSource, shadowDashClip, shadowDashVolume);
 
         direction = direction.sqrMagnitude > 0.001f ? direction.normalized : Vector2.right;
 

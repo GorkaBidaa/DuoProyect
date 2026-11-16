@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6159740403324709239}
   - component: {fileID: 6946210248826282180}
   - component: {fileID: 8460193791512209659}
+  - component: {fileID: 1025279329749256903}
   m_Layer: 5
   m_Name: UpgradeSelectBTN
   m_TagString: Untagged
@@ -141,6 +142,23 @@ MonoBehaviour:
   itemIcon: {fileID: 2607719358936493810}
   pinnedMarker: {fileID: 6135457761558761182}
   upgradeStateText: {fileID: 0}
+--- !u!114 &1025279329749256903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137310196909403187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e4d3585db11611439f41c954b9920e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonFeedback
+  clickSound: 0
+  visualRoot: {fileID: 2813998000896537758}
+  hoverScale: 1.035
+  pressedScale: 0.96
+  animationSpeed: 18
 --- !u!1 &1709520096149817606
 GameObject:
   m_ObjectHideFlags: 0

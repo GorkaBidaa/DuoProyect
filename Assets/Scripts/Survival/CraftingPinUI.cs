@@ -90,14 +90,13 @@ public sealed class CraftingPinUI : MonoBehaviour
     {
         if (!button || !craftingMenu || !actionLabel || !bindingFallbackText) return;
         lastCanPin = craftingMenu.CanPinSelected;
-        bool selectedIsPinned = craftingMenu.SelectedRecipe &&
-            craftingMenu.SelectedRecipe == craftingMenu.PinnedRecipe;
+        bool selectedIsPinned = craftingMenu.IsSelectedPinned;
         button.interactable = lastCanPin;
         actionLabel.text = selectedIsPinned ? "Unpin" : "Pin";
         if (selectedPinnedMarker) selectedPinnedMarker.SetActive(selectedIsPinned);
         if (pinnedStatusText)
-            pinnedStatusText.text = craftingMenu.PinnedRecipe
-                ? "Pinned: " + craftingMenu.PinnedRecipe.recipeName : "No recipe pinned";
+            pinnedStatusText.text = craftingMenu.HasPinnedTarget
+                ? "Pinned: " + craftingMenu.PinnedTitle : "No recipe pinned";
 
         InputAction action = input ? input.Action("PinRecipe") : null;
         int bindingIndex = FindBinding(action);

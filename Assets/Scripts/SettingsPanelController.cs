@@ -35,6 +35,12 @@ public class SettingsPanelController : MonoBehaviour
     private bool isOpen;
     private int openedFrame;
     public bool IsOpen => isOpen;
+    public GameObject SettingsRoot => settingsRoot;
+    public event System.Action Closed;
+    public bool CloseRequestsBlocked { get; set; }
+    private int closedFrame = -1;
+    public bool ConsumesBackThisFrame => Time.frameCount == closedFrame ||
+        (keybindPanel && keybindPanel.ConsumesBackThisFrame);
 
     private void Awake()
     {
@@ -68,7 +74,7 @@ public class SettingsPanelController : MonoBehaviour
     {
         if (!Application.isPlaying || !isActiveAndEnabled || isOpen) return;
         GameInput input = GameInput.Instance;
-        if ((input && input.DialogueBlocked) || keybindPanel.IsOpen) return;
+        if ((input && input.SettingsOpeningBlocked) || keybindPanel.IsOpen) return;
         previousTimeScale = Time.timeScale;
         previousMainMenuActive = mainMenuPanel && mainMenuPanel.activeSelf;
         previousSelection = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
@@ -84,10 +90,17 @@ public class SettingsPanelController : MonoBehaviour
 
     public void CloseSettings()
     {
+        if (CloseRequestsBlocked) return;
+        CloseSettingsInternal();
+    }
+
+    private void CloseSettingsInternal()
+    {
         if (!isOpen) return;
         // Capture is cancelled before changing panels or restoring gameplay input.
         keybindPanel.Close();
         isOpen = false;
+        closedFrame = Time.frameCount;
         if (settingsRoot) settingsRoot.SetActive(false);
         if (mainMenuPanel) mainMenuPanel.SetActive(previousMainMenuActive);
         if (inputOwner) inputOwner.SetSettingsBlocked(false);
@@ -96,6 +109,7 @@ public class SettingsPanelController : MonoBehaviour
         if (EventSystem.current)
             EventSystem.current.SetSelectedGameObject(previousSelection && previousSelection.activeInHierarchy
                 ? previousSelection : null);
+        Closed?.Invoke();
     }
 
     public void ShowAudio() => SelectTab(Tab.Audio);
@@ -104,7 +118,7 @@ public class SettingsPanelController : MonoBehaviour
 
     private void SelectTab(Tab tab)
     {
-        if (!isOpen) return;
+        if (!isOpen || CloseRequestsBlocked) return;
         keybindPanel.Close();
         activeTab = tab;
         audioPage.SetActive(tab == Tab.Audio);
@@ -120,7 +134,7 @@ public class SettingsPanelController : MonoBehaviour
 
     public void RestoreCurrentTabDefaults()
     {
-        if (!isOpen || keybindPanel.IsRebinding) return;
+        if (!isOpen || CloseRequestsBlocked || keybindPanel.IsRebinding) return;
         switch (activeTab)
         {
             case Tab.Controls: keybindPanel.RestoreDefaults(); break;
@@ -140,13 +154,15 @@ public class SettingsPanelController : MonoBehaviour
 
     private void Update()
     {
-        if (!isOpen) return;
+        if (!isOpen || CloseRequestsBlocked) return;
         RefreshRestoreButton();
         if (Time.frameCount <= openedFrame || keybindPanel.ConsumesBackThisFrame) return;
-        if ((Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
+        GameInput input = GameInput.Instance;
+        if ((input && input.PausePressedThisFrame) ||
+            (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
             (Gamepad.current != null && (Gamepad.current.buttonEast.wasPressedThisFrame ||
              Gamepad.current.startButton.wasPressedThisFrame))) CloseSettings();
     }
 
-    private void OnDisable() => CloseSettings();
+    private void OnDisable() => CloseSettingsInternal();
 }

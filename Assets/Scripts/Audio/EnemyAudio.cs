@@ -10,6 +10,11 @@ public class EnemyAudio : MonoBehaviour
     [SerializeField] private AudioClip[] deathClips;
     [Header("Optional bat wings")]
     [SerializeField] private AudioClip[] wingClips;
+    [SerializeField] private bool wingsFromAnimation;
+    [Header("Optional Mushroom movement")]
+    [SerializeField] private AudioClip[] footstepClips;
+    [SerializeField, Range(0f, 1f)] private float footstepVolume = 0.2f;
+    [SerializeField, Min(0.08f)] private float minimumStepInterval = 0.12f;
     [SerializeField] private Vector2 wingInterval = new Vector2(0.45f, 0.65f);
     [SerializeField, Range(0f, 1f)] private float wingVolume = 0.15f;
     [Header("Mix")]
@@ -18,7 +23,8 @@ public class EnemyAudio : MonoBehaviour
     [SerializeField, Min(1f)] private float audibleDistance = 18f;
     [SerializeField, Range(0f, 1f)] private float volume = 0.55f;
     [SerializeField] private Vector2 pitchRange = new Vector2(0.95f, 1.05f);
-    private AudioSource cueSource, wingSource;
+    private AudioSource cueSource, wingSource, stepSource;
+    private float nextStep;
     private AudioClip lastClip;
     private float nextWing;
     private bool quietWings, paused;
@@ -28,6 +34,7 @@ public class EnemyAudio : MonoBehaviour
     {
         cueSource = MakeSource("EnemyCues");
         wingSource = MakeSource("EnemyWings");
+        stepSource = MakeSource("EnemySteps");
     }
     private AudioSource MakeSource(string name)
     {
@@ -43,13 +50,14 @@ public class EnemyAudio : MonoBehaviour
     {
         if (Time.timeScale <= 0f)
         {
-            if (!paused) { cueSource.Pause(); wingSource.Pause(); paused = true; }
+            if (!paused) { cueSource.Pause(); wingSource.Pause(); stepSource.Pause(); paused = true; }
             return;
         }
-        if (paused) { cueSource.UnPause(); wingSource.UnPause(); paused = false; }
+        if (paused) { cueSource.UnPause(); wingSource.UnPause(); stepSource.UnPause(); paused = false; }
         UpdateMix(cueSource, volume);
         UpdateMix(wingSource, wingVolume);
-        if (quietWings || Time.time < nextWing || wingSource.isPlaying) return;
+        UpdateMix(stepSource, footstepVolume);
+        if (wingsFromAnimation || quietWings || Time.time < nextWing || wingSource.isPlaying) return;
         float min = Mathf.Max(0.1f, Mathf.Min(wingInterval.x, wingInterval.y));
         nextWing = Time.time + Random.Range(min, Mathf.Max(min, Mathf.Max(wingInterval.x, wingInterval.y)));
         Play(wingSource, Pick(wingClips), wingVolume);
@@ -80,6 +88,22 @@ public class EnemyAudio : MonoBehaviour
         source.clip = clip;
         source.Play();
     }
+    public void AnimationWingbeat()
+    {
+        if (!isActiveAndEnabled || !wingsFromAnimation || quietWings || paused ||
+            Time.timeScale <= 0f || !wingSource || wingSource.isPlaying) return;
+        Play(wingSource, Pick(wingClips), wingVolume);
+    }
+
+    public void Footstep()
+    {
+        if (!isActiveAndEnabled || paused || Time.timeScale <= 0f || !stepSource || Time.time < nextStep) return;
+        nextStep = Time.time + Mathf.Max(0.08f, minimumStepInterval);
+        Play(stepSource, Pick(footstepClips), footstepVolume);
+    }
+
+    public void StopFootsteps() { if (stepSource) stepSource.Stop(); }
+
     public void Detection() => Play(cueSource, Pick(detectionClips), volume);
     public void Windup() => Play(cueSource, Pick(windupClips), volume);
     public void Attack() => Play(cueSource, Pick(attackClips), volume);
@@ -110,6 +134,8 @@ public class EnemyAudio : MonoBehaviour
     {
         if (cueSource) cueSource.Stop();
         if (wingSource) wingSource.Stop();
+        if (stepSource) stepSource.Stop();
+        nextStep = 0f;
         quietWings = paused = false;
         nextWing = Time.time + 0.2f;
     }
@@ -117,5 +143,6 @@ public class EnemyAudio : MonoBehaviour
     {
         if (cueSource) Destroy(cueSource.gameObject);
         if (wingSource) Destroy(wingSource.gameObject);
+        if (stepSource) Destroy(stepSource.gameObject);
     }
 }

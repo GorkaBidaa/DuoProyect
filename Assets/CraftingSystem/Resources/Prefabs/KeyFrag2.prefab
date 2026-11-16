@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 571507f9ca92c2a4f965c628c3d1cc5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourcePickup
-  resource: {fileID: 11400000, guid: 2cd709f9264adf140a4bfbdd1675aeb7, type: 2}
+  resource: {fileID: 11400000, guid: 725a7b59c85762f46a376db0e25a8551, type: 2}
   amount: 1
 --- !u!114 &7841729517553522471
 MonoBehaviour:

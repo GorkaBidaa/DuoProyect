@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21da5c0e040d85f4cbd184064c884a19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceBob
-  visual: {fileID: 0}
+  visual: {fileID: 6379556984603919964}
   bobHeight: 0.1
   cyclesPerSecond: 0.6
   randomStartPhase: 1
