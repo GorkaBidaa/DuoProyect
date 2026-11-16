@@ -34,6 +34,7 @@ public class GameInput : MonoBehaviour
 
     private bool externalBlock;
     private bool settingsBlocked;
+    private bool pauseBlocked;
     public InputActionMap GameplayActions => gameplay;
 
 
@@ -110,14 +111,36 @@ public class GameInput : MonoBehaviour
 
         }
 
+        UpdatePromptDevice();
+
         // Latch menu input before other scripts run, preventing order-dependent item use.
 
         if (Pressed("Inventory") || (ContextInteractionAvailable && Pressed("Interact")))
 
             BlockThisFrame();
 
-        if (inventoryMenu.IsOpen || craftingMenu.IsOpen) BlockThisFrame();
+        if (PausePressedThisFrame || inventoryMenu.IsOpen || craftingMenu.IsOpen) BlockThisFrame();
 
+    }
+
+    private void UpdatePromptDevice()
+    {
+        Gamepad pad = Gamepad.current;
+        if (UsingGamepad && pad == null) UsingGamepad = false;
+        if (pad != null)
+        {
+            if (pad.leftStick.ReadValue().sqrMagnitude > 0.25f ||
+                pad.rightStick.ReadValue().sqrMagnitude > 0.25f ||
+                pad.dpad.ReadValue().sqrMagnitude > 0.01f) UsingGamepad = true;
+            foreach (var control in pad.allControls)
+                if (control is UnityEngine.InputSystem.Controls.ButtonControl button && button.wasPressedThisFrame)
+                    UsingGamepad = true;
+        }
+        Mouse mouse = Mouse.current;
+        if ((Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame) ||
+            (mouse != null && (mouse.delta.ReadValue().sqrMagnitude > 4f ||
+             mouse.leftButton.wasPressedThisFrame || mouse.rightButton.wasPressedThisFrame ||
+             mouse.scroll.ReadValue().sqrMagnitude > 0.01f))) UsingGamepad = false;
     }
 
     public InputAction Action(string name) => gameplay?.FindAction(name, true);
@@ -130,13 +153,25 @@ public class GameInput : MonoBehaviour
 
     private bool RopeTravelling => ropeUse && ropeUse.IsTravelling;
 
-    public bool DialogueBlocked => externalBlock || settingsBlocked || RopeTravelling;
+    public bool DialogueBlocked => externalBlock || settingsBlocked || pauseBlocked || RopeTravelling;
+    public bool SettingsOpeningBlocked => externalBlock || settingsBlocked || RopeTravelling;
 
-    public bool PromptsAllowed => !externalBlock && !settingsBlocked && !RopeTravelling && Time.timeScale > 0f &&
+    public bool PausePressedThisFrame
+    {
+        get
+        {
+            InputAction pause = gameplay?.FindAction("Pause", false);
+            if (pause != null) return pause.WasPressedThisFrame();
+            return (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
+                (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame);
+        }
+    }
+
+    public bool PromptsAllowed => !externalBlock && !settingsBlocked && !pauseBlocked && !RopeTravelling && Time.timeScale > 0f &&
 
         player && !player.IsDead && !inventoryMenu.IsOpen && !craftingMenu.IsOpen;
 
-    public bool GameplayBlocked => externalBlock || settingsBlocked || RopeTravelling || Time.timeScale <= 0f ||
+    public bool GameplayBlocked => externalBlock || settingsBlocked || pauseBlocked || RopeTravelling || Time.timeScale <= 0f ||
 
         (player && player.IsDead) || inventoryMenu.IsOpen || craftingMenu.IsOpen || blockedFrame == Time.frameCount;
 
@@ -178,7 +213,7 @@ public class GameInput : MonoBehaviour
 
         // Opening crafting is intentionally allowed despite the same-frame gameplay latch.
 
-        if (externalBlock || settingsBlocked || RopeTravelling || Time.timeScale <= 0f || (player && player.IsDead) ||
+        if (externalBlock || settingsBlocked || pauseBlocked || RopeTravelling || Time.timeScale <= 0f || (player && player.IsDead) ||
 
             inventoryMenu.IsOpen || !Pressed("Interact") || interactionFrame == Time.frameCount)
 
@@ -193,6 +228,8 @@ public class GameInput : MonoBehaviour
     }
 
     public void BlockThisFrame() => blockedFrame = Time.frameCount;
+
+    public void SetPauseBlocked(bool value) { pauseBlocked = value; BlockThisFrame(); }
 
     public void SetSettingsBlocked(bool value) { settingsBlocked = value; BlockThisFrame(); }
 

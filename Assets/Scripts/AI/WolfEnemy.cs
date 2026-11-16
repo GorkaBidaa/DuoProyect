@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,6 +51,9 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
     [SerializeField] private ResourceData gloomResource;
     [SerializeField, Min(0)] private int gloomDropped = 3;
 
+    [Header("Animation")]
+    [SerializeField] private EnemyAnimationDriver animationDriver;
+    [SerializeField] private bool useDebugStateTint;
     private EnemyAttackContact attackContact;
 
     private enum State
@@ -104,6 +108,7 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
         EnemyAudio audio = GetComponent<EnemyAudio>();
         if (audio != null && player != null) audio.SetListener(player.transform);
         body = GetComponent<Rigidbody2D>();
+        if (!animationDriver) animationDriver = GetComponentInChildren<EnemyAnimationDriver>(true);
         shape = GetComponent<CapsuleCollider2D>();
         homePosition = body.position;
         body.bodyType = RigidbodyType2D.Dynamic;
@@ -168,7 +173,7 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
                         if (stateTime >= Mathf.Max(0f, windupDuration - aimLockDuration))
                         {
                             aimLocked = true;
-                            if (visuals != null)
+                            if (useDebugStateTint && visuals != null)
                                 visuals.color = new Color(1f, 0.5f, 0f);
                         }
                     }
@@ -214,6 +219,7 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
                 TickRepelled();
                 break;
         }
+        RefreshAnimation();
     }
 
     private void TickPatrol()
@@ -480,7 +486,23 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
             retreatTargetX = Mathf.Clamp(body.position.x + away * backAwayDistance, ChaseMin, ChaseMax);
         }
         if (visuals != null)
-            visuals.color = next == State.Windup ? Color.yellow : next == State.Lunging ? Color.red : originalColor;
+            visuals.color = useDebugStateTint
+                ? (next == State.Windup ? Color.yellow : next == State.Lunging ? Color.red : originalColor)
+                : originalColor;
+        RefreshAnimation();
+    }
+
+    private void RefreshAnimation()
+    {
+        if (!animationDriver || dead) return;
+        EnemyAnimationPhase phase = state == State.Windup ? EnemyAnimationPhase.Windup :
+            state == State.Lunging ? EnemyAnimationPhase.Attack :
+            state == State.Recovering ? EnemyAnimationPhase.Recover : EnemyAnimationPhase.Locomotion;
+        float phaseDuration = state == State.Windup ? windupDuration :
+            state == State.Lunging ? lungeDuration : recoveryDuration;
+        animationDriver.SetPhase(phase, stateTime, phaseDuration);
+        if (state == State.Windup || state == State.Lunging)
+            animationDriver.Face(new Vector2(lungeDirection, 0f));
     }
 
     private void OnCollisionEnter2D(Collision2D collision) => TryDamagePlayer(collision);
@@ -508,8 +530,37 @@ public class WolfEnemy : MonoBehaviour, ITrapTarget
             if (player != null) audio.SetListener(player.transform);
             audio.Death();
         }
+        if (audio != null)
+        {
+            audio.StopCue();
+            audio.SetQuietWings(true);
+            audio.StopFootsteps();
+        }
+        if (attackContact != null)
+        {
+            attackContact.EndAttack();
+            attackContact.StopAllCoroutines();
+            attackContact.enabled = false;
+        }
+        foreach (Collider2D collider in GetComponentsInChildren<Collider2D>())
+            collider.enabled = false;
         body.linearVelocity = Vector2.zero;
+        body.simulated = false;
+        if (visuals) visuals.color = originalColor;
         DropGloom();
+        float deathDuration = animationDriver ? animationDriver.PlayDeath() : 0f;
+        if (deathDuration > 0f) StartCoroutine(FinishDeath(deathDuration));
+        else RemoveDeadEnemy();
+    }
+
+    private IEnumerator FinishDeath(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        RemoveDeadEnemy();
+    }
+
+    private void RemoveDeadEnemy()
+    {
         gameObject.SetActive(false);
         Destroy(gameObject);
     }

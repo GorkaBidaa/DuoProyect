@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
@@ -6,31 +7,36 @@ using UnityEngine;
 public class CursedTreeInteraction : MonoBehaviour, IInteractionPromptSource
 {
     [SerializeField] private TreeDialogueController controller;
+    [SerializeField] private PlayerInventory inventory;
+    [SerializeField] private RecipeData keyRecipe;
+    [Header("Short tutorial conversations")]
     [SerializeField] private TreeDialogueData introduction;
-    [SerializeField] private TreeDialogueData aboutTheForest;
-    [SerializeField] private TreeDialogueData reservedThird;
+    [SerializeField] private TreeDialogueData gatheringHint;
+    [SerializeField] private TreeDialogueData readyToCraft;
+    [SerializeField] private TreeDialogueData keyReady;
     [SerializeField] private bool autoPlayIntroduction = true;
-    [SerializeField] private bool thirdUnlocked;
+    [SerializeField] private bool showMissingMaterials = true;
     private readonly HashSet<Collider2D> occupants = new HashSet<Collider2D>();
-    private bool introCompleted, forestCompleted, autoAttemptedThisVisit;
-    private bool ownsConversation;
+    private bool introCompleted, autoAttemptedThisVisit, ownsConversation;
     public bool PromptAvailable => isActiveAndEnabled && occupants.Count > 0 && controller &&
-        !controller.IsOpen && NextDialogue != null;
+        controller.isActiveAndEnabled && !controller.IsOpen && !controller.ConsumesInteractionThisFrame;
     public Vector3 PromptPosition => transform.position;
     public int PromptPriority => 150;
     public string PromptAction => "Interact";
-    public string PromptLabel => "Talk";
-    private TreeDialogueData NextDialogue => !introCompleted && introduction && introduction.IsPlayable
-        ? introduction : thirdUnlocked && forestCompleted && reservedThird && reservedThird.IsPlayable
-        ? reservedThird : aboutTheForest && aboutTheForest.IsPlayable ? aboutTheForest : null;
+    public string PromptLabel => "Talk to Alderworn";
 
     private void Reset() => GetComponent<Collider2D>().isTrigger = true;
     private void Awake()
     {
-        if (!controller || !introduction || !introduction.IsPlayable || !aboutTheForest || !aboutTheForest.IsPlayable ||
-            !GetComponent<Collider2D>().isTrigger)
+        bool valid = controller && inventory && controller.Player &&
+            inventory.gameObject == controller.Player.gameObject && keyRecipe && keyRecipe.IsValid() &&
+            keyRecipe.outputType == RecipeOutputType.Item && keyRecipe.itemOutput &&
+            introduction && introduction.IsPlayable && gatheringHint && gatheringHint.IsPlayable &&
+            readyToCraft && readyToCraft.IsPlayable && keyReady && keyReady.IsPlayable &&
+            GetComponent<Collider2D>().isTrigger;
+        if (!valid)
         {
-            Debug.LogError("Assign the Tree controller and two playable dialogues, and enable Is Trigger on its interaction collider.", this);
+            Debug.LogError("Alderworn needs the dialogue controller, its Player inventory, the Magic Key recipe, four playable tutorial dialogues and an interaction trigger.", this);
             enabled = false;
         }
     }
@@ -45,7 +51,7 @@ public class CursedTreeInteraction : MonoBehaviour, IInteractionPromptSource
         if (occupants.Count == 0)
         {
             autoAttemptedThisVisit = false;
-            if (ownsConversation) controller.Cancel();
+            if (ownsConversation && controller) controller.CancelImmediately();
         }
     }
     private void Update()
@@ -54,35 +60,54 @@ public class CursedTreeInteraction : MonoBehaviour, IInteractionPromptSource
         if (occupants.Count == 0)
         {
             autoAttemptedThisVisit = false;
-            if (ownsConversation && controller) controller.Cancel();
+            if (ownsConversation && controller) controller.CancelImmediately();
             return;
         }
         if (!PromptAvailable || !controller.CanStart) return;
         if (!ReferenceEquals(InteractionPromptRegistry.Select(controller.Player.transform.position), this)) return;
         if (autoPlayIntroduction && !introCompleted && !autoAttemptedThisVisit)
         {
-            if (Play(introduction)) autoAttemptedThisVisit = true;
+            if (Talk()) autoAttemptedThisVisit = true;
         }
-        else if (GameInput.Instance && GameInput.Instance.TryInteract()) Play(NextDialogue);
+        else if (GameInput.Instance && GameInput.Instance.TryInteract()) Talk();
     }
-    private bool Play(TreeDialogueData data)
+
+    public bool Talk()
     {
-        bool opened = controller.Begin(data, completed =>
+        if (!PromptAvailable || !controller.CanStart) return false;
+        bool welcome = !introCompleted;
+        TreeDialogueData data = welcome ? introduction :
+            inventory.GetItemAmount(keyRecipe.itemOutput) > 0 ? keyReady :
+            keyRecipe.CanCraft(inventory) ? readyToCraft : gatheringHint;
+        var lines = new List<TreeDialogueLine>(data.lines);
+        if (!welcome && data == gatheringHint && showMissingMaterials)
+        {
+            var missing = new StringBuilder("Still needed for " + keyRecipe.recipeName + ": ");
+            bool separator = false;
+            foreach (var ingredient in keyRecipe.ingredients)
+            {
+                int amount = Mathf.Max(0, ingredient.amount - inventory.GetResourceAmount(ingredient.resource));
+                if (amount == 0) continue;
+                if (separator) missing.Append("; ");
+                missing.Append(ingredient.resource.resourceName).Append(" x").Append(amount);
+                separator = true;
+            }
+            if (separator) lines.Add(new TreeDialogueLine("Alderworn", missing.ToString() + "."));
+        }
+        bool opened = controller.Begin(lines.ToArray(), completed =>
         {
             ownsConversation = false;
-            if (!completed) return;
-            if (data == introduction) introCompleted = true;
-            if (data == aboutTheForest) forestCompleted = true;
+            if (welcome && completed) introCompleted = true;
         });
         ownsConversation = opened;
         return opened;
     }
-    public void SetThirdUnlocked(bool value) => thirdUnlocked = value;
+
     private void OnDisable()
     {
         InteractionPromptRegistry.Unregister(this);
         occupants.Clear();
         autoAttemptedThisVisit = false;
-        if (ownsConversation && controller) controller.Cancel();
+        if (ownsConversation && controller) controller.CancelImmediately();
     }
 }

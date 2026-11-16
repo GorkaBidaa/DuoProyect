@@ -116,3 +116,7 @@ InitTestScene*.unity*
 #Code2Prompt
 code2prompt.exe
 revision.txt
+
+[mergetool "vscode"]
+    cmd = code --wait --merge "$REMOTE" "$LOCAL" "$BASE" "$MERGED"
+

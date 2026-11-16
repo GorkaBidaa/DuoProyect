@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
@@ -57,6 +58,12 @@ public class PlayerMovement : MonoBehaviour
     public float fallMultiplier = 2.5f;
     [Tooltip("Must be greater than upwardGravityMultiplier to shorten the jump when released")]
     public float lowJumpMultiplier = 3f;
+
+    [Header("Jump Audio")]
+    [SerializeField] private AudioClip jumpClip;
+    [SerializeField] private AudioMixerGroup jumpMixerGroup;
+    [SerializeField, Range(0f, 1f)] private float jumpVolume = 0.65f;
+    private AudioSource jumpSource;
 
     [Header("Invisible Mechanics (Game Feel)")]
     public float coyoteTime = 0.1f;
@@ -164,6 +171,15 @@ public class PlayerMovement : MonoBehaviour
         col = GetComponent<Collider2D>();
         stamina = GetComponent<StaminaSystem>();
 
+        var jumpAudioObject = new GameObject("JumpAudio");
+        jumpAudioObject.transform.SetParent(transform, false);
+        jumpSource = jumpAudioObject.AddComponent<AudioSource>();
+        jumpSource.playOnAwake = false;
+        jumpSource.loop = false;
+        jumpSource.spatialBlend = 0f;
+        jumpSource.dopplerLevel = 0f;
+        jumpSource.outputAudioMixerGroup = jumpMixerGroup;
+
         if (rb != null)
         {
             // Ensure the Rigidbody2D is dynamic and X/Y positions are not frozen in the Inspector
@@ -211,6 +227,15 @@ public class PlayerMovement : MonoBehaviour
         // Clean up dynamically created physics material to prevent memory leaks
         if (frictionlessMaterial != null)
             Destroy(frictionlessMaterial);
+    }
+
+    private void PlayJumpSound()
+    {
+        if (!jumpClip || !jumpSource) return;
+        jumpSource.clip = jumpClip;
+        jumpSource.volume = jumpVolume;
+        // Reuse one voice so repeated jumps do not stack overlapping sound tails.
+        jumpSource.Play();
     }
 
     public void UnlockWallJump()
@@ -977,6 +1002,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             rb.linearVelocity = new Vector2(jumpVelX, jumpVelY);
+            PlayJumpSound();
 
             isJumping = true;
             jumpCutApplied = false;
@@ -1004,6 +1030,7 @@ public class PlayerMovement : MonoBehaviour
             float launchX = -jumpWallDir * wallJumpForce.x;
 
             rb.linearVelocity = new Vector2(launchX, wallJumpForce.y);
+            PlayJumpSound();
 
             isJumping = true;
             jumpCutApplied = false;
